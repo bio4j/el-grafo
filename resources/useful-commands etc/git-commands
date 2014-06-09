@@ -1,0 +1,18 @@
+GIT
+
+BASIC
+git add <filename>
+git add .
+git commit -m "Commit message"
+git push origin master
+
+
+CREATE NEW BRANCH
+git checkout -b feature_x
+git checkout master
+
+git push origin <branch>
+
+
+DELETE BRANCH REMOTE
+git push origin --delete <branchName>
