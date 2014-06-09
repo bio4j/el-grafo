@@ -21,3 +21,11 @@ git push origin <branch>
 
 DELETE BRANCH REMOTE
 git push origin --delete <branchName>
+
+
+GMT
+gmt status
+gtm start
+gtm stop
+gtm list
+gtm task feature/topic/foo -m "Task short description"  //new task on branch
