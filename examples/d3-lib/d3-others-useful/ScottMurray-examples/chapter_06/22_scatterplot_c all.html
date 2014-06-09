@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Adding dynamic color, based on data</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 500;
+			var h = 100;
+			var barPadding = 1;
+			
+			var dataset = [
+							[5, 20], 
+							[480, 90], 
+							[250, 50], 
+							[100, 33], 
+							[330, 95],
+							[410, 12], 
+							[475, 44], 
+							[25, 67], 
+							[85, 21], 
+							[220, 8]
+						];
+			
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			// Circles
+			svg.selectAll("circle")
+			   .data(dataset)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(d, i) {
+			   		return i * (w / dataset.length);
+			   })
+			   .attr("cy", function(d) {
+			   		return h - (d * 4);
+			   })
+			   .attr("r", w / dataset.length - barPadding)
+			
+			// Labels
+			svg.selectAll("text")
+				.data(dataset1)
+				.enter()
+				.append("text")
+				.text(function(d) {
+					return d;
+				})
+				.attr("x", function(d, i) {
+					return i * (w / dataset1.length) + (w / dataset1.length - barPadding) / 2;  // +5
+				})
+				.attr("y", function(d) {
+						return (h - d * 6) + 15;
+				})
+				.attr("font-family", "sans-serif")
+				.attr("text-anchor", "middle")
+				.attr("font-size", "11px")
+				.attr("fill", "white");
+			
+		</script>
+	</body>
+</html>

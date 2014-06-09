@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Mercator projection applied to oceans</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">
+			features.OBJECTID.734 { fill: #ddc; }	
+			features.OBJECTID.735 { fill: #blue; }	
+			features.OBJECTID.736 { fill: #ddc; }	
+			features.OBJECTID.737 { fill: #blue; }	
+			features.OBJECTID.738 { fill: #cdc; }	
+			features.OBJECTID.739 { fill: #blue; }	
+			features.OBJECTID.740 { fill: none; }	
+
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 1000;
+			var h = 500;
+
+			//Define map projection
+			var projection = d3.geo.mercator()
+									.center([ -3.33, 37.05 ])
+								   .translate([w/2, h/2])
+								   .scale([40000]);
+
+			//Define path generator
+			var path = d3.geo.path()
+					 .projection(projection);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Load in GeoJSON data
+			d3.json("geoJSON-c/EMIs7.json", function(json) {
+				
+				//Bind data and create one path per GeoJSON feature
+				svg.selectAll("path")
+				   .data(json.features)
+				   .enter()
+				   .append("path")
+				   //.attr("class", function(d) { return "features.OBJECTID"; })	NO ME FUNCIONAN STYLES
+				   .attr("d", path);
+				   //.style("stroke", "black")
+				   //.style("fill", "teal");
+
+				   //.style("fill", "steelblue");
+		
+			});
+			
+		</script>
+	</body>
+</html>

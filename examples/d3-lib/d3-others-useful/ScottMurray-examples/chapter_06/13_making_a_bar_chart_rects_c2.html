@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Making a bar chart with SVG rects2</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 600;
+			var h = 300;
+			var barPadding = 3; 
+			
+			var dataset1 = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13,
+							11, 12, 15, 20, 18, 17, 16, 18, 23, 25, 50 ];
+			var dataset2 = [];  									//Initialize empty array
+			for (var i = 0; i < 30; i++) {			 				//Loop 25 times
+				var newNumber = Math.floor(Math.random() * 30);  	//New random integer (0-29)
+				dataset2.push(newNumber);	
+				}
+			
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			svg.selectAll("rect")
+			   .data(dataset1)
+			   .enter()
+			   .append("rect")
+			   .attr("x", function(d, i) {
+						return i * (w / dataset1.length);
+					})
+			   .attr("y", function(d) {
+						return h - d * 6; 
+					})
+			   .attr("width", w / dataset1.length - barPadding)
+			   .attr("height", function(d, i) {
+						return d * 6;
+					})
+				//.attr("fill", "teal")
+				//.attr("opacity", function(d, i) {
+				//		return d / 100;
+				//	})
+				.attr("fill", function(d) {
+						return "rgb(0, 0, " + (d * 5) + ")";
+					});
+			
+			svg.selectAll("text")
+				.data(dataset1)
+				.enter()
+				.append("text")
+				.text(function(d) {
+					return d;
+				})
+				.attr("x", function(d, i) {
+					return i * (w / dataset1.length) + (w / dataset1.length - barPadding) / 2;  // +5
+				})
+				.attr("y", function(d) {
+						return (h - d * 6) + 15;
+				})
+				.attr("font-family", "sans-serif")
+				.attr("text-anchor", "middle")
+				.attr("font-size", "11px")
+				.attr("fill", "white");
+		</script>
+	</body>
+</html>

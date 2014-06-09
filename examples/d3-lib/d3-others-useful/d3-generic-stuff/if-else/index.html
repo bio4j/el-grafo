@@ -1,0 +1,13 @@
+ IF!!
+ 	........
+
+      	.attr("x", function(d) { 
+      	return d.children || d._children ? -18 : 18; })   
+
+
+      ES EQUIVALENTE A..
+
+	  	.attr("x", function(d) { 
+      		if (d.children) {return -18; }
+      		else {return 45; }
+    	})

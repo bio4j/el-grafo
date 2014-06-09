@@ -1,0 +1,42 @@
+{
+  "name": "graphlib",
+  "version": "0.7.4",
+  "description": "A directed and undirected multi-graph library",
+  "main": "index.js",
+  "keywords": [
+    "graph",
+    "algorithms"
+  ],
+  "dependencies": {
+    "cp-data": "1.1.3"
+  },
+  "devDependencies": {
+    "benchmark": "~1.0.0",
+    "browserify": "~2.35.1",
+    "chai": "1.8.x",
+    "jade": "0.35.x",
+    "jshint": "2.1.x",
+    "istanbul": "~0.1.44",
+    "marked": "0.2.x",
+    "mocha": "1.12.x",
+    "semver": "2.1.x",
+    "uglify-js": "1.2.3"
+  },
+  "author": {
+    "name": "Chris Pettitt",
+    "email": "chris@samsarin.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cpettitt/graphlib.git"
+  },
+  "license": "MIT",
+  "readme": "# Graphlib\n\nGraphlib is a JavaScript library that provides data structures for undirected\nand directed multi-graphs along with algorithms that can be used with them.\n\n[![Build Status](https://secure.travis-ci.org/cpettitt/graphlib.png)](http://travis-ci.org/cpettitt/graphlib)\n\nNote that graphlib is current a pre-1.0.0 library. We will do our best to\nmaintain backwards compatibility for patch level increases (e.g. 0.0.1 to\n0.0.2) but make no claim to backwards compatibility across minor releases (e.g.\n0.0.1 to 0.1.0). Watch our [CHANGELOG](CHANGELOG.md) for details on changes.\n\n# Getting Graphlib\n\n## NPM Install\n\nBefore installing this library you need to install the [npm package manager].\n\nTo get graphlib from npm, use:\n\n    $ npm install graphlib\n\n## Browser Scripts\n\nYou can get the latest browser-ready scripts:\n\n* [graphlib.js](http://cpettitt.github.io/project/graphlib/latest/graphlib.js)\n* [graphlib.min.js](http://cpettitt.github.io/project/graphlib/latest/graphlib.min.js)\n\n## Build From Source\n\nBefore building this library you need to install the [npm package manager].\n\nCheck out this project and run this command from the root of the project:\n\n    $ make\n\nThis will generate `graphlib.js` and `graphlib.min.js` in the `out/dist` directory\nof the project.\n\n# Example\n\n```js\nvar Digraph = require(\"graphlib\").Digraph;\n\n// Create a new empty graph\nvar g = new Digraph();\n\n// Add node \"A\" to the graph with no value\ng.addNode(\"A\");\n\n// This returns true\ng.hasNode(\"A\");\n\n// Add node \"B\" to the graph with a String value\ng.addNode(\"B\", \"B's value\");\n\n// Prints `B's value`\nconsole.log(g.node(\"B\"));\n\n// Add node \"C\" to the graph with an Object value\ng.addNode(\"C\", { k: 123 });\ng.addNode(\"D\");\n\n// Prints `[ 'A', 'B', 'C', 'D' ]`\nconsole.log(g.nodes());\n\n// Add a directed edge with the ID \"AB\" from \"A\" to \"B\", but assign no value\ng.addEdge(\"AB\", \"A\", \"B\");\n\n// Add a directed edge with no ID (Diraph will assign one) from \"B\" to \"C\"\ng.addEdge(null, \"B\", \"C\");\n\n// Add a directed edge from \"C\" to \"D\" with an Object value\ng.addEdge(\"CD\", \"C\", \"D\", { k: 456 });\n\n// Since Digraph is a multi-graph, we can have multiple edges incident on the\n// same source and target nodes.\ng.addEdge(\"AB2\", \"A\", \"B\");\n\n// Prints `[ 'AB', '_ANON-1', 'CD', 'AB2' ]`. `_ANON-1` is the edge from \"B\" to \"C\"\nconsole.log(g.edges());\n\n// Which edges go from \"A\" to \"B\"? This prints `[ 'AB', 'AB2' ]`\nconsole.log(g.outEdges(\"A\", \"B\"));\n\n// Which edges are incident on \"D\"? This prints `[ 'CD' ]`\nconsole.log(g.incidentEdges(\"D\"));\n\n// How about a subgraph?\nvar g2 = g.subgraph([\"A\", \"B\", \"C\"]);\n\n// Prints `[ 'A', 'B', 'C' ]`\nconsole.log(g2.nodes());\n\n// Prints `[ 'AB', '_ANON-1', 'AB2' ]`. Note that edges that have both their\n// source and target nodes in the graph are also included in the subgraph.\nconsole.log(g2.edges());\n```\n\n# API\n\n[API documentation](http://cpettitt.github.io/project/graphlib/latest/doc/index.html)\n\n# Contributing\n\nWe welcome contributions under the MIT license! Here are a few ways you can\nhelp:\n\n* Bug reports\n* Bug fixes\n* New algorithms\n* More test cases\n* Documentation improvements\n* Imrpovements to the core Graph API\n\nIf your change involves change to the core Graph API, we recommend discussing\nthe idea via a [GitHub issue](https://github.com/cpettitt/graphlib/issues)\nfirst.\n\n# License\n\nGraphlib is licensed under the terms of the MIT License. See the LICENSE file\nfor details.\n\n[npm package manager]: http://npmjs.org/\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/cpettitt/graphlib/issues"
+  },
+  "homepage": "https://github.com/cpettitt/graphlib",
+  "_id": "graphlib@0.7.4",
+  "_from": "graphlib@"
+}

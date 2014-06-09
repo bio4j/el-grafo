@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Mercator projection applied to oceans</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style type="text/css">
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 1000;
+			var h = 500;
+
+			//Define map projection
+			var projection = d3.geo.mercator()
+									.center([ -3.33, 37.05 ])
+								   .translate([w/2, h/2])
+								   .scale([40000]);
+
+			//Define path generator
+			var path = d3.geo.path()
+					 .projection(projection);
+
+			//Easy colors accessible via a 10-step ordinal scale
+			var color = d3.scale.category10();
+
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+			//Load in GeoJSON data
+			d3.json("geoJSON-c/EMIsColors.json", function(json) {
+				
+				//Bind data and create one path per GeoJSON feature
+				svg.selectAll("path")
+				   .data(json.features)
+				   .enter()
+				   .append("path")
+				   .attr("d", path)
+				   .style("fill", function(d,i) {return color(i); });
+
+				   //.attr("class", function(d) { return "features.OBJECTID"; })	NO ME FUNCIONAN STYLES
+				    //.style("fill", "teal");
+				   //.style("stroke", "black")
+				   //.style("fill", "#030085");
+		
+				/*//Create labels
+				svg.selectAll("text")
+			   .data(json.features)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {
+			   		return "nombre";
+			   })
+			   .attr("text-anchor", "middle")
+			   .attr("x", function(d, i) {
+			   		return xScale(i) + xScale.rangeBand() / 2;
+			   })
+			   .attr("y", function(d) {
+			   		return h - yScale(d) + 14;
+			   })
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "11px")
+			   .attr("fill", "white");*/
+
+			});
+			
+		</script>
+	</body>
+</html>
