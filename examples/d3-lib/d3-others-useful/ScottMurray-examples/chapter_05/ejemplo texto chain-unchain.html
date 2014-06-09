@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Loading data from a CSV file</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+		var dataset;
+		d3.csv("food.csv", function(error, data) {
+        if (error) {  //If error is not null, something went wrong.
+          console.log(error);  //Log the error.
+        } else {      //If no error, the file loaded correctly. Yay!
+          console.log(data);   //Log the data.
+		dataset = data;
+		}});
+		d3.select("body").append("p").text("desde código. chain!");
+		var body = d3.select("body");
+		var p = body.append("p");
+		p.text("sin chain!");
+		</script>
+	</body>
+</html>

@@ -1,0 +1,53 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+window.onload = function() {    
+    var params = getParameters();
+    var id = params["id"];
+	var callback = function(data) {
+		console.log("Reports received, accessible as window.data", data);
+		window.data = data;
+		window.xtrace = new XTraceDAG(document.body, data[0].reports, params);
+	};
+	var errback = function(message, error) {
+		console.log("Error retrieving reports", error);
+	};
+	if (id==null) {
+	    document.body.appendChild(document.createTextNode("No Trace ID specified"));
+    } else {
+        getReports(id, callback, errback);
+    }
+}
+</script>

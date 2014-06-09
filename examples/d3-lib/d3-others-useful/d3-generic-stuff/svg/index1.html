@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>SVG playing</title>
+<style>
+
+.linea {			/* Class selectors empiezan con . !! */
+stroke-width: 20;
+stroke-dasharray: 2, 3;
+}
+
+p {
+	background-color: lightgrey;
+}
+
+
+
+</style>
+<body>
+<p>SVG playing</p>
+
+<svg width="150" height="150">
+  <path d=" M 15 25			
+            L 15 75
+            L 60 75
+            Z"
+            stroke="red" stroke-width="2" fill="none" />
+</svg>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+//Width and height
+var w = 960,
+    h = 700;
+
+//Create SVG element
+var svg = d3.select("body")
+    .append("svg")
+    .attr("width", w)
+    .attr("height", h);
+
+
+var linea1 = svg.append("line")
+				.attr("x1", 40)
+				.attr("x2", 60)
+				.attr("y1", 70)
+				.attr("y2", 20)
+				.style("stroke", "blue");
+
+
+var linea2 = svg.append("line")
+				.attr("x1", 100)
+				.attr("x2", 50)
+				.attr("y1", 10)
+				.attr("y2", 500)
+				.attr("class", "linea")
+				.style("stroke", "orange");
+
+
+//The data for our line
+ var lineData = [ { "x": 1,   "y": 5},  { "x": 20,  "y": 20},
+                  { "x": 40,  "y": 10}, { "x": 60,  "y": 40},
+                  { "x": 80,  "y": 5},  { "x": 100, "y": 60}];
+ 
+ //This is the accessor function we talked about above
+
+ var linea3 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + i * 30; })
+                .y(function(d) { return d.y * 2; })
+                .interpolate("linear");
+
+ var linea4 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 30; })
+                .y(function(d) { return d.y * 2 + 30; })
+                 .interpolate("step-before");
+
+ var linea5 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 60; })
+                .y(function(d) { return d.y * 2 + 60; })
+                 .interpolate("step-after");
+ 
+ var linea6 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 90; })
+                .y(function(d) { return d.y * 2 + 90; })                 
+                 .interpolate("basis");
+
+ var linea7 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 120; })
+                .y(function(d) { return d.y * 2 + 120; })
+                 .interpolate("basis-open");
+
+ var linea8 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 150; })
+                .y(function(d) { return d.y * 2 + 150; })
+                 .interpolate("basis-closed");
+
+ var linea9 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 180; })
+                .y(function(d) { return d.y * 2 + 180; })
+                 .interpolate("bundle");
+
+ var linea10 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 210; })
+                .y(function(d) { return d.y * 2 + 210; })
+                 .interpolate("cardinal");
+
+ var linea11 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 240; })
+                .y(function(d) { return d.y * 2 + 240; })
+                 .interpolate("cardinal-open");
+
+ var linea12 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 270; })
+                .y(function(d) { return d.y * 2 + 270; })
+                 .interpolate("cardinal-closed");
+
+ var linea13 = d3.svg.line()
+                .x(function(d) { return d.x * 2 + 300; })
+                .y(function(d) { return d.y * 2 + 300; })
+                .interpolate("monotone");
+
+var color = d3.scale.category20();
+
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                //.attr("d", linea3(lineData + "Z"))
+                .attr("d", [linea3(lineData),linea4(lineData),linea5(lineData),linea6(lineData),linea7(lineData),linea8(lineData),linea9(lineData),linea10(lineData),linea11(lineData),linea12(lineData),linea13(lineData)])
+                .attr("stroke", function(d,i) { for i, return color(i); })
+                .attr("stroke-width", 2)
+                .attr("fill", "none");
+
+
+// M .. .. 		MOVE TO (inicio) X-Coordinates Y-Coordinates
+// L .. .. 		Draw a line
+// ...
+
+// Mayúsculas -> valores Absolutos
+// Minúsuculas -> valores Relativos
+
+</script>

@@ -1,0 +1,4 @@
+No funciona xq faltan cosas, 
+xo es interesante ver el código. Hace uso de ROOT como en el tree layout
+
+http://mbostock.github.io/d3/talk/20110921/parent-foci.html?1317947158473

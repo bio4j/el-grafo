@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Force layout  Curved links -- Bio4j trial</title>
+
+<style>
+
+
+</style>
+<body>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+//Width and height
+var w = 960,
+    h = 700;
+
+
+//Create SVG element
+var svg = d3.select("body")
+    .append("svg")
+    .attr("width", w)
+    .attr("height", h);
+
+var circleRadii = [40, 20, 10];
+
+
+svg.selectAll("circle")
+    .data(circleRadii)
+    .enter()
+    .append("circle")
+    .attr("cx", function(d) { return d + 50; })
+    .attr("cy", function(d) { return d + 50; })
+    .attr("r", function(d) {return d; })
+    .style("fill", function(d) {
+        return "rgb(100, " + d * 5 + ", 100)"; })
+    .style("stroke", function(d) {
+        if (d == 40) { return "red"; }
+        // else { return "black" };
+        if (d == 20) { return "blue"; }
+        else { return "yellow"}
+    })
+    /*
+    .style("stroke-width", function(d,i) {
+      return " + i * 5 + "; });
+    */
+    .style("stroke-width", function(d,i) {
+      return i * 5 });
+</script>
