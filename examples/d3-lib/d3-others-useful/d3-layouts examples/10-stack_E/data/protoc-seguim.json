@@ -1,0 +1,125 @@
+{
+ "name": "PROGRAMA DE SEGUIMIENTO",
+ "children": [
+  {
+   "name": "1.RECONSTRUCCIÓN DEL PASADO",
+   "children": [
+    {
+     "name": "Paleopalinología y Paleolimnología",
+     "children": [
+      {"name": "Reconstrucción de la vegetación por análisis palinológico", "size": 3938},
+      {"name": "Indicadores paleolimnológicos en lagunas", "size": 3812}
+     ]
+    },
+    {
+     "name": "Cambios en la cubierta vegetal",
+     "children": [
+      {"name": "Análisis retrospectivo de la gestión forestal", "size": 7074},
+      {"name": "Cartografía histórica de la vegetación mediante documentos", "size": 7074},
+      {"name": "Caracterización detallada de formaciones vegetales mediante ortofotografía", "size": 7074},
+      {"name": "Cartografía histórica de la vegetación mediante ortofotos", "size": 7074}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "2.CLIMATOLOGÍA",
+   "children": [
+    {"name": "Red de estaciones meteorológicas multiparam‚tricas", "size": 17010},
+    {"name": "Procesamiento de datos climáticos", "size": 5842},
+    {"name": "Simulaciones climáticas", "size": 1041}
+   ]
+  },
+  {
+   "name": "3.CRIOSFERA",
+   "children": [
+    {"name": "Seguimiento de la extensión de la nieve mediante MODIS", "size": 1759},
+    {"name": "Modelo hidrológico de Sierra Nevada", "size": 2165},
+    {"name": "Estaciones de seguimiento de nieve en campo", "size": 586}
+   ]
+  },
+  {
+   "name": "4.SISTEMAS ACUÁTICOS",
+   "children": [
+    {"name": "Parámetros físico-químicos", "size": 8833},
+    {"name": "Comunidades biológicas", "size": 1732},
+    {"name": "Trucha común", "size": 3623}
+   ]
+  },
+  {
+   "name": "5.CAMBIOS QUÍMICA ATMOSFÉRICA",
+   "children": [
+    {"name": "Dosímetros pasivos", "size": 4116},
+    {"name": "Deposición contaminantes", "size": 4116}
+   ]
+  },
+  {
+   "name": "6.EVALUACIÓN DE LA GESTIÓN",
+   "children": [
+    {"name": "Gestión de pinares de repoblación", "size": 1082},
+    {"name": "Gestión encinares y robledales", "size": 1336},
+    {"name": "Gestión enebrales y sabinares", "size": 319},
+    {"name": "Restauración post-incendio", "size": 2822}
+   ]
+  },
+  {
+   "name": "7.ENFERMEDADES EMERGENTES",
+   "children": [
+    {"name": "Estado sanitario cabra montés y jabalí", "size": 1616}
+    ]
+  },
+  {
+   "name": "8.REPERCUSIONES SOBRE LA BIODIVERSIDAD",
+   "children": [
+    {
+     "name": "Fauna",
+     "children": [
+      {"name": "Procesionaria del pino", "size": 3938},
+      {"name": "Artrópodos terrestres", "size": 3812},
+      {"name": "Mariposas diurnas", "size": 3938},
+      {"name": "Procesionaria del pino", "size": 3938},
+      {"name": "Reptiles", "size": 3812},
+      {"name": "Anfibios", "size": 3938},
+      {"name": "Aves paseriformes", "size": 3938},
+      {"name": "Aves rapaces", "size": 3812},
+      {"name": "Mamíferos carnívoros", "size": 3938},
+      {"name": "Micromamíferos", "size": 3938},
+      {"name": "Cabra montés", "size": 3812},
+      {"name": "Jabalí", "size": 3938}
+     ]
+    },
+    {
+     "name": "Flora",
+     "children": [
+      {"name": "Fenología de floración", "size": 7074},
+      {"name": "Flora alta montaña: GLORIA", "size": 7074},
+      {"name": "Caracterización detallada de formaciones vegetales mediante ", "size": 7074},
+      {"name": "Enebral piornal", "size": 7074},
+      {"name": "Flora alta montaña: GLORIA", "size": 7074},
+      {"name": "Caracterización detallada de formaciones vegetales mediante", "size": 7074},
+      {"name": "Bosques autóctonos", "size": 7074},
+      {"name": "Borreguiles", "size": 7074},
+      {"name": "Riberas", "size": 7074}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "9.PRODUCTIVIDAD PRIMARIA Y FLUJOS CARBONO",
+   "children": [
+    {"name": "Torres eddie covariance", "size": 8258},
+    {"name": "Productividad mediante teledetección", "size": 10001}
+   ]
+  },
+  {
+   "name": "10.SERVICIOS ECOSISTÉMICOS Y SOCIOECONOMÍA",
+   "children": [
+    {"name": "Huella humana", "size": 8258},
+    {"name": "Servicios regulación hídrica", "size": 10001},
+    {"name": "Servicios de regulación erosión", "size": 8217},
+    {"name": "Generación información socioeconómica", "size": 12555},
+    {"name": "Recopilación información socioeconómica", "size": 2324}
+   ]
+  }
+ ]
+}

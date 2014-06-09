@@ -1,0 +1,10 @@
+d3.json("https://api.github.com/gists/1129492", function(data) {
+    var json = JSON.parse(data.files['readme.json'].content);
+    var link = svg.selectAll("line")
+                .data(json.links)
+                .enter().append("line");
+
+
+
+Archivo completo en 
+C:\wamp\www\d3-bio4j-d3 test\12_force layout-neighbours\III

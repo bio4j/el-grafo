@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+svg {
+  font: 10px sans-serif;
+}
+
+
+.areaBoth.areaContext {
+  opacity: .6;
+}
+
+.areaBoth {
+  fill: teal;
+  clip-path: url(#clip);
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .1;    
+  /*fill-opacity: .125;    */
+  shape-rendering: crispEdges;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var margin = {top: 10, right: 10, bottom: 100, left: 40},
+    margin2 = {top: 430, right: 10, bottom: 20, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom,
+    height2 = 500 - margin2.top - margin2.bottom;
+
+var parseDate = d3.time.format("%b %Y").parse;
+
+var x = d3.time.scale().range([0, width]),
+    x2 = d3.time.scale().range([0, width]),
+    y = d3.scale.linear().range([height, 0]),
+    y2 = d3.scale.linear().range([height2, 0]);
+
+var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+    xAxis2 = d3.svg.axis().scale(x2).orient("bottom"),
+    yAxis = d3.svg.axis().scale(y).orient("left");
+
+// Constructs a new brush with no default x- and y-scale, and an empty extent.
+var brush = d3.svg.brush()
+    .x(x2)
+    .on("brush", brushed);      
+/*Gets or sets the listener for the specified event type. Brushes support three types of events:
+
+brushstart - on mousedown
+brush - on mousemove, if the brush extent has changed
+brushend - on mouseup
+*/
+
+//d3.svg.area generator for the graphics
+var areaFocus = d3.svg.area()
+    .interpolate("monotone")
+    .x(function(d) { return x(d.date); })
+    .y0(height)
+    .y1(function(d) { return y(d.price); });
+
+var areaContext = d3.svg.area()
+    .interpolate("monotone")
+    .x(function(d) { return x2(d.date); })
+    .y0(height2)
+    .y1(function(d) { return y2(d.price); });
+
+// On this case, just 1 svg canvas. Then we have 2 different charts.
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+
+svg.append("defs").append("clipPath")
+    .attr("id", "clip")
+    .append("rect")
+    .attr("width", width)
+    .attr("height", height);
+
+// focusUp & focusDown to create the 2 charts 
+var focusUp = svg.append("g")
+    .attr("class", "focus")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var contextDown = svg.append("g")
+    .attr("class", "context")
+    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+
+d3.csv("data/sp500.csv", type, function(error, data) {
+  x.domain(d3.extent(data.map(function(d) { return d.date; })));
+  y.domain([0, d3.max(data.map(function(d) { return d.price; }))]);
+  x2.domain(x.domain());
+  y2.domain(y.domain());
+
+  //path focusUp
+  focusUp.append("path")
+      .datum(data)
+      .attr("class", "areaBoth areaFocus")      //Multiple classes just separating by spaces
+      .attr("d", areaFocus);
+  
+  //xAxis focusUp
+  focusUp.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+  
+  //yAxis focusUp
+  focusUp.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+  
+  //path contextDown
+  contextDown.append("path")
+      .datum(data)  
+      .attr("class", "areaBoth areaContext")    //Multiple classes just separating by spaces
+      .attr("d", areaContext);
+
+  //xAxis contextDown
+  contextDown.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height2 + ")")
+      .call(xAxis2);
+
+  //yAxis contextDown
+  contextDown.append("g")
+      .attr("class", "x brush")
+      .call(brush)
+      .selectAll("rect")
+      .attr("y", -6)
+      .attr("height", height2 + 7);
+});
+
+function brushed() {
+  x.domain(brush.empty() ? x2.domain() : brush.extent());
+  focusUp.select(".areaBoth").attr("d", areaFocus);
+  focusUp.select(".x.axis").call(xAxis);
+}
+
+function type(d) {
+  d.date = parseDate(d.date);
+  d.price = +d.price;
+  return d;
+}
+
+</script>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Drawing Graphs with D3JS</title>
+
+<style>
+</style>
+
+<body>
+	<p>Drawing Graphs with D3JS</p>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var drawGraph = function(json)
+{
+	// Declare a spot for the graph
+	var svg = d3.select("body").append("svg")
+		.attr("width", '100%')
+		.attr("height", '89%');
+ 
+	// Create the graph
+	var force = d3.layout.force()
+		.gravity(.2)
+		.distance(250)
+		.charge(-1000)
+		.on('tick', tick)
+		.size([width, height]);
+ 
+	// Add the data
+	force.nodes(nodes)
+		.links(links)
+		.start();	
+ 
+	// Draw the links
+	var link = svg.selectAll(".link").data(force.links());
+ 
+	// Update the new links
+	link.enter().append("line");
+ 
+	// Remove the old links
+	link.exit().remove();
+ 
+	// Draw the nodes
+	var node = svg.selectAll(".node").data(force.nodes());
+ 
+	// Update the new nodes 
+	node.enter().append("svg:g");
+ 
+	// Remove the old nodes
+	node.exit().remove();	
+ 
+	// Create the tick function which animates the graph
+	function tick()
+	{
+		link.attr("x1", function(d) { return d.source.x; })
+		    .attr("y1", function(d) { return d.source.y; })
+		    .attr("x2", function(d) { return d.target.x; })
+		    .attr("y2", function(d) { return d.target.y; });
+		node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	}
+}
+</script>
+</body>

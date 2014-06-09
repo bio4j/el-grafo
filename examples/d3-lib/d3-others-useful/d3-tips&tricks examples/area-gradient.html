@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body { font: 12px Arial;}
+
+.axis path,
+.axis line {
+	fill: none;
+	stroke: grey;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+}
+
+.area {							/* changed from line to area */
+  fill: url(#area-gradient);	/* moved the url reference to fill instead of stroke */
+  stroke-width: 0px;			/* got rid of the stroke reference and any line*/
+}
+
+</style>
+<body>
+
+<!-- load the d3.js library -->	
+<script type="text/javascript" src="d3/d3.v3.js"></script>
+
+<script>
+
+// Set the dimensions of the canvas / graph
+var	margin = {top: 30, right: 20, bottom: 30, left: 50},
+	width = 600 - margin.left - margin.right,
+	height = 270 - margin.top - margin.bottom;
+
+// Parse the date / time
+var	parseDate = d3.time.format("%d-%b-%y").parse;
+
+// Set the ranges
+var	x = d3.time.scale().range([0, width]);
+var	y = d3.scale.linear().range([height, 0]);
+
+// Define the axes
+var	xAxis = d3.svg.axis().scale(x)
+	.orient("bottom").ticks(5);
+
+var	yAxis = d3.svg.axis().scale(y)
+	.orient("left").ticks(5);
+	
+// Define the area (remove the line definition)
+var	area = d3.svg.area()						// added
+	.x(function(d) { return x(d.date); })		// added
+	.y0(height)									// added
+	.y1(function(d) { return y(d.close); });	// added
+
+// Adds the svg canvas
+var	svg = d3.select("body")
+	.append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// Get the data
+d3.tsv("data/data.tsv", function(error, data) {
+	data.forEach(function(d) {
+		d.date = parseDate(d.date);
+		d.close = +d.close;
+	});
+
+	// Scale the range of the data
+	x.domain(d3.extent(data, function(d) { return d.date; }));
+	y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+	// Set the threshold
+	svg.append("linearGradient")					
+		.attr("id", "area-gradient")				// change from line to area
+		.attr("gradientUnits", "userSpaceOnUse")	
+		.attr("x1", 0).attr("y1", y(0))				
+		.attr("x2", 0).attr("y2", y(1000))			
+	.selectAll("stop")								
+		.data([										
+			{offset: "0%", color: "red"},			
+			{offset: "30%", color: "red"},		
+			{offset: "45%", color: "black"},		
+			{offset: "55%", color: "black"},	
+			{offset: "60%", color: "lawngreen"},	
+			{offset: "100%", color: "lawngreen"}	
+		])											
+	.enter().append("stop")							
+		.attr("offset", function(d) { return d.offset; })		
+		.attr("stop-color", function(d) { return d.color; });	
+
+	// Add the filled area and remove the value line block
+	svg.append("path") 			// added
+		.datum(data)			// added
+		.attr("class", "area")	// added
+		.attr("d", area);		// added
+
+	// Add the X Axis
+	svg.append("g")			// Add the X Axis
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+	// Add the Y Axis
+	svg.append("g")			// Add the Y Axis
+		.attr("class", "y axis")
+		.call(yAxis);
+
+
+});
+
+</script>
+</body>
