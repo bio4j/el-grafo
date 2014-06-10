@@ -17,6 +17,8 @@ git checkout -b feature_x
 git checkout master
 
 git push origin <branch>
+RENAME BRANCH
+git branch (-m | -M) [<oldbranch>] <newbranch>
 
 
 DELETE BRANCH REMOTE
