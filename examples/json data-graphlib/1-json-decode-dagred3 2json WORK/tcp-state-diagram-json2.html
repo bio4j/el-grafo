@@ -58,31 +58,19 @@ function draw() {
            });
   console.log(states);*/
 
-  var nodes = [
+  var states = [
     { id: "CLOSED",     value: { label: "open" } },
     { id: "LISTEN",     value: { label: "rcv SYN" } },
     { id: "SYN RCVD",     value: { label: "rcv---" } },
     { id: "SYN SENT",     value: { label: "---YN" } },
+  ];
 
   var edges = [
     { u: "CLOSED",     v: "LISTEN",     value: { label: "open" } },
     { u: "LISTEN",     v: "SYN RCVD",   value: { label: "rcv SYN" } },
     { u: "LISTEN",     v: "SYN SENT",   value: { label: "send" } },
     { u: "LISTEN",     v: "CLOSED",     value: { label: "close" } },
-    { u: "SYN RCVD",   v: "FINWAIT-1",  value: { label: "close" } },
-    { u: "SYN RCVD",   v: "ESTAB",      value: { label: "rcv ACK of SYN" } },
-    { u: "SYN SENT",   v: "SYN RCVD",   value: { label: "rcv SYN" } },
-    { u: "SYN SENT",   v: "ESTAB",      value: { label: "rcv SYN, ACK" } },
-    { u: "SYN SENT",   v: "CLOSED",     value: { label: "close" } },
-    { u: "ESTAB",      v: "FINWAIT-1",  value: { label: "close" } },
-    { u: "ESTAB",      v: "CLOSE WAIT", value: { label: "rcv FIN" } },
-    { u: "FINWAIT-1",  v: "FINWAIT-2",  value: { label: "rcv ACK of FIN" } },
-    { u: "FINWAIT-1",  v: "CLOSING",    value: { label: "rcv FIN" } },
-    { u: "CLOSE WAIT", v: "LAST-ACK",   value: { label: "close" } },
-    { u: "FINWAIT-2",  v: "TIME WAIT",  value: { label: "rcv FIN" } },
-    { u: "CLOSING",    v: "TIME WAIT",  value: { label: "rcv ACK of FIN" } },
-    { u: "LAST-ACK",   v: "CLOSED",     value: { label: "rcv ACK of FIN" } },
-    { u: "TIME WAIT",  v: "CLOSED",     value: { label: "timeout=2MSL" } }
+   
   ];
 
   var renderer = new dagreD3.Renderer();
