@@ -5,7 +5,7 @@ git add <filename>
 git add .
 git commit -m "Commit message"
 git push origin master
-
+ga -A // to remove?
 
 SEE BRANCHES
 git branch
@@ -29,3 +29,4 @@ gtm start
 gtm stop
 gtm list
 gtm task feature/topic/foo -m "Task short description"  //new task on branch
+gtm comment // comment on current branch+issue related
