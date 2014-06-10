@@ -1,41 +1,23 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>III Neighbours </title>
+<title>json from url </title>
 
-<style>
-
-
-circle {
-  stroke-width: 1.5px;
-}
-
-line {
-  stroke: #999;
-}
-
-
-</style>
 <body>
-  <p> III- Force layout graph with colour-coded node neighbours </p>
 
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 
+// from d3 API
+/*var data; // a global
 
-var w = 960,
-    h = 500,
-    r = 6,
-    fill = d3.scale.category20();
+d3.json("path/to/file.json", function(error, json) {
+  if (error) return console.warn(error);
+  data = json;
+  visualizeit();
+});*/
 
-var force = d3.layout.force()
-            .charge(-120)
-            .linkDistance(30)
-            .size([w, h]);
 
-var svg = d3.select("body")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
+
 
 /*// direct url
 var url = "https://gist.githubusercontent.com/mbostock/1129492/raw/8ac84377f78fb62ccb574ddf9d5af42b5c21d0a4/readme.json";
@@ -47,14 +29,12 @@ d3.json("https://api.github.com/gists/1129492", function(data) {
     
     var json = JSON.parse(data.files['readme.json'].content);               // lee el json dsd una url
 
-    console.log("json links");
-    console.log(json.links);
-    console.log("json nodes:");
-    console.log(json.nodes);
-
     var link = svg.selectAll("line")
                 .data(json.links)
                 .enter().append("line");
+
+     console.log(json.links);
+     console.log(json.nodes);
 
 
 
