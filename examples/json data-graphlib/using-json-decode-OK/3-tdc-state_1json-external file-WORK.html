@@ -59,7 +59,7 @@ function draw() {
     "nodes": [
         {
             "id": "CLOSED",
-            value: { label: "open" }
+            value: { label: "open", lilili: "lilili" }
         },
         {
             "id": "LISTEN",
@@ -67,7 +67,7 @@ function draw() {
         },
         {
             "id": "SYN RCVD",
-            value: { label: "rcv---" }
+            value: { label: "rcv---", lululu: "lulu" }
         },
         {
             "id": "SYN SENT",
@@ -78,7 +78,7 @@ function draw() {
         {
             u: "CLOSED", 
             v: "LISTEN",
-            value: { label: "open" }
+            value: { label: "open", lalala: "lalala" }
         },
         {
             u: "LISTEN",
@@ -103,6 +103,9 @@ function draw() {
   renderer.drawNodes(function(graph, root) {
     var svgNodes = oldDrawNodes(graph, root);
     svgNodes.attr("id", function(u) { return "node-" + u; });
+    svgNodes.attr("id", function(u) { return "node-" + u; });
+
+    
     return svgNodes;
   });
 
@@ -117,8 +120,8 @@ function draw() {
   
    // EDGES/NODE LIST (general: all edges)
  //digraph.edges()
- console.log("all g.edges: " + g.nodes());
- console.log("all g.nodes: " + g.edgeLabels());
+ console.log(json.nodes);
+ console.log(json.edges);
 
 }
 </script>
