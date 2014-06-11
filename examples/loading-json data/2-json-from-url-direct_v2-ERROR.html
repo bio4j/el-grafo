@@ -23,8 +23,8 @@ var url1 = "https://gist.githubusercontent.com/mbostock/1129492/raw/8ac84377f78f
 var urlargh = "https://gist.githubusercontent.com/mbostock/1129492/raw/8ac84377f78fb62ccb574ddf9d5af42b5c21d0a4/readme.json"
 var url2 = "http://gist.githubusercontent.com/mbostock/1093025/raw/a05a94858375bd0ae023f6950a2b13fac5127637/flare.json";
 
-
-d3.json("readme.json").header("Content-Type", "application/json").get(
+//Edu tweacks:
+d3.json(url2).header("Content-Type", "application/json").get(
 	function(error, graph) {
 
      console.log(graph.links);
@@ -35,6 +35,12 @@ d3.json("readme.json").header("Content-Type", "application/json").get(
 
 });
 
+
+//Initial test:
+d3.json(url2, function(error, graph) {     
+	console.log(graph.links);
+    console.log(graph.nodes);
+});
 
 </script>
 </body>
