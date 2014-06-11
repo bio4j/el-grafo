@@ -1,0 +1,5 @@
+Having some issues with cross-domain requests when loading external json files from urls.
+
+Some tests here:
+
+But this won't be a problem as we'll load them from our server, not from external sources.

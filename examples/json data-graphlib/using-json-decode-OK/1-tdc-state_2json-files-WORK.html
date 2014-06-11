@@ -1,0 +1,97 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Dagre D3 Renderer Demo</title>
+
+<script src="js/d3.js" charset="utf-8"></script>da
+<script src="js/graphlib.min.js"></script>
+<script src="js/dagre-d3.js"></script>
+
+<style>
+svg {
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke-width: 2px;
+  stroke: #333;
+  fill: #fff;
+}
+
+#node-CLOSED rect {
+  fill: #f77;
+}
+
+#node-ESTAB rect {
+  fill: #7f7;
+}
+
+.edgeLabel rect {
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+}
+</style>
+
+<body onLoad="draw();">
+
+<svg width=650 height=680><g transform="translate(20,20)"/></svg>
+
+<script>
+function draw() {
+/*  var states = [ "CLOSED", "LISTEN", "SYN RCVD", "SYN SENT",
+                 "ESTAB", "FINWAIT-1", "CLOSE WAIT", "FINWAIT-2",
+                 "CLOSING", "LAST-ACK", "TIME WAIT" ]
+           .map(function(s) {
+              return { id: s, value: { label: s } };       
+           });
+  console.log(states);*/
+
+  var states = [
+    { id: "CLOSED",     value: { label: "open" } },
+    { id: "LISTEN",     value: { label: "rcv SYN" } },
+    { id: "SYN RCVD",     value: { label: "rcv---" } },
+    { id: "SYN SENT",     value: { label: "---YN" } },
+  ];
+
+  var edges = [
+    { u: "CLOSED",     v: "LISTEN",     value: { label: "open" } },
+    { u: "LISTEN",     v: "SYN RCVD",   value: { label: "rcv SYN" } },
+    { u: "LISTEN",     v: "SYN SENT",   value: { label: "send" } },
+    { u: "LISTEN",     v: "CLOSED",     value: { label: "close" } },
+   
+  ];
+  
+
+
+
+  var renderer = new dagreD3.Renderer();
+  var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return "node-" + u; });
+    return svgNodes;
+  });
+
+  var layout = renderer.run(dagreD3.json.decode(states, edges), d3.select("svg g"));
+  d3.select("svg")
+    .attr("width", layout.graph().width + 40)
+    .attr("height", layout.graph().height + 40);
+
+  // console.log(graph);
+  console.log(states);
+  console.log(graph.edges);
+
+}
+</script>
