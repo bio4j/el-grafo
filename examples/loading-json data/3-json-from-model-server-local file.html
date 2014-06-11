@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>json from url </title>
+
+<body>
+
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+
+/*You can load them in series:
+  d3.csv("file1.csv", function(rows1) {
+    d3.csv("file2.csv", function(rows2) {
+      … do something with rows1 and rows2 here …
+    });
+  });
+
+
+
+/*var url-go = "http://localhost:8080/schema/go";
+var url-goEdgesTypes = "http://localhost:8080/schema/go/edgeTypes";
+var url-goVertexTypes = "http://localhost:8080/schema/go/vertexTypes";*/
+
+
+
+/*
+//Loading json files in series:
+  d3.json("data/go.json", function(jsonGo) {
+    d3.csv("data/goEdgeTypes.json", function(jsonGoEdges) {
+   	    d3.csv("data/goVertexTypes.json", function(jsonGoVertex) {
+
+   	 	console.log(jsonGo);
+
+    	});
+    });
+  });
+*/
+
+//Loading json files in series:
+  d3.json("data/go.json", function(jsonGo) {
+   
+   	 	console.log(jsonGo);
+   	 	console.log(jsonGo.vertexTypes);
+   	 	console.log(jsonGo.edgeTypes);
+
+  });
+
+
+
+/*//Initial test:
+d3.json(url-go, function(error, graph) {     
+	console.log(graph);
+});
+*/
+
+/*d3.json("readme.json").header("Content-Type", "application/json").get(
+	function(error, graph) {
+     console.log(graph.links);
+     console.log(graph.nodes);
+});
+*/
+
+</script>
+</body>
