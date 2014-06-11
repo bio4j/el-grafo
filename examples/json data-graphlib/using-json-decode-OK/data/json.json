@@ -1,48 +1,48 @@
 {
     "nodes": [{
         "id": "CLOSED",
-        value: {
-            label: "open"
+        "value": {
+            "label": "open"
         }
     }, {
         "id": "LISTEN",
-        value: {
-            label: "rcv SYN"
+        "value": {
+            "label": "rcv SYN"
         }
     }, {
         "id": "SYN RCVD",
-        value: {
-            label: "rcv---"
+        "value": {
+            "label": "rcv---"
         }
     }, {
         "id": "SYN SENT",
-        value: {
-            label: "---YN"
+        "value": {
+            "label": "---YN"
         }
     }],
     "edges": [{
-        u: "CLOSED",
-        v: "LISTEN",
-        value: {
-            label: "open"
+        "u": "CLOSED",
+        "v": "LISTEN",
+        "value": {
+            "label": "open"
         }
     }, {
-        u: "LISTEN",
-        v: "LISTEN",
-        value: {
-            label: "rcv SYN"
+        "u": "LISTEN",
+        "v": "LISTEN",
+        "value": {
+            "label": "rcv SYN"
         }
     }, {
-        u: "LISTEN",
-        v: "LISTEN",
-        value: {
-            label: "send"
+        "u": "LISTEN",
+        "v": "LISTEN",
+        "value": {
+            "label": "send"
         }
     }, {
-        u: "LISTEN",
-        v: "LISTEN",
-        value: {
-            label: "close"
+        "u": "LISTEN",
+        "v": "LISTEN",
+        "value": {
+            "label": "close"
         }
     }]
 }

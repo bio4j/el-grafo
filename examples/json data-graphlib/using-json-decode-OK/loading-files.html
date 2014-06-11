@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>json from url </title>
+
+<body>
+
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+
+//Loading json files in series:
+  d3.json("data/go.json", function(jsonGo) {
+   
+   	 	console.log(jsonGo);
+   	 	console.log(jsonGo.vertexTypes);
+   	 	console.log(jsonGo.edgeTypes);
+  });
+
+//Loading json files in series:
+  d3.json("data/json.json", function(json) {
+   
+   	 	console.log(json);
+  });
+
+
+</script>
+</body>

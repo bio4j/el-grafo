@@ -51,17 +51,17 @@ text {
   </svg>
 </div>
 <script>
+
+
+
+
   
 function draw() {
 
 //Loading json files in series:
-  d3.json("data/json.json", function(json) {
-  console.log(json);
-
- console.log(json.nodes);
- console.log(json.edges);
-
-
+  d3.json("data/go.json", function(jsonGo) {
+  console.log(jsonGo.vertexTypes);
+  });
  
   var renderer = new dagreD3.Renderer();
   var oldDrawNodes = renderer.drawNodes();
@@ -74,19 +74,19 @@ function draw() {
     return svgNodes;
   });
 
-  var layout = renderer.run(dagreD3.json.decode(json.nodes, json.edges), d3.select("svg g"));
+  var layout = renderer.run(dagreD3.json.decode(go.vertexTypes, edgeTypes.edges), d3.select("svg g"));
   d3.select("svg")
     .attr("width", layout.graph().width + 40)
     .attr("height", layout.graph().height + 40);
 
-/*  console.log(graph);
+  console.log(graph);
   console.log(graph.nodes);
-  console.log(graph.edges);*/
+  console.log(graph.edges);
   
    // EDGES/NODE LIST (general: all edges)
  //digraph.edges()
-
-  });
+ console.log(json.nodes);
+ console.log(json.edges);
 
 }
 </script>
