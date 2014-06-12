@@ -52,15 +52,45 @@ text {
 </div>
 <script>
   
+/*You can load them in series:
+  d3.csv("file1.csv", function(rows1) {
+    d3.csv("file2.csv", function(rows2) {
+      … do something with rows1 and rows2 here …
+    });
+  });
+
+Or in parallel:
+
+  var rows1, rows2, remaining = 2;
+
+  d3.csv("file1.csv", function(csv) {
+    rows1 = csv;
+    if (!--remaining) doSomething();
+  });
+
+  d3.csv("file2.csv", function(csv) {
+    rows2 = csv;
+    if (!--remaining) doSomething();
+  });
+
+  function doSomething() {
+    … do something with rows1 and rows2 here …
+  }
+  */
+
 function draw() {
 
-//Loading json files in series:
+//Loading json files
   d3.json("data/json.json", function(json) {
+
+  console.log("json: ");
   console.log(json);
 
- console.log(json.nodes);
- console.log(json.edges);
+  console.log("json.nodes: ");
+  console.log(json.nodes);
 
+  console.log("json.edges: ");
+  console.log(json.edges);
 
  
   var renderer = new dagreD3.Renderer();
