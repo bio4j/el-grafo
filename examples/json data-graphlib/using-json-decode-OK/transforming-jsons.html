@@ -16,6 +16,36 @@
 </body>
 <script>
 
+// works fine!!
+d3.json("data/GOedgeTypes.json", function(jsonGOedgeTypes) {
+
+    console.log("Original json structure of edgeTypes")
+    console.log(jsonGOedgeTypes)
+
+    var newEdges2 = jsonGOedgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { label: x.label, inArity: x.inArity, outArity: x.outArity }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib")
+    console.log(newEdges2);
+});
+
+/////////////////////////////////////////
+
+//TO DO:
+/*d3.json("data/GOvertexTypes.json", function(jsonGOvertexTypes) {
+
+    console.log("Number of Vertex: " + jsonGOvertexTypes.length)
+    console.log(jsonGOvertexTypes)
+});
+
+*/
+
+/*
 
 var old = {
  "data": 
@@ -32,7 +62,7 @@ var old = {
 };
 
 
-/*//new json must be like this
+//new json must be like this
 "aaData": 
 [ 
     [
@@ -41,7 +71,7 @@ var old = {
     [
         "ac310894-d808-447b-a189-d07edb7f6dd7","test2"
     ]
-] */
+] 
 
 
 var len = old.data.length,
@@ -55,7 +85,7 @@ for ( i=0; i < len; i+=1 ) {
 console.log(newJson);
 
 
-
+///////////////////////////////////
 
 d3.json("data/GO.json", function(jsonGO) {
 
@@ -64,20 +94,63 @@ d3.json("data/GO.json", function(jsonGO) {
 	console.log("Number of Vertex: " + jsonGO.vertexTypes.length)
 	console.log("Number of Edges: " + jsonGO.edgeTypes.length)
 
-var lenVertex = jsonGO.vertexTypes.length
-	new
+
+var lenVertex = jsonGO.vertexTypes.length,
+	newJsonVertex = {nodes:[]},
+    i;
+
+    for ( i=0; i < len; i+=1 ) {
+    newJsonVertex.nodes.push( [ "id" == jsonGO.vertexTypes[ i ]] );   
+}
+
+console.log(newJsonVertex);
 
 });
 
+////////////////////////////////////////
+
+var data = [
+    { "dep": "d1", "name": "name2", "size": "size1" },
+    { "dep": "d1", "name": "name2", "size": "size2" },
+    { "dep": "d2", "name": "name1"},
+    { "dep": "d2"}
+]
+
+var newData = d3.nest()
+.key(function(d,i){ return d.dep; })
+.entries(data);
+
+console.log(newData);
 
 
-/*//Option1
+/////////////////////////////////////////
+
+//Option1
 function replacer(key, value) {
     if (typeof value === 'number' && !isFinite(value)) {
         return String(value);
     }
     return value;
-}*/
+}
+
+/////////////////////////////////////////
+
+
+d3.json("data/sankey.json", function(error, graph) {
+
+         var nodeMap = {};
+    graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
+    graph.links = graph.links.map(function(x) {
+      return {
+        source: nodeMap[x.source],
+        target: nodeMap[x.target],
+        value: x.value
+      };
+    });
+
+console.log(nodeMap)
+});
+*/
 
 </script>
 
