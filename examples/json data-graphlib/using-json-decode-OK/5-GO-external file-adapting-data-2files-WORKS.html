@@ -1,0 +1,96 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Dagre D3 Renderer Demo</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="js/d3.js" charset="utf-8"></script>da
+<script src="js/graphlib.min.js"></script>
+<script src="js/dagre-d3.js"></script>
+
+<body onLoad="draw();">
+<div id="attach">
+  <svg id="svg-canvas" width=800 height=600>
+    <g transform="translate(20, 20)"/>
+  </svg>
+</div>
+<script>
+
+var g = new dagreD3.Digraph();
+  
+function draw() {
+
+
+// edgeTypes:
+d3.json("data/GOedgeTypes.json", function(jsonGOedgeTypes) {
+
+    console.log("Original json structure of edgeTypes")
+    console.log(jsonGOedgeTypes)
+
+    var newEdges = jsonGOedgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { label: x.label, inArity: x.inArity, outArity: x.outArity }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib")
+    console.log(newEdges);
+
+
+/////////////////////////////////////////
+
+// vertextTypes:
+d3.json("data/GOvertexTypes.json", function(jsonGOvertexTypes) {
+
+    console.log("Original json structure of vertexTypes")
+    console.log(jsonGOvertexTypes)
+
+    var newVertex = jsonGOvertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { label: x }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib")
+    console.log(newVertex);
+
+
+
+
+
+  var renderer = new dagreD3.Renderer();
+
+  var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return "node-" + u; });
+    svgNodes.attr("id", function(u) { return "node-" + u; });
+
+    
+    return svgNodes;
+  });
+
+  var layout = renderer.run(dagreD3.json.decode(newVertex, newEdges), d3.select("svg g"));
+  d3.select("svg")
+    .attr("width", layout.graph().width + 40)
+    .attr("height", layout.graph().height + 40);
+
+  // console.log(graph);
+  // console.log(g.nodes);
+  // console.log(g.edges);
+  
+   // EDGES/NODE LIST (general: all edges)
+ // digraph.edges()
+
+
+});
+});
+
+
+
+}
+</script>

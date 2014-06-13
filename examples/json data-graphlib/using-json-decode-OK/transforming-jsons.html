@@ -16,13 +16,13 @@
 </body>
 <script>
 
-// works fine!!
+// edgeTypes:
 d3.json("data/GOedgeTypes.json", function(jsonGOedgeTypes) {
 
     console.log("Original json structure of edgeTypes")
     console.log(jsonGOedgeTypes)
 
-    var newEdges2 = jsonGOedgeTypes.map(function(x) {
+    var newEdges = jsonGOedgeTypes.map(function(x) {
           return {
             u: x.sourceType,     
             v: x.targetType,
@@ -31,19 +31,116 @@ d3.json("data/GOedgeTypes.json", function(jsonGOedgeTypes) {
         });
     
     console.log("Transformed structure of edgeTypes for Graphlib")
-    console.log(newEdges2);
+    console.log(newEdges);
 });
 
 /////////////////////////////////////////
 
-//TO DO:
-/*d3.json("data/GOvertexTypes.json", function(jsonGOvertexTypes) {
+// vertextTypes:
+d3.json("data/GOvertexTypes.json", function(jsonGOvertexTypes) {
 
-    console.log("Number of Vertex: " + jsonGOvertexTypes.length)
+    console.log("Original json structure of vertexTypes")
     console.log(jsonGOvertexTypes)
+
+    var newVertex = jsonGOvertexTypes.map(function(x) {
+          return {
+            id: x
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib")
+    console.log(newVertex);
+
 });
 
-*/
+/////////////////////////////////////////
+
+// All togheter:
+d3.json("data/GO.json", function(jsonGO) {
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+    var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { label: x.label, inArity: x.inArity, outArity: x.outArity }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { label: x }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+});
+
+
+/////////////////////////////////////////
+
+
+// ADDING MODULE NAME:
+d3.json("data/GO.json", function(jsonGO) {
+
+    console.log(jsonGO.label)
+
+    var module = jsonGO.map(function(m) {
+        return {
+        module: m.label 
+        };
+    });
+
+    console.log("Model:")
+    console.log(module);    
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+
+    var newEdges2 = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { label: x.label, inArity: x.inArity, outArity: x.outArity }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges2);
+    
+
+    /////
+
+/*    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { label: x }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);*/
+
+});
+
+//////////////////////////
 
 /*
 

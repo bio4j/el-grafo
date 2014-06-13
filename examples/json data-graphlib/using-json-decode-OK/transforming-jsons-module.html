@@ -1,0 +1,74 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>T....</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="js/d3.js" charset="utf-8"></script>da
+
+<body>
+<div id="attach">
+  <svg id="svg-canvas" width=800 height=600>
+    <g transform="translate(20, 20)"/>
+  </svg>
+</div>
+
+</body>
+<script>
+
+// ADDING MODULE NAME:
+d3.json("data/GO.json", function(jsonGO) {
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+    var module = jsonGO.label;
+    var properties = jsonGO.propertyTypes;
+
+
+        var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { module: jsonGO.label, label: x.label, inArity: x.inArity, outArity: x.outArity, propertyTypes: properties }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { module: jsonGO.label, label: x, propertyTypes: properties  }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+
+    ////
+
+/*    console.log(jsonGO.label)
+
+    var module = jsonGO(function(x) {
+        return {
+        module: x.label 
+        };
+    });
+
+    console.log("Model:")
+    console.log(module);    
+
+   */
+
+});
+ 
+</script>
+</html>
