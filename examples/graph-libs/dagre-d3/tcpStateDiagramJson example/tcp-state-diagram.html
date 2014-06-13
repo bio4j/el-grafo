@@ -76,12 +76,12 @@ function draw() {
   g.addEdge(null, "TIME WAIT",  "CLOSED",     { label: "timeout=2MSL" });
 
   var renderer = new dagreD3.Renderer();
-  var oldDrawNodes = renderer.drawNodes();
+/*  var oldDrawNodes = renderer.drawNodes();
   renderer.drawNodes(function(graph, root) {
     var svgNodes = oldDrawNodes(graph, root);
     svgNodes.attr("id", function(u) { return "node-" + u; });
     return svgNodes;
-  });
+  });*/
   renderer.run(g, d3.select("svg g"));
 }
 </script>

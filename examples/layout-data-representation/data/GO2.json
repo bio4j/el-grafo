@@ -1,0 +1,94 @@
+{
+    "label": "go",
+    "propertyTypes": [
+        "id",
+        "name",
+        "synonyms",
+        "definition",
+        "comment"
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "id": "GoTerm",
+        "value": {
+            "label": "GoTerm"
+        }
+    }, {
+        "id": "GoSlims",
+        "value": {
+            "label": "GoSlims"
+        }
+    }, {
+        "id": "SubOntologies",
+        "value": {
+            "label": "SubOntologies"
+        }
+    }],
+    "edgeTypes": [{
+        "u": "GoTerm",
+        "v": "GoTerm",
+        "value": {
+            "label": "IsA",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }, {
+        "u": "GoTerm",
+        "v": "GoTerm",
+        "value": {
+            "label": "PartOf",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }, {
+        "u": "GoTerm",
+        "v": "GoTerm",
+        "value": {
+            "label": "HasPartOf",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }, {
+        "u": "GoTerm",
+        "v": "GoTerm",
+        "value": {
+            "label": "Regulates",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }, {
+        "u": "GoTerm",
+        "v": "GoTerm",
+        "value": {
+            "label": "PositivelyRegulates",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }, {
+        "u": "GoTerm",
+        "v": "GoTerm",
+        "value": {
+            "label": "NegativelyRegulates",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }, {
+        "u": "GoTerm",
+        "v": "SubOntologies",
+        "value": {
+            "label": "SubOntology",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }, {
+        "u": "GoTerm",
+        "v": "GoSlims",
+        "value": {
+            "label": "GoSlim",
+            "inArity": "many",
+            "outArity": "many"
+        }
+    }]
+}
