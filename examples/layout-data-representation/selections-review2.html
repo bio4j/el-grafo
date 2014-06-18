@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: A simple scatterplot with value labels</title>
+		
+		<script src="js/d3.js" charset="utf-8"></script>
+		<script src="js/graphlib.min.js"></script>
+		<script src="js/dagre-d3.js"></script>
+
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 500;
+			var h = 800;
+
+var matrix = [
+  [11975,  5871, 8916, 2868],
+  [ 1951, 10048, 2060, 6171],
+  [ 8010, 16145, 8090, 8045],
+  [ 1013,   990,  940, 6907]
+];
+
+//Data
+var dataset = [ 5, 10, 15, 20, 25, 2 ];
+
+
+d3.json("data/GO.json", function(jsonGO) {
+
+    var raizNodes = jsonGO.vertexTypes;
+    var raizEdges = jsonGO.edgeTypes;
+
+    var module = jsonGO.label;
+    var properties = jsonGO.propertyTypes;
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { module: jsonGO.label, label: x, propertyTypes: properties  }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+  //////
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+        var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { module: jsonGO.label, label: x.label, inArity: x.inArity, outArity: x.outArity, propertyTypes: properties }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+
+
+			//Create SVG element
+/*			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);*/
+
+/*			svg.selectAll("circle")
+			   .data(dataset)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(d) {
+			   		return d[0];
+			   })
+			   .attr("cy", function(d) {
+			   		return d[1];
+			   })
+			   .attr("r", function(d) {
+			   		return Math.sqrt(h - d[1]);
+			   });*/
+
+
+/*			svg.selectAll("p")
+			   .data(matrix)
+			   .enter()
+			   .append("p")
+			   .text(function(d) {
+			   		// return d.u + d.v + d.value.label;
+			   		// return d.value
+			   		// return "lalalal";
+					return "I can count up to " + d;
+				});
+			   .style("color", "red");
+*/
+			d3.select("body").selectAll("p")
+				.data(newEdges)
+				.enter()
+				.append("p")
+				.text(function(d) {
+					return d.value.label + ":   " + d.u + " + " + d.v + " + " + d.value.inArity + " + " + " to " + d.value.outArity;
+				});
+
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+/*			svg.selectAll("circle")
+			   .data(newEdges)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(d, i) {
+			   		return (10 + i*10);
+			   })
+			   .attr("cy", function(d, i) {
+			   		return (10 + i*10);
+			   })
+			   .attr("r", function(d, i) {
+			   		 (i*10);
+			   });
+*/
+			var circles2 = svg.selectAll("circle")
+							.data(newEdges)
+							.enter()
+							.append("circle")	
+							.attr("cx", function(d, i) {
+								return (i * 75) + 25;
+							})
+							.attr("cy", function(d, i) {
+								return (i * 75) + 25;
+							})
+							.attr("r", function(d, i) {
+								return (i * 10);
+							})
+							.attr("class", function(d) {
+								return d.value.inArity
+							})
+							.attr("source", function(d) {
+								return d.u
+							});
+
+			console.log(d3.selectAll("circle"));
+
+  	});
+		</script>
+	</body>
+</html>

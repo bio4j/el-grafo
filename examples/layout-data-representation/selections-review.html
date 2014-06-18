@@ -1,0 +1,235 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>json data to representation</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="js/d3.js" charset="utf-8"></script>da
+<script src="js/graphlib.min.js"></script>
+<script src="js/dagre-d3.js"></script>
+
+
+<body onLoad="draw();">
+<script type="text/javascript">
+
+      //Width and height
+      var w = 500;
+      var h = 100;
+      
+      var dataset = [
+              [5, 20], [480, 90], [250, 50], [100, 33], [330, 95],
+              [410, 12], [475, 44], [25, 67], [85, 21], [220, 88]
+              ];
+  
+      //Create SVG element
+      var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+
+
+
+var g = new dagreD3.Digraph();
+  
+function draw() {
+
+// ADDING MODULE NAME:
+d3.json("data/GO.json", function(jsonGO) {
+
+    var raizNodes = jsonGO.vertexTypes;
+    var raizEdges = jsonGO.edgeTypes;
+
+    var module = jsonGO.label;
+    var properties = jsonGO.propertyTypes;
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { module: jsonGO.label, label: x, propertyTypes: properties  }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+  //////
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+        var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { module: jsonGO.label, label: x.label, inArity: x.inArity, outArity: x.outArity, propertyTypes: properties }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+  var renderer = new dagreD3.Renderer();
+  var sourceData = dagreD3.json.decode(newVertex, newEdges);
+
+
+  /////////////
+
+/*  // Original DrawNodes function
+  function defaultDrawNodes(g, root) {
+  var nodes = g.nodes().filter(function(u) { return !isComposite(g, u); });
+
+  var svgNodes = root
+    .selectAll('g.node')
+    .classed('enter', false)
+    .data(nodes, function(u) { return u; });
+
+  svgNodes.selectAll('*').remove();
+
+  svgNodes
+    .enter()
+      .append('g')
+        .style('opacity', 0)
+        .attr('class', 'node enter');
+
+  svgNodes.each(function(u) { addLabel(g.node(u), d3.select(this), 10, 10); });
+*/
+
+
+            
+
+  //alter the drawNodes function:
+    var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+
+/*    var newEdges2 = jsonGO.edgeTypes(function(x) {
+          return x.sourceType }); */
+
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("module", module)
+    // svgNodes.each(function(u) { d3.select(this).classed(graph.node(u).nodeclass, true); })
+    // svgNodes.attr("prueba", function(u) { return  raizNodes })
+    svgNodes.attr("id", function(u) { return  u });
+
+    return svgNodes;
+  });
+
+
+
+/*  // Create layers
+  svg
+    .selectAll('g.edgePaths, g.edgeLabels, g.nodes')
+    .data(['edgePaths', 'edgeLabels', 'nodes'])
+    .enter()
+      .append('g')
+      .attr('class', function(d) { return d; });
+*/
+
+
+
+
+
+  //alter the drawEdges function:
+  var oldDrawEdge = renderer.drawEdgePaths();
+  renderer.drawEdgePaths(function(graph, root) {
+
+    var svgEdgePaths = oldDrawEdge(graph, root);
+    svgEdgePaths.attr("id", function(e) { return  e });
+    // svgEdgePaths.attr("source-target", function(e) { return  e.sourceType })
+
+    console.log(newEdges);
+
+    svgEdgePaths.attr("module", module);
+    // svgEdgePaths.attr("prueba", function(u, i) { return  i.raizEdges })
+    // svgEdgePaths.attr("prueba2", function(raizEdges) { return  x.targetType });
+    
+    // svgEdgePaths.attr("prueba2", function(e) { return  e.value.width });
+
+    // svgEdgePaths.attr("sourceType", function(newEdges) { return newEdges.sourceType});
+    // svgEdgePaths.attr("targetType", module)
+    // svgEdgePaths.attr("inArity", module)
+    // svgEdgePaths.attr("outArity", module);
+    
+    // svgNodes.each(function(u) { d3.select(this).classed(graph.node(u).nodeclass, true); });
+
+    return svgEdgePaths;
+
+    var bindingData = d3.selectAll("svgEdgePaths")
+                        .data(newEdges);
+/*                      .enter()
+                        .attr("prueba4", function(d) { return d })*/
+
+
+    console.log("svgEdgePaths");
+
+  });
+  
+
+
+  var layout = dagreD3.layout()
+                //.nodeSep(50)  //50=default
+                //.edgeSep(10)
+                //.rankSep(20);   //Separation between levels, childs
+                .rankDir("LR"); //TB:top-to-bottom / BT:bottom-to-top / LR:left-to-right / RL:right-to-left 
+
+  var renderinglayout = renderer.layout(layout)
+              // .edgeTension(.5)
+              .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
+              
+              .run(sourceData, d3.select("svg g"));
+  
+ //
+
+
+     // d3.select("body").
+    // d3.select("svg g").selectAll("g")
+  
+/*  d3.selectAll("g.nodes")
+    .data(newVertex)
+    .enter()
+    // .attr("prueba4", function(d) { return d })
+    .append("text")
+    .text( function (d) { return d + "ldl"; });
+
+
+
+*/
+
+
+ //
+
+/* layout.eachEdge(function(e, u, v, value) {
+     console.log("Edge " + u + " -> " + v + ": " + JSON.stringify(value));
+ });
+
+ layout.eachNode(function(u, value) {
+     console.log("Node " + u + ": " + JSON.stringify(value));
+ });*/
+
+   
+   renderinglayout.eachNode(function(u, value) {
+       console.log("Node " + u + ": " + JSON.stringify(value));
+   });
+    
+  renderinglayout.eachEdge(function(e, u, v, value) {
+     console.log("Edge " + u + " -> " + v + ": " + JSON.stringify(value));
+  });
+
+
+
+
+  });
+  }
+
+
+      
+    </script>
+  </body>
+</html>
+
+

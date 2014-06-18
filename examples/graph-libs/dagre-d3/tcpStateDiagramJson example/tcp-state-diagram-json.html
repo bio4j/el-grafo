@@ -89,5 +89,18 @@ function draw() {
   d3.select("svg")
     .attr("width", layout.graph().width + 40)
     .attr("height", layout.graph().height + 40);
+
+// console.log(g.source("LISTEN"));
+
+   layout.eachNode(function(u, value) {
+       console.log("VertexTypes " + u + ": " + JSON.stringify(value));
+   });
+
+console.log(layout.g.source("LISTEN"))
+
 }
+
+
+// console.log(nodes());
+
 </script>

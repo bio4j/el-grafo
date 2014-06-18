@@ -292,14 +292,14 @@
       .append('g')
       .attr('class', function(d) { return d; });*/
 
- d3.select("svg.g")
+ /* d3.select("svg.g")
      .selectAll("g.nodes")
      .data("nodes")
      .enter()
      .append("text")
      .attr("prueba", function(d) {
          return d;
-     });
+     });*/
 
  /*//selecting stuff
 d3.selectAll(".type-DT")

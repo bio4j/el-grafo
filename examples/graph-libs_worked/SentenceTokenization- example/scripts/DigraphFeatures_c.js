@@ -58,6 +58,7 @@
  console.log(g.incidentEdges(11, 8)); //inEdges+outEdges
 
 
+ d
  layout.eachEdge(function(e, u, v, value) {
      console.log("Edge " + u + " -> " + v + ": " + JSON.stringify(value));
  });

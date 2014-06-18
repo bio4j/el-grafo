@@ -74,8 +74,6 @@ function draw() {
   ];
   
 
-
-
   var renderer = new dagreD3.Renderer();
   var oldDrawNodes = renderer.drawNodes();
   renderer.drawNodes(function(graph, root) {
@@ -89,9 +87,16 @@ function draw() {
     .attr("width", layout.graph().width + 40)
     .attr("height", layout.graph().height + 40);
 
+
   // console.log(graph);
   console.log(states);
-  console.log(graph.edges);
+  console.log(edges);
+
+   // console.log(g.sources());
+
+g = dagreD3.json.decode(states, edges)
+  console.log(g.neighbors("LISTEN"));
+
 
 }
 </script>
