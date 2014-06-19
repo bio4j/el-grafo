@@ -186,18 +186,37 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
 
+    //SOME DIAGRAPH FEATURES:
+    
+    // EDGES/NODE LIST (general: all edges)
+    console.log("All graph vertex: " + sourceData.nodes());
+    console.log("All graph edges: " + sourceData.edges());
 
-    //Some diagraph features:
-    console.log(sourceData.nodes());
-    console.log(sourceData.edges());
 
-    console.log(sourceData.sources()); // There's no source on the graph due the self-linking GoTerm node
-    console.log(sourceData.sinks());
+    // SUCCESORS, PREDECESSORS & NEIGHBORS -> LOCAL (node:node)
+    console.log(sourceData.successors("SubOntologies"));
+    console.log(sourceData.predecessors("GoSlims"));
+    console.log(sourceData.neighbors("GoTerm"));
 
-    console.log(sourceData.incidentNodes("SubOntology")) //source+target of the edge
+
+    // SOURCES, SINKS -> GLOBAL (general:node)
+    console.log("Graph sources: " + sourceData.sources()); // There's no source on the graph due the self-linking GoTerm node
+    console.log("Graph sinks: " + sourceData.sinks());
+
+
+    // EXISTENCE OF EDGE (edge:true/false)
+    console.log(sourceData.hasEdge("GoSlim"));
+
+    // SOURCE, TARGETS & INCIDENTS -> LOCAL  (edge:nodes)
+     console.log(sourceData.source("PositivelyRegulates"));
+     console.log(sourceData.target("GoSlim"));
+     console.log(sourceData.incidentNodes("SubOntology")) //source+target of the edge
 
     console.log(sourceData.inEdges("GoSlims")); //all edges going in node10
     console.log(sourceData.inEdges("SubOntologies")); //all edges going in node10
+
+
+
 
 
      // nodes on click!
@@ -213,6 +232,14 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
 
+
+
+    //DIAGRAPH ALG FEATURES:
+
+/* // TARJAN: STRONGLY CONNECTED COMPONENTS
+ // var tarjan = require("graphlib").alg.tarjan;
+ console.log(tarjan(sourceData))
+*/
 
   });
   }
