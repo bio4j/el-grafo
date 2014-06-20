@@ -104,28 +104,7 @@ d3.json("data/GO.json", function(jsonGO) {
     console.log(d3.selectAll("svgNodes"));
 
     var svgNodes = oldDrawNodes(graph, root);
-    svgNodes.attr("id", function(u) { return  u })
-    svgNodes.attr("module", function(u, value) { return  value.module(u) });
-
-    //Binding Vertex DATA to the graph by iterating over the generated svg
-    // svgNodes.data(newVertex, function(d) { return d; })
-/*    svgNodes.data(newVertex)
-            .attr("moduleee", function(d) {
-                        return d.value.module
-            })           
-            .attr("labelll", function(d) {
-                        return d.value.label
-            })
-            .attr("height", function(d) {
-                        return d.value.height
-            })           
-            .attr("width", function(d) {
-                        return d.value.width
-            });*/
-
-    //ERROR1: this is not working, although the Edges does below does. It makes the classes as asked but then gives this error:
-    // `Uncaught Error: Node '[object Object]' is not in graph`
-
+    svgNodes.attr("id", function(u) { return  u });
     return svgNodes;
   });
 
@@ -138,37 +117,7 @@ d3.json("data/GO.json", function(jsonGO) {
     console.log(d3.selectAll("svgEdgePaths"));
 
     var svgEdgePaths = oldDrawEdge(graph, root);
-    // svgEdgePaths.attr("id", function(e) { return  e });
-
-   /* ///Binding Edges DATA to the graph by iterating over the generated svg
-    svgEdgePaths.data(newEdges)
-                .attr("u", function(d) {
-                            return d.u
-                        })
-                .attr("v", function(d) {
-                            return d.v
-                        })
-                .attr("inArity", function(d) {
-                            return d.value.inArity
-                        })
-                .attr("outArity", function(d) {
-                            return d.value.outArity
-                        })
-                .attr("label", function(d) {
-                            return d.value.label
-                        })
-                .attr("module", function(d) {
-                      return d.value.module
-                        })
-                .attr("height", function(d) {
-                      return d.value.height
-                        })
-                .attr("width", function(d) {
-                      return d.value.width
-                        });
-*/
-    //TO DO: convert this on a function so the node/edges attributes can change in the future with no need of updating the code.
-
+    svgEdgePaths.attr("id", function(e) { return  e })
     return svgEdgePaths;
 
   });
@@ -195,6 +144,53 @@ d3.json("data/GO.json", function(jsonGO) {
   renderinglayout.eachEdge(function(e, u, v, value) {
      console.log("EdgeTypes " + e + ": " + JSON.stringify(value));
   });
+
+
+
+   //Binding Nodes&Edges DATA to the graph by iterating over the generated svg adding attrubutes:
+
+    d3.selectAll(".edgePath.enter")
+      .data(newEdges)
+      .attr("u", function(d) {
+                  return d.u
+              })
+      .attr("v", function(d) {
+                  return d.v
+              })
+      .attr("inArity", function(d) {
+                  return d.value.inArity
+              })
+      .attr("outArity", function(d) {
+                  return d.value.outArity
+              })
+      .attr("label", function(d) {
+                  return d.value.label
+              })
+      .attr("module", function(d) {
+            return d.value.module
+              })
+      .attr("propertyTypes", function(d) {
+            return d.value.propertyTypes
+              });
+
+
+    d3.selectAll(".node.enter")
+      .data(newVertex)
+      .attr("module", function(d) {
+                  return d.value.module
+      })           
+      .attr("label", function(d) {
+                  return d.value.label
+      })
+      .attr("propertyTypes", function(d) {
+      return d.value.propertyTypes
+        });
+
+    //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
+
+
+
+
 
 
 
@@ -242,8 +238,10 @@ d3.json("data/GO.json", function(jsonGO) {
              alert("Edge '" + e + "'\n" + "Source: '" + sourceData.source(e) + "' -> Target: '" + sourceData.target(e) + "'" + "'\n" + "\n" + "Module: '" + sourceData.edge(e).module + "'' , PropertyTypes: '" + sourceData.edge(e).propertyTypes + "' & inArity/OutArity: '" + sourceData.edge(e).inArity + "/" + sourceData.edge(e).outArity + "'");
          })
 
-    //ERROR2: 
-    // All data related to
+
+
+
+
 
 /////
 

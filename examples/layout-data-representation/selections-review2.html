@@ -153,6 +153,16 @@ d3.json("data/GO.json", function(jsonGO) {
 
 			console.log(d3.selectAll("circle"));
 
+
+
+     d3.selectAll("circle")
+		.on("click", function(e) {
+             alert(e.value.inArity)
+             });
+
+
+
+
   	});
 		</script>
 	</body>

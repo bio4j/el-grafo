@@ -316,6 +316,11 @@ d3.selectAll(".type-DT")
      });
 */
 
+ layout.eachNode(function(u, value) {
+     console.log("VertexTypes " + u + ": " + JSON.stringify(value));
+ });
+
+
  // nodes properties works fine
  d3.selectAll(".node rect")
      .on("click", function(u) {

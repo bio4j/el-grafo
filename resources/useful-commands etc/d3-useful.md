@@ -138,3 +138,11 @@ Modulo:
 `10 % 2 === 0` evaluates to true
 `7 % 3 === 0` evaluates to false because there is 1 left over.
 
+
+
+FILTRAR
+BTW, you can also filter the selection set by class name if you need more control:
+
+```
+var textNode = d3.select("#barchart").selectAll("svg text").filter(function(d, i){ return this.classList.contains(countryname); });
+```
