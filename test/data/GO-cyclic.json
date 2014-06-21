@@ -1,0 +1,79 @@
+{
+    "label": "go",
+    "propertyTypes": [
+        "id",
+        "name",
+        "synonyms",
+        "definition",
+        "comment"
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [
+        "GoTerm",
+        "GoSlims",
+        "SubOntologies"
+    ],
+    "edgeTypes": [{
+        "sourceType": "GoTerm",
+        "label": "IsA",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "GoTerm"
+    }, {
+        "sourceType": "GoTerm",
+        "label": "PartOf",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "GoTerm"
+    }, {
+        "sourceType": "GoTerm",
+        "label": "HasPartOf",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "GoTerm"
+    }, {
+        "sourceType": "GoTerm",
+        "label": "Regulates",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "GoTerm"
+    }, {
+        "sourceType": "GoTerm",
+        "label": "PositivelyRegulates",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "GoTerm"
+    }, {
+        "sourceType": "GoTerm",
+        "label": "NegativelyRegulates",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "GoTerm"
+    }, {
+        "sourceType": "GoTerm",
+        "label": "SubOntology",
+        "inArity": "many",
+        "outArity": "one",
+        "targetType": "SubOntologies"
+    }, {
+        "sourceType": "SubOntologies",
+        "label": "fake1",
+        "inArity": "many",
+        "outArity": "one",
+        "targetType": "GoSlims"
+    }, {
+        "sourceType": "GoSlims",
+        "label": "fake2",
+        "inArity": "many",
+        "outArity": "one",
+        "targetType": "GoTerm"
+    }, {
+        "sourceType": "GoTerm",
+        "label": "GoSlim",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "GoSlims"
+    }]
+}
