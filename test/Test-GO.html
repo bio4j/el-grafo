@@ -31,7 +31,7 @@
   
 function draw() {
 
-// ADDING MODULE NAME:
+// Loading GO data and transforming json initial structure.
 d3.json("data/GO.json", function(jsonGO) {
 
     var module = jsonGO.label;
@@ -109,7 +109,6 @@ d3.json("data/GO.json", function(jsonGO) {
   });
 
 
-
   //alter the drawEdges function:
   var oldDrawEdge = renderer.drawEdgePaths();
   renderer.drawEdgePaths(function(graph, root) {
@@ -122,12 +121,14 @@ d3.json("data/GO.json", function(jsonGO) {
 
   });
   
+  //Configuring the layout
   var layout = dagreD3.layout()
                 //.nodeSep(50)  //50=default
                 //.edgeSep(10)
                 //.rankSep(20);   //Separation between levels, childs
                 .rankDir("LR"); //TB:top-to-bottom / BT:bottom-to-top / LR:left-to-right / RL:right-to-left 
 
+  //Configuring the renderer
   var renderinglayout = renderer.layout(layout)
               // .edgeTension(.5)
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
@@ -147,7 +148,7 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
 
-   //Binding Nodes&Edges DATA to the graph by iterating over the generated svg adding attrubutes:
+   //Binding Nodes&Edges DATA to the graph by iterating over the generated svg adding ATTRIBUTES:
 
     d3.selectAll(".edgePath.enter")
       .data(newEdges)
@@ -184,7 +185,9 @@ d3.json("data/GO.json", function(jsonGO) {
       })
       .attr("propertyTypes", function(d) {
       return d.value.propertyTypes
-        });
+        })
+      // .call(d3.behavior.drag())
+      ;
 
     //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
 
@@ -226,12 +229,12 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
 
-
+    // TEST1
      // nodes on click! Alert windows just to test everything is working or not:
-    d3.selectAll(".node rect")
+/*    d3.selectAll(".node rect")
          .on("click", function(u, value) {
              alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'");
-         })
+         })*/
  
   d3.selectAll(".edgePath path")
          .on("click", function(e, u, v, value) {
@@ -240,6 +243,37 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
 
+    // TEST2
+     // nodes on click! 
+    d3.selectAll(".node rect")
+         .on("click", function(u, value) {
+             alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'");
+         })
+
+
+
+      //Create labels
+      svg = d3.select("svg#svg-canvas");
+
+
+     RouteMap = svg.select("g")
+                    .append("g")
+                    .attr("id", "RouteMap");
+
+
+    RouteMap.selectAll("text")
+         .data(sourceData)
+         .enter()
+         .append("text")
+         .text(function(d) {
+            return d.source;
+         })
+         .attr("text-anchor", "middle")
+         .attr("x", 20)
+         .attr("y", 30)
+         .attr("font-family", "sans-serif")
+         .attr("font-size", "11px")
+         .attr("fill", "red");
 
 
 
