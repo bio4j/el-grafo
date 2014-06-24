@@ -22,11 +22,16 @@
 
 <body onLoad="draw();">
 <div id="attach">
-  <svg id="svg-canvas" width=800 height=600>
+  <svg id="svg-dagred3graph" width=450 height=350>
+    <g transform="translate(20, 20)"/>
+  </svg>
+  
+  <svg id="svg-routemap" width=450 height=350>
     <g transform="translate(20, 20)"/>
   </svg>
 </div>
 <script>
+
 
   
 function draw() {
@@ -119,7 +124,6 @@ d3.json("data/GO.json", function(jsonGO) {
               
               .run(sourceData, d3.select("svg g"));
   
-
   //
 
    renderinglayout.eachNode(function(u, value) {
@@ -175,6 +179,13 @@ d3.json("data/GO.json", function(jsonGO) {
 
     //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
 
+
+////////////////////////////////////////////////////////////
+
+text = d3.select("body")
+          .append("p")
+          .text("Dagre-d3 graph representation: '" + module + "' module")
+          .style("text-transform", "uppercase");
 
 ////////////////////////////////////////////////////////////
 
@@ -274,12 +285,11 @@ d3.json("data/GO.json", function(jsonGO) {
              alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'");
          })*/
 
-    //Starting some trials
-    svg = d3.select("svg#svg-canvas");
 
-    RouteMap = svg.select("g")
-                    .append("g")
-                    .attr("id", "RouteMap");
+    //Starting some trials
+
+
+
 
 
 /*  //Show some vertex-info while hovering or clicking...
@@ -306,6 +316,21 @@ d3.json("data/GO.json", function(jsonGO) {
          .attr("font-size", "11px")
          .attr("fill", "red");
 */
+
+
+// ROUTE MAP:
+
+svgRouteMap = d3.select("svg#svg-routemap");
+
+RouteMap = svgRouteMap.select("g")
+                      .append("g")
+                      .attr("id", "RouteMap");
+
+
+    d3.selectAll(".node.enter")
+      .onClick(
+
+        
 
   });
   }
