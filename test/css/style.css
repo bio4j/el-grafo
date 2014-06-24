@@ -41,7 +41,7 @@ svg {
   stroke: #999;
   stroke-width: 1px;
   fill: teal;
-  opacity: .4;
+  opacity: .2;
 }
 
 /*node hover works*/
@@ -49,6 +49,9 @@ svg {
   cursor: pointer;
   opacity: .8;
 }
+
+/*.node:not(:hover) rect .nodetext {
+  display: none;*/
 
 .edgeLabel rect {
   fill: none;
