@@ -265,11 +265,11 @@ text = d3.select("body")
 
 
     // TEST1
-    // nodes on click! Alert windows just to test everything is working or not:
+/*    // nodes on click! Alert windows just to test everything is working or not:
     d3.selectAll(".node rect")
          .on("click", function(u, value) {
              alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'");
-         })
+         })*/
  
     d3.selectAll(".edgePath path")
          .on("click", function(e, u, v, value) {
@@ -313,7 +313,7 @@ text = d3.select("body")
          .attr("x", 20)
          .attr("y", 30)
          .attr("font-family", "sans-serif")
-         .attr("font-size", "11px")
+         .attr("font-size", "11px")cd
          .attr("fill", "red");
 */
 
@@ -327,9 +327,90 @@ RouteMap = svgRouteMap.select("g")
                       .attr("id", "RouteMap");
 
 
-    d3.selectAll(".node.enter")
-      .onClick(
+/*    d3.selectAll(".node.enter")
+      //On click, update with new data      
+        .on("click", function() { 
 
+          // doesn't work well, all the time shows the first ite "GoTerm"
+            d3.select("body")
+                .data(newVertex)
+                // .enter()
+                .append("p")
+                .style("color", "teal")
+                // .text("lalala")
+                .text(function(d) { return d.value.label })
+                // .attr("x", function(d, i) { return (10*i) + 100; })
+                .attr("x", 100)
+                .attr("y", 100)
+              });*/
+
+    d3.selectAll(".node.enter")
+      //On click, update with new data      
+        .on("click", function(d) { 
+
+          // doesn't work well, all the time shows the first ite "GoTerm"
+            d3.select("this").select("text")
+                            .text(function(d) { 
+                              return d.value.label })
+                            .style("font-size","20px")
+                            .style("color", "teal")
+
+            /*                .attr("x", 100)
+                            .attr("y", 100)*/
+              });
+
+
+/*          svgRouteMap.append("text")
+                      .attr("text-anchor", "middle")
+                      .attr("fill", "red")
+                      .text(function(u) { return u; })
+                      .attr("x", 100)
+                      .attr("y", 100)
+                    });
+*/
+
+
+
+/*        d3.selectAll(".node.enter")
+      //On click, update with new data     
+      .on("click", function(u, value) { return
+        
+        select(this).append("p")    
+         .text(function(u) { return u; })
+         .attr("font-family", "sans-serif")
+         .attr("font-size", "10px")
+         .attr("fill", "teal")
+         .attr("x", function(d, i) { return (10*i) + 100; })
+         .attr("y", 100);
+
+       });*/
+
+
+/*        d3.selectAll(".node.enter")
+      //On click, update with new data     
+        
+         .append("p")    
+         .text(function(u) { return u; })
+         .attr("font-family", "sans-serif")
+         .attr("font-size", "10px")
+         .attr("fill", "teal")
+         .attr("x", function(d, i) { return (10*i) + 100; })
+         .attr("y", 100);
+
+       });
+*/
+
+
+
+/*          //New values for dataset
+          var numValues = dataset.length;               //Count original length of dataset
+          var maxRange = Math.random() * 1000;            //Max range of new values
+          dataset = [];                         //Initialize empty array
+          for (var i = 0; i < numValues; i++) {           //Loop numValues times
+            var newNumber1 = Math.floor(Math.random() * maxRange);  //New random integer
+            var newNumber2 = Math.floor(Math.random() * maxRange);  //New random integer
+            dataset.push([newNumber1, newNumber2]);         //Add new number to array
+          }*/
         
 
   });
