@@ -50,7 +50,7 @@ svg {
   stroke: #999;
   stroke-width: 1px;
   fill: teal;
-  opacity: .2;
+  opacity: .4;
 }
 
 /*node hover works*/
@@ -68,11 +68,20 @@ svg {
   pointer-events: none;
 }
 
-.edgePath path {
+/*dots path*/
+/*.edgePath path {
   stroke: #333;
   stroke-width: 1.5px;
   fill: none;
   stroke-dasharray: 1, 4, 1, 4;
+  pointer-events:all;
+}*/
+
+/*solid path*/
+.edgePath path {
+  stroke: #333;
+  stroke-width: .8px;
+  fill: none;
   pointer-events:all;
 }
 

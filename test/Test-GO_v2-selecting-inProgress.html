@@ -109,6 +109,15 @@ d3.json("data/GO.json", function(jsonGO) {
     return svgEdgePaths;
 
   });
+
+  // Multiple lines with different tension:
+/*  vis.selectAll("path")
+    .data([0, 0.2, 0.4, 0.6, 0.8, 1])
+  .enter().append("svg:path")
+    .attr("d", function(d) { return line.tension(d)(data); })
+    .style("stroke", d3.interpolateRgb("teal", "lightblue"));
+*/
+
   
   //Configuring the layout:
   var layout = dagreD3.layout()
@@ -117,12 +126,20 @@ d3.json("data/GO.json", function(jsonGO) {
                 //.rankSep(20);   //Separation between levels, childs
                 .rankDir("LR"); //TB:top-to-bottom / BT:bottom-to-top / LR:left-to-right / RL:right-to-left 
 
-  //Configuring the renderer:
+  
+  //Configuring the renderer-original:
   var renderinglayout = renderer.layout(layout)
               // .edgeTension(.5)
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
               
               .run(sourceData, d3.select("svg g"));
+
+/*  //Configuring the renderer-modified:
+  var renderinglayout = renderer.layout(layout)
+              // .edgeTension(.9)   //1=default
+              .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
+              
+              .run(sourceData, d3.select("svg g"));*/
   
   //
 
@@ -137,6 +154,7 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
    //Binding Nodes&Edges DATA to the graph by iterating over the generated svg adding ATTRIBUTES:
+   //Maybe I need data-attribute instead: http://stackoverflow.com/questions/13188125/d3-add-multiple-classes-with-function
 
     d3.selectAll(".edgePath.enter")
       .data(newEdges)
@@ -265,16 +283,125 @@ text = d3.select("body")
 
 
     // TEST1
-/*    // nodes on click! Alert windows just to test everything is working or not:
+    // nodes on click! Alert windows just to test everything is working or not:
     d3.selectAll(".node rect")
          .on("click", function(u, value) {
-             alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'");
-         })*/
- 
+             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'")
+          });
+    
+/*    //Trying to select by "id"
+    d3.selectAll(".node.enter#GoTerm")
+          .selectAll("rect")
+          .style("fill", "red");  // works fine!*/
+
+/*    //Trying to select by "id"
+    d3.selectAll("#GoTerm")
+          // .select("rect")
+          .style("stroke", "red");  // works fine!*/
+
+/*    //Trying to select by "id"
+    d3.selectAll(".node.enter#SubOntologies")          
+          .selectAll("rect")
+          .style("fill", "brown");  // works fine*/
+
+/*    //Trying to select by "id"
+    var idd = d3.selectAll(".node.enter").attr("id"); // weird, just selects the first element when asking for the attribute, althoguh the first selectAll returns and array of elements.
+    d3.selectAll("#"+idd)          
+          // .selectAll("rect")
+          .style("fill", "brown");   */
+
+
+ /*        ------> function nodeclick 
+            iddd = sourceData.successors(u);
+            d3.selectAll("#"+iddd)          
+              .selectAll("rect")
+              .style("fill", "red");  
+          });
+
+
+    d3.selectAll(".node.enter")
+         .on("click", nodeclick);*/
+
+
+/*
+    d3.selectAll(".node.enter")
+         .on("click", function(u) {
+            iddd = sourceData.successors(u);
+            d3.selectAll("#"+iddd)          
+              .selectAll("rect")
+              .style("fill", "red");  
+          });
+*/
+
+
+/*    d3.selectAll(".node rect")
+         .on("click", function(u, value) {
+             d3.selectAll(sourceData.neighbors(u))
+                    .style("stroke", "red")
+          });*/
+
+/*    // Accessing to attributes/classes -- WORKS
+    d3.selectAll(".node.enter")
+         .on("click", function(u, value) {
+            if(d3.select(this).attr("id") == "GoTerm") {
+              return console.log("yes, I am " + d3.select(this).attr("id") ) 
+            }
+            else { return console.log("no,  I am not GoTerm" )
+            }
+          // All this if/else code is equivalent to this single line:
+          // return d3.select(this).attr("id") == "GoTerm" ? console.log("yes") : console.log("no")
+          });
+*/
+
+
+/*    // Reading attributes/classes -- WORKS
+    d3.selectAll(".node.enter")
+         .on("click", function(u, value) {
+              var ll = d3.select(this)
+              console.log( ll.attr("propertyTypes") + ll.attr("label") + ll.attr("style") )
+                      
+          });*/
+
+/*
+    d3.selectAll(".node rect")
+         .on("mouseover", function(){ 
+                d3.select(this)
+                  .attr("width", 100)
+                  .attr("heigh", 100)
+         });*/
+
+/*    d3.selectAll(".node rect")
+         .on("mouseover", function(){ 
+                var ww = d3.select(this).attr("width")
+                
+                d3.select(this)
+                  .attr("width", (+ww + 20))
+         });*/
+
     d3.selectAll(".edgePath path")
          .on("click", function(e, u, v, value) {
              alert("Edge '" + e + "'\n" + "Source: '" + sourceData.source(e) + "' -> Target: '" + sourceData.target(e) + "'" + "'\n" + "\n" + "Module: '" + sourceData.edge(e).module + "'' , PropertyTypes: '" + sourceData.edge(e).propertyTypes + "' & inArity/OutArity: '" + sourceData.edge(e).inArity + "/" + sourceData.edge(e).outArity + "'");
          })
+
+    d3.selectAll("[id=GoTerm]")
+          .selectAll("rect")
+          .style("fill", "brown");
+
+    // d3.selectAll("[outArity=one]") // Something wrong when selecting edges instead of vertex, doesnt do anything!
+    d3.selectAll("#PositivelyRegulates")
+          // .selectAll("path")
+          .style("fill", "red")
+          .styele("stroke", "blue");
+
+
+// Returning a specif atribute of a variable
+/*d3.select("body")
+    .on("mouseover", function(){ 
+          if (d3.select(this).attr("id") == "correct") {
+              enableInteraction(d3.select(this));
+          }
+});*/
+
 
 //all work in progress ---->>
 
@@ -344,7 +471,7 @@ RouteMap = svgRouteMap.select("g")
                 .attr("y", 100)
               });*/
 
-    d3.selectAll(".node.enter")
+/*    d3.selectAll(".node.enter")
       //On click, update with new data      
         .on("click", function(d) { 
 
@@ -355,9 +482,9 @@ RouteMap = svgRouteMap.select("g")
                             .style("font-size","20px")
                             .style("color", "teal")
 
-            /*                .attr("x", 100)
-                            .attr("y", 100)*/
-              });
+                            .attr("x", 100)
+                            .attr("y", 100)
+              });*/
 
 
 /*          svgRouteMap.append("text")
