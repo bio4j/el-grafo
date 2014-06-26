@@ -293,13 +293,15 @@ text = d3.select("body")
 ////////////////////////////////////////////////////////////
 
 
-    // TEST1
+/*    // TEST1
     // nodes on click! Alert windows just to test everything is working or not:
     d3.selectAll(".node rect")
          .on("click", function(u, value) {
              console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
-          });
-    
+          });*/
+
+
+
 /*    //Trying to select by "id"
     d3.selectAll(".node.enter#GoTerm")
           .selectAll("rect")
@@ -316,12 +318,248 @@ text = d3.select("body")
           .style("fill", "brown");  // works fine*/
 
 /*    //Trying to select by "id"
-    var idd = d3.selectAll(".node.enter").attr("id"); // weird, just selects the first element when asking for the attribute, althoguh the first selectAll returns and array of elements.
+    var idd = d3.selectAll(".node.enter").attr("id"); // worng, just selects the attribute of the first element 
     d3.selectAll("#"+idd)          
-          // .selectAll("rect")
+          .selectAll("rect")
           .style("fill", "brown");   */
 
+/*    //Trying to select by "id"
+    d3.selectAll(".node.enter").each( function(d, i) {
+        console.log( d3.select(this).attr("id") );        // works fine!
+    });*/
 
+/*    //Trying to select by "id"
+    d3.selectAll(".node.enter").each( function(d, i) {
+        idSelection = d3.select(this).attr("id");
+    
+        d3.selectAll("#"+idSelection)          
+          .selectAll("rect")
+          .style("fill", "brown");                      // works fine!
+
+    });*/
+
+
+/*     //Trying to select by "id"
+    d3.selectAll(".node.enter").each( function(d, i) {
+        
+        idSelection = d3.select(this)
+        graphStuff = graph.successors(idSelection).attr("id");
+    
+        console.log(graphStuff)
+
+        d3.selectAll("#"+idSelection)          
+          .selectAll("rect")
+          .style("fill", "brown");          
+
+    });  */
+
+
+    
+/* 
+    //Trying to select by "id"
+    idVertex = d3.selectAll("#GoSlims").attr("id")
+ 
+    idSucessorsVertex = graph.successors(idVertex)
+    idPredecessorsVertex = graph.predecessors(idVertex)
+    idNeighborsVertex = graph.neighbors(idVertex)
+    console.log(idNeighborsVertex)*/
+
+/*    d3.selectAll("#"+ idPredecessorsVertex) 
+      .selectAll("rect")
+      .style("fill", "yellow");                     // works fine!*/
+    
+/*    d3.selectAll("#"+ idNeighborsVertex)      //by id just selects one. I might need a filter function
+      .selectAll("rect")
+      .style("fill", "red");                     // works fine!*/
+
+
+/*
+  // Understanding filtering selections
+    d3.selectAll(".node.enter")
+                    .filter(function(d) { 
+                        selectingThis = d3.select(this)
+                        if (selectingThis.attr("id") == idPredecessorsVertex ) {
+                           console.log(selectingThis.attr("id"))     // returns #GoTerm
+
+                        selectingThis.selectAll("rect")
+                                         .style("fill", "green");     // works fine!  
+                        }
+                    })
+ 
+ console.log(graph.predecessors("GoSlims"))
+
+
+
+*/
+              
+
+
+
+/*  // Understanding filtering selections
+  d3.selectAll(".node.enter")
+              .filter(function(d) { 
+                  selectingThis = d3.select(this)
+                  // myArray = JSON.stringify(["GoSlims", "GoTerm"])
+                  myArray = ["GoSlims", "GoTerm"]
+                  singleElement = "SubOntologies"
+                 
+                  if (selectingThis.attr("id") == "SubOntologies"  || selectingThis.attr("id") == "GoSlims" ) {
+                      
+                      console.log(selectingThis.attr("id"))  
+                      selectingThis.selectAll("rect")
+                                   .style("fill", "red");         
+                  }
+                  
+                  else { console.log("buuu") }              // WORKS!! :D
+              })*/
+               
+
+/*  // Understanding filtering selections-comparison with MULTIPLE elements
+  d3.selectAll(".node.enter")
+              .filter(function(d) { 
+                  selectingThis = d3.select(this)
+                  // myArray = JSON.stringify(["GoSlims", "GoTerm"])
+                  myArray = ["GoSlims", "GoTerm"]
+                  singleElement = "SubOntologies"
+                  cosaRara = selectingThis.attr("id")
+                  
+                  //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                  if (myArray.indexOf(cosaRara) >= 0)  {
+                      
+                      console.log(selectingThis.attr("id"))  
+                      selectingThis.selectAll("rect")
+                                   .style("fill", "red");         
+                  }
+                  
+                  else { console.log("buuu") }              // WORKS!! :D
+              })
+
+*/
+
+/*  // Understanding filtering selections
+  d3.selectAll(".node.enter")
+              .filter(function(d) { 
+                  selectingThis = d3.select(this)
+                  selectingThisId = selectingThis.attr("id")
+
+                  myArray = ["GoSlims", "GoTerm"]
+                  
+                  //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                  if (myArray.indexOf(selectingThisId) >= 0)  {
+                      
+                      console.log(selectingThisId)  
+                      selectingThis.selectAll("rect")
+                                   .style("fill", "red");         
+                  }
+                  
+                  else { console.log("buuu") }              // WORKS!! :D
+              })*/
+
+
+/*if (['banana', 'lemon', 'mango', 'pineapple'].indexOf(fruit) >= 0) {
+  .......
+}*/
+
+
+    idVertex = d3.selectAll("#GoTerm").attr("id")
+
+    idSucessorsVertex = graph.successors(idVertex)
+    idPredecessorsVertex = graph.predecessors(idVertex)
+    idNeighborsVertex = graph.neighbors(idVertex)
+    console.log(idNeighborsVertex)
+
+
+/*  // Understanding filtering selections
+    d3.selectAll(".node.enter")
+                    .filter(function(d) { 
+                        selectingThis = d3.select(this)
+                        if (selectingThis.attr("id") == idPredecessorsVertex ) {
+                           console.log(selectingThis.attr("id"))     // returns #GoTerm
+
+                        selectingThis.selectAll("rect")
+                                         .style("fill", "green");     // works fine!  
+                        }
+                    })*/
+
+
+
+  // all together: graphlib features + filter + arrays
+  d3.selectAll(".node.enter")
+              .filter(function(d) { 
+                  selectingThis = d3.select(this)
+                  selectingThisId = selectingThis.attr("id")
+
+                  myArray = idNeighborsVertex
+                  
+                  //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                  if (myArray.indexOf(selectingThisId) >= 0)  {
+                      
+                      console.log(selectingThisId)  
+                      selectingThis.selectAll("rect")
+                                   .style("fill", "orange");         
+                  }
+                  
+                  else { console.log("buuu") }              // WORKS!! :D
+              })
+
+
+
+// ----------------------- >
+// TO DO: implement this with click on events :D
+
+
+
+/*      // .each( function(d, i) {
+      .selectAll("rect")
+      .style("fill", "green");      */
+      
+
+
+/*    .each( function(d, i) {
+        idSelection = d3.select(this).attr("id");
+    
+        d3.selectAll("#"+idSelection)          
+          .selectAll("rect")
+          .style("fill", "brown");                 
+    });*/
+
+
+
+/*    d3.selectAll(".node rect")
+         .on("click", function(u, value) {
+             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
+          });*/
+    
+
+/*    d3.selectAll(".node rect").each
+         .on("click", function(d, i) {
+         // .on("click", function(u) {
+
+              myNeighbor = graph.neighbors(u);
+              
+              idNeighbors = d3.select(myNeighbor).attr("id");
+              
+              d3.selectAll("#"+idNeighbors)          
+                .selectAll("rect")
+                .style("fill", "brown");              // DOESNT WORK
+              
+          });*/
+
+/*    d3.selectAll(".node rect").each
+         .on("click", dosomething });
+
+    dosomething      function(u) {
+              
+              myNeighbor = graph.neighbors(u);
+              
+              idNeighbors = d3.select(myNeighbor).attr("id");
+              
+              d3.selectAll("#"+idNeighbors)          
+                .selectAll("rect")
+                .style("fill", "brown");              // DOESNT WORK
+              
+          });
+*/
  /*        ------> function nodeclick 
             iddd = graph.successors(u);
             d3.selectAll("#"+iddd)          
@@ -394,15 +632,15 @@ text = d3.select("body")
              alert("Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
          })
 
-    d3.selectAll("[id=GoTerm]")
+/*    d3.selectAll("[id=GoTerm]")
           .selectAll("rect")
-          .style("fill", "brown");
+          .style("fill", "brown");*/
 
-    // d3.selectAll("[outArity=one]") // Something wrong when selecting edges instead of vertex, doesnt do anything!
+/*    // d3.selectAll("[outArity=one]") // Something wrong when selecting EDGE PATHS instead of vertex, doesnt do anything!
     d3.selectAll("#PositivelyRegulates")
           // .selectAll("path")
           .style("fill", "red")
-          .styele("stroke", "blue");
+          .style("stroke", "blue");*/
 
 
 // Returning a specif atribute of a variable
