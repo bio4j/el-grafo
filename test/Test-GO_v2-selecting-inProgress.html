@@ -83,7 +83,7 @@ d3.json("data/GO.json", function(jsonGO) {
 
   // Using the GRAPHLIB GRAPH as input for DAGRE-D3:
   var renderer = new dagreD3.Renderer();
-  var sourceData = dagreD3.json.decode(newVertex, newEdges);
+  var graph = dagreD3.json.decode(newVertex, newEdges);
     
   //alter the drawNodes function:
     var oldDrawNodes = renderer.drawNodes();
@@ -132,14 +132,14 @@ d3.json("data/GO.json", function(jsonGO) {
               // .edgeTension(.5)
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
               
-              .run(sourceData, d3.select("svg g"));
+              .run(graph, d3.select("svg g"));
 
 /*  //Configuring the renderer-modified:
   var renderinglayout = renderer.layout(layout)
               // .edgeTension(.9)   //1=default
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
               
-              .run(sourceData, d3.select("svg g"));*/
+              .run(graph, d3.select("svg g"));*/
   
   //
 
@@ -198,6 +198,7 @@ d3.json("data/GO.json", function(jsonGO) {
     //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
 
 
+
 ////////////////////////////////////////////////////////////
 
 text = d3.select("body")
@@ -205,37 +206,47 @@ text = d3.select("body")
           .text("Dagre-d3 graph representation: '" + module + "' module")
           .style("text-transform", "uppercase");
 
+      d3.select("body")
+          .append("p")
+          .text("Nº of VERTEX loaded: " + graph.order())
+          .append("p")
+          .text("Nº of EGES loaded: " + graph.size());
+
+
 ////////////////////////////////////////////////////////////
 
 
     // A. SOME DIAGRAPH FEATURES:
+    console.log("Number of VERTEX on the Graph: " + graph.order());
+    console.log("Number of EDGES on the Graph: " + graph.size());
     
+
     // EDGES/NODE LIST (general: all edges)
-    console.log("All graph vertex: " + sourceData.nodes());
-    console.log("All graph edges: " + sourceData.edges());
+    console.log("All graph vertex: " + graph.nodes());
+    console.log("All graph edges: " + graph.edges());
 
 
     // SUCCESORS, PREDECESSORS & NEIGHBORS -> LOCAL (node:node)
-    console.log(sourceData.successors("SubOntologies"));
-    console.log(sourceData.predecessors("GoSlims"));
-    console.log(sourceData.neighbors("GoTerm"));
+    console.log(graph.successors("SubOntologies"));
+    console.log(graph.predecessors("GoSlims"));
+    console.log(graph.neighbors("GoTerm"));
 
 
     // SOURCES, SINKS -> GLOBAL (general:node)
-    console.log("Graph sources: " + sourceData.sources()); // There's no source on the graph due the self-linking GoTerm node
-    console.log("Graph sinks: " + sourceData.sinks());
+    console.log("Graph sources: " + graph.sources()); // There's no source on the graph due the self-linking GoTerm node
+    console.log("Graph sinks: " + graph.sinks());
 
 
     // EXISTENCE OF EDGE (edge:true/false)
-    console.log(sourceData.hasEdge("GoSlim"));
+    console.log(graph.hasEdge("GoSlim"));
 
     // SOURCE, TARGETS & INCIDENTS -> LOCAL  (edge:nodes)
-     // console.log(sourceData.source("PositivelyRegulates"));
-     console.log(sourceData.target("GoSlim"));
-     console.log(sourceData.incidentNodes("SubOntology")) //source+target of the edge
+     // console.log(graph.source("PositivelyRegulates"));
+     console.log(graph.target("GoSlim"));
+     console.log(graph.incidentNodes("SubOntology")) //source+target of the edge
 
-    console.log(sourceData.inEdges("GoSlims")); //all edges going in node10
-    console.log(sourceData.inEdges("SubOntologies")); //all edges going in node10
+    console.log(graph.inEdges("GoSlims")); //all edges going in node10
+    console.log(graph.inEdges("SubOntologies")); //all edges going in node10
 
 
     ///////
@@ -247,33 +258,33 @@ text = d3.select("body")
      console.log("tarjan algo:")
      console.log("finds all strongly connected components in the directed graph")
 
-     console.log(tarjan(sourceData))
+     console.log(tarjan(graph))
      //Array of components, each of them is itself an array with the ids. It gives lots of 1-array objetcs when there are no strongly connected components.
 
 
      // IS ACYCLIC, FIND CLYCLES
     // console.log("isAcyclic?")
-     // console.log(isAcyclic(sourceData));    //Gives TRUE if the graph has no cycles and returns false if it does. -ERROR: if there are cycles gives Exception isntead of False.
+     // console.log(isAcyclic(graph));    //Gives TRUE if the graph has no cycles and returns false if it does. -ERROR: if there are cycles gives Exception isntead of False.
      
-     // alg.findCycles(sourceData)
+     // alg.findCycles(graph)
      console.log("findCycles algo:")
      console.log("all nodes that are part of a cycle")
-     console.log(findCycles(sourceData)); //Returns all nodes that are part of a cycle-> Arrays of these cycles if there are more.
+     console.log(findCycles(graph)); //Returns all nodes that are part of a cycle-> Arrays of these cycles if there are more.
 
 
      // TOPSORT: TOPOLOGICAL SORTING
      // var alg = require("graphlib").alg;
      // var topsort = require("graphlib").alg.topsort.
-     // console.log(topsort(sourceData));  // If the graph has a cycle it is impossible to generate such a list and CycleException is thrown. ojo! cycles include self-linking nodes
+     // console.log(topsort(graph));  // If the graph has a cycle it is impossible to generate such a list and CycleException is thrown. ojo! cycles include self-linking nodes
 
 
      // DIJKSTRA & FLOYDWARSHALL: SHORTEST PATH
      // alg.dijkstra(g, source, [weightFunc], [incidentFunc])
-     // console.log(dijkstra(sourceData, "GoTerm"));      //ERROR: anonymous function (in the js alg file)
+     // console.log(dijkstra(graph, "GoTerm"));      //ERROR: anonymous function (in the js alg file)
      // alg.dijkstraAll(g, [weightFunc], [incidentFunc])
      // console.log(dijkstraAll(g));        //ERROR: anonymous function (in the js alg file)
      // alg.floydWarshall(g, [weightFunc], [incidentFunc])
-     // console.log(floydWarshall(sourceData)); //Si funciona, xo da lista infinita de cosas
+     // console.log(floydWarshall(graph)); //Si funciona, xo da lista infinita de cosas
 
      // ALL CONNECTED COMPONENTS -----ERROR
      // console.log(components(g));    //NO FUNCIONA: anonymous function (in the js alg file)
@@ -286,7 +297,7 @@ text = d3.select("body")
     // nodes on click! Alert windows just to test everything is working or not:
     d3.selectAll(".node rect")
          .on("click", function(u, value) {
-             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'")
+             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
           });
     
 /*    //Trying to select by "id"
@@ -312,7 +323,7 @@ text = d3.select("body")
 
 
  /*        ------> function nodeclick 
-            iddd = sourceData.successors(u);
+            iddd = graph.successors(u);
             d3.selectAll("#"+iddd)          
               .selectAll("rect")
               .style("fill", "red");  
@@ -326,7 +337,7 @@ text = d3.select("body")
 /*
     d3.selectAll(".node.enter")
          .on("click", function(u) {
-            iddd = sourceData.successors(u);
+            iddd = graph.successors(u);
             d3.selectAll("#"+iddd)          
               .selectAll("rect")
               .style("fill", "red");  
@@ -336,7 +347,7 @@ text = d3.select("body")
 
 /*    d3.selectAll(".node rect")
          .on("click", function(u, value) {
-             d3.selectAll(sourceData.neighbors(u))
+             d3.selectAll(graph.neighbors(u))
                     .style("stroke", "red")
           });*/
 
@@ -380,7 +391,7 @@ text = d3.select("body")
 
     d3.selectAll(".edgePath path")
          .on("click", function(e, u, v, value) {
-             alert("Edge '" + e + "'\n" + "Source: '" + sourceData.source(e) + "' -> Target: '" + sourceData.target(e) + "'" + "'\n" + "\n" + "Module: '" + sourceData.edge(e).module + "'' , PropertyTypes: '" + sourceData.edge(e).propertyTypes + "' & inArity/OutArity: '" + sourceData.edge(e).inArity + "/" + sourceData.edge(e).outArity + "'");
+             alert("Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
          })
 
     d3.selectAll("[id=GoTerm]")
@@ -409,7 +420,7 @@ text = d3.select("body")
     // nodes on click! 
     d3.selectAll(".node rect")
          .on("click", function(u, value) {
-             alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'");
+             alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'");
          })*/
 
 
@@ -430,7 +441,7 @@ text = d3.select("body")
 
 
 /*    RouteMap.selectAll("text")
-         .data(sourceData)
+         .data(graph)
          .enter()
          .append("text")
          .text(function(d) {
@@ -539,10 +550,8 @@ RouteMap = svgRouteMap.select("g")
             dataset.push([newNumber1, newNumber2]);         //Add new number to array
           }*/
         
-
   });
   }
-
 
 </script>
 

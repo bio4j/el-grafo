@@ -1,0 +1,13 @@
+{
+    "name": "flare",
+    "children": [{
+        "name": "analytics",
+        "children": [{
+            "name": "cluster",
+            "children": [{
+                "name": "MergeEdge",
+                "size": 743
+            }]
+        }]
+    }]
+}
