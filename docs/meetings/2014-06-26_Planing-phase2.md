@@ -80,11 +80,11 @@
 - Week0 (23June- 27 June) // from Phase1                [1]
 
 ----
-- Week1 (30 June - 4 July)                              [2-3]
-- Week2 (7 July - 11 July)                              [3-4]
+- Week1 (30 June - 4 July)                              [1-2]
+- Week2 (7 July - 11 July)                              [3]
 - Week3 (14 July - 18 July)                             [4]
-- Week4 (21 July - 25 July)                             [5]
-- Week5 (28 July - 1 August)                            [6]
+- Week4 (21 July - 25 July)                             [4]
+- Week5 (28 July - 1 August)                            [5]
 - Week6 (4 August - 8 August)                           
 
 ----
