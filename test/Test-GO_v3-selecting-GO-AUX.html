@@ -22,7 +22,7 @@
 
 <body onLoad="draw();">
 <div id="attach">
-  <svg id="svg-dagred3graph" width=450 height=350>
+  <svg id="svg-dagred3graph" width=650 height=650>
     <g transform="translate(20, 20)"/>
   </svg>
   
@@ -38,7 +38,7 @@ function draw() {
 
 // 1-MODEL/DATA/FROM/SERVICE
 // Loading GO data from local file after and transforming json initial structure.
-d3.json("data/GO.json", function(jsonGO) {
+d3.json("data/GO-multiple.json", function(jsonGO) {
 
     var module = jsonGO.label;
     var properties = jsonGO.propertyTypes;
@@ -298,24 +298,24 @@ text = d3.select("body")
     d3.selectAll(".node rect")
          .on("click", function(u, value) {
              console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
-          });
-*/
+          });*/
+
 
 
 /*    //Trying to select by "id"
     d3.selectAll(".node.enter#GoTerm")
           .selectAll("rect")
-          .style("fill", "red");            // WORKS!! :D */
+          .style("fill", "red");  // works fine!*/
 
 /*    //Trying to select by "id"
     d3.selectAll("#GoTerm")
           // .select("rect")
-          .style("stroke", "red");          // WORKS!! :D */
+          .style("stroke", "red");  // works fine!*/
 
 /*    //Trying to select by "id"
     d3.selectAll(".node.enter#SubOntologies")          
           .selectAll("rect")
-          .style("fill", "brown");            // WORKS!! :D */
+          .style("fill", "brown");  // works fine*/
 
 /*    //Trying to select by "id"
     var idd = d3.selectAll(".node.enter").attr("id"); // worng, just selects the attribute of the first element 
@@ -325,7 +325,7 @@ text = d3.select("body")
 
 /*    //Trying to select by "id"
     d3.selectAll(".node.enter").each( function(d, i) {
-        console.log( d3.select(this).attr("id") );            // WORKS!! :D
+        console.log( d3.select(this).attr("id") );        // works fine!
     });*/
 
 /*    //Trying to select by "id"
@@ -334,7 +334,7 @@ text = d3.select("body")
     
         d3.selectAll("#"+idSelection)          
           .selectAll("rect")
-          .style("fill", "brown");                         // WORKS!! :D
+          .style("fill", "brown");                      // works fine!
 
     });*/
 
@@ -366,11 +366,11 @@ text = d3.select("body")
 
 /*    d3.selectAll("#"+ idPredecessorsVertex) 
       .selectAll("rect")
-      .style("fill", "yellow");                         // WORKS!! :D */
+      .style("fill", "yellow");                     // works fine!*/
     
 /*    d3.selectAll("#"+ idNeighborsVertex)      //by id just selects one. I might need a filter function
       .selectAll("rect")
-      .style("fill", "red");                         // WORKS!! :D */
+      .style("fill", "red");                     // works fine!*/
 
 
 /*
@@ -382,7 +382,7 @@ text = d3.select("body")
                            console.log(selectingThis.attr("id"))     // returns #GoTerm
 
                         selectingThis.selectAll("rect")
-                                         .style("fill", "green");        // WORKS!! :D 
+                                         .style("fill", "green");     // works fine!  
                         }
                     })
  
@@ -461,12 +461,11 @@ text = d3.select("body")
 }*/
 
 /*
-    idVertex = d3.selectAll("#GoTerm").attr("id")
+    idVertex = d3.selectAll("#GoSlims").attr("id")
 
     idSucessorsVertex = graph.successors(idVertex)
     idPredecessorsVertex = graph.predecessors(idVertex)
     idNeighborsVertex = graph.neighbors(idVertex)
-    console.log(idNeighborsVertex)
 
   // all together: graphlib features + filter + arrays
   d3.selectAll(".node.enter")
@@ -485,21 +484,16 @@ text = d3.select("body")
                   }
                   
                   else { console.log("buuu") }              // WORKS!! :D
-              })*/
+              })
+
+    console.log(idNeighborsVertex)
+
+    //NOTE: for an in/out switch button i should access the successors/predecessors i times (i = degree)
 
 
-
-// ----------------------- >
-// TO DO: implement this with click on events :D
-
-/*
-    // Previous node on click - > show info on console.log
-    d3.selectAll(".node rect")
-         .on("click", function(u, value) {
-             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
-          });
 */
-  
+
+
   // Implemented: now on click 
   d3.selectAll(".node rect")
        .on("click", function(u, value) {
@@ -518,7 +512,7 @@ text = d3.select("body")
                     
                     // console.log(selectingThisId)  
                     selectingThis.selectAll("rect")
-                                 .style("fill", "brown");         
+                                 .style("fill", "orange");         
                 }
                 
                 else { console.log("buuu") }              // WORKS!! :D
@@ -528,39 +522,6 @@ text = d3.select("body")
         });
 
 
-    //NOTE: for an in/out switch button i should access the successors/predecessors i times (i = degree)
-
-
-/*
-    idVertex = d3.selectAll("#GoTerm").attr("id")
-
-    idSucessorsVertex = graph.successors(idVertex)
-    idPredecessorsVertex = graph.predecessors(idVertex)
-    idNeighborsVertex = graph.neighbors(idVertex)
-    console.log(idNeighborsVertex)
-
-  // all together: graphlib features + filter + arrays
-  d3.selectAll(".node.enter")
-    .filter(function(d) { 
-        selectingThis = d3.select(this)
-        selectingThisId = selectingThis.attr("id")
-
-        myArray = idNeighborsVertex
-        
-        //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-        if (myArray.indexOf(selectingThisId) >= 0)  {
-            
-            console.log(selectingThisId)  
-            selectingThis.selectAll("rect")
-                         .style("fill", "orange");         
-        }
-        
-        else { console.log("buuu") }              // WORKS!! :D
-    })
-
-
-
-*/
 
 
 
@@ -571,6 +532,11 @@ text = d3.select("body")
 
 
 
+
+
+
+// ----------------------- >
+// TO DO: implement this with click on events :D
 
 
 
