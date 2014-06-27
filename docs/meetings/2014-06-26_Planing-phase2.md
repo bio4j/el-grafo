@@ -11,7 +11,13 @@
     - Select and modify the svg edge path elements to represent the different possibilities. 
         - a. Playing with the line-tension/multiplying elements at the beginning/end of the edge.
         - b. Edge tapering possibilities.
-3. `Always defined` is not appearing now on the graph model?
+
+3. Implement this coding a **Contextual menu** to select neighbors, degree/threshold, strong components, cycles...(all graphlib/diagraph features/algos). 
+[Relevant example](http://cs.brown.edu/people/jcmace/d3/graph.html?id=small.json)
+    - Select the desired elements by calling the diagraph feature as tested.
+    - Use `digraph.filterNodes(f)` to filter them as tested.
+
+4. **In/out switch button**, to see the network connected backwards/afterwards (using `digraph.successors(u)` and `digraph.predecessors(u)` graphlib/diagraph features, based on an i degree.
 
 
  
@@ -51,17 +57,8 @@
 
 
 
-### 5. LOCAL/ZOOMED GRAPH: more features
 
-1. **Contextual menu** to select neighbors, degree/threshold, strong components, cycles...(all graphlib/diagraph features/algos). 
-[Relevant example](http://cs.brown.edu/people/jcmace/d3/graph.html?id=small.json)
-    - Select the desired elements by calling the diagraph feature as tested.
-    - Use `digraph.filterNodes(f)` to filter them as tested.
-2. **In/out switch button**, to see the network connected backwards/afterwards (using `digraph.successors(u)` and `digraph.predecessors(u)` graphlib/diagraph features)
-
-
-
-### 6. INTRO INFO
+### 5. INTRO INFO
 
 1. Platform presentation with texts/descriptions about the Bio4j platform
 2. Find the relevant info on the Bio4j page that could be showed.
@@ -69,7 +66,7 @@
 
 
 
-### 7. OPTIONAL IMPLEMENTATIONS:
+### 6. OPTIONAL IMPLEMENTATIONS:
 
 1. Add a **Search text box** to browse the network on this way and searching for a specific element/family.
 2. **Automatized the queries** on basic level, by defining a function that takes the indexes and parse them as they are needed on the Bio4j model.
