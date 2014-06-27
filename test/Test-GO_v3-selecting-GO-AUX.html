@@ -26,10 +26,17 @@
     <g transform="translate(20, 20)"/>
   </svg>
   
+
   <svg id="svg-routemap" width=450 height=350>
     <g transform="translate(20, 20)"/>
   </svg>
 </div>
+
+<div id="tooltip" class="hidden">
+  <p><strong>Important Label Heading</strong></p>
+  <p><span id="value">100</span>%</p>
+</div>
+
 <script>
 
 
@@ -39,6 +46,8 @@ function draw() {
 // 1-MODEL/DATA/FROM/SERVICE
 // Loading GO data from local file after and transforming json initial structure.
 d3.json("data/GO-multiple.json", function(jsonGO) {
+
+    svgGraph = d3.select("svg g");
 
     var module = jsonGO.label;
     var properties = jsonGO.propertyTypes;
@@ -132,7 +141,7 @@ d3.json("data/GO-multiple.json", function(jsonGO) {
               // .edgeTension(.5)
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
               
-              .run(graph, d3.select("svg g"));
+              .run(graph, svgGraph);
 
 /*  //Configuring the renderer-modified:
   var renderinglayout = renderer.layout(layout)
@@ -494,19 +503,158 @@ text = d3.select("body")
 */
 
 
+    //TOOLTIPS WORLD:
+
+/*    //1. Default browser tooltip
+    d3.selectAll(".node rect")
+        .append("title")
+        .text(function(u) {
+          return "Click to see '" + u + "'' Neighbor vertex";       //WORKS :)
+        });*/
+
+ 
+/*    .attr("x1", parseInt(circ1.attr("cx")) + circ1[0][0].getCTM().e)
+    .attr("y1", parseInt(circ1.attr("cy")) + circ1[0][0].getCTM().f)
+*/
+
+
+
+    //2. SVG Element Tooltips
+    d3.selectAll(".node rect")
+        .on("mouseover", function(d) {
+
+/*        var xPosition = parseFloat(d3.select(this).attr("x")) + 105;      
+        var yPosition = parseFloat(d3.select(this).attr("y")) + 15;
+*/
+        // console.log(d3.select(this).rbox());
+
+        // console.log(d3.select(this).attr("x"));
+        // console.log(d3.select(this).getCTM());
+
+/*        var xPosition = parseFloat(d3.select(this).attr("x")) + d3.select(this).getCTM().e;      
+        var yPosition = parseFloat(d3.select(this).attr("y")) + d3.select(this).getCTM().f;*/
+       
+        svgGraph.append("text")
+        // d3.select(this).append("text")
+              .attr("id", "tooltip")
+/*              .attr("x", xPosition)
+              .attr("y", yPosition)*/
+              .attr("x", 100)
+              .attr("y", 5)
+              .attr("text-anchor", "middle")
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "11px")
+              .attr("font-weight", "bold")
+              .attr("fill", "black")
+              .text(function(u) {
+                selection = d3.select(this)
+                return "Click to see '" + selection.u + "'' Neighbor vertex";     
+             });
+         })
+
+        .on("mouseout", function() {
+          d3.select("#tooltip").remove()
+        });
+
+    
+/*    //3. HTML div Tooltips
+    d3.selectAll(".node rect")
+         .on("mouseover", function(d) {
+
+          //Get this bar's x/y values, then augment for the tooltip
+          var xPosition = parseFloat(d3.select(this).attr("x"));
+          var yPosition = parseFloat(d3.select(this).attr("y"));
+
+          //Update the tooltip position and value
+          d3.select("#tooltip")
+            .style("left", xPosition + "px")
+            .style("top", yPosition + "px")           
+            .select("#value")
+            .text(function(u) {
+                return "Click to see '" + u + "'' Neighbor vertex";     
+             });
+         
+          //Show the tooltip
+          d3.select("#tooltip").classed("hidden", false);
+
+         })
+
+         .on("mouseout", function() {
+         
+          //Hide the tooltip
+          d3.select("#tooltip").classed("hidden", true);
+
+          });*/
+
+
+    //2.b. SVG Element Tooltips
+/*    var tooltip = d3.selectAll(".tooltip:not(.css)");
+    var SVGexactTip = d3.select("g.tooltip.exact");
+    var SVGmouseTip = d3.select("g.tooltip.mouse"); 
+
+    d3.selectAll(".node rect")
+        .on("mouseover", function(d) {
+         // tooltip.style("color", this.getAttribute("fill") );
+         tooltip.style("color", "grey" );
+                
+                //"this" in the context of this function
+                //is the element that triggered this event handler
+                //which will be one of the circle elements.
+                var tooltipParent = SVGexactTip.node().parentElement;
+                var matrix = 
+                        this.getTransformToElement(tooltipParent)
+                            .translate(+this.getAttribute("x"),
+                                 +this.getAttribute("y"));
+                
+                //getTransformToElement returns a matrix
+                //representing all translations, rotations, etc.
+                //to convert between two coordinate systems.
+                //The .translate(x,y) function adds an additional 
+                //translation to the centre of the circle.
+                
+                //the matrix has values a, b, c, d, e, and f
+                //we're only interested in e and f
+                //which represent the final horizontal and vertical
+                //translation between the top left of the svg and 
+                //the centre of the circle.
+                
+                //we get the position of the svg on the page
+                //using this.viewportElement to get the SVG
+                //and using offsetTop and offsetLeft to get the SVG's
+                //position relative to the page.
+               
+                SVGexactTip
+                    .attr("transform", "translate(" + (matrix.e)
+                              + "," + (matrix.f-20) + ")");
+
+*/
+
+
+
+
+////////////////////////////////////////////
+
+
   // Implemented: now on click 
   d3.selectAll(".node rect")
        .on("click", function(u, value) {
 
-
           // UPDATE to normal status
           d3.selectAll(".node rect")
              .style("fill", "teal")
-             .style("opacity", .4);  
+             .style("opacity", .4)
+             .style("stroke", "#999")
+             .style("stroke-width", 1);
+          d3.selectAll(".node text")  
+             .style("opacity", 1);
 
+          // HIGHLIGHT the vertex clicked
+          d3.select(this)
+            .style("stroke", "yellow")
+            .style("stroke-width", 4);
 
-           idNeighborsVertex = graph.neighbors(u)
-           console.log(idNeighborsVertex) 
+          idNeighborsVertex = graph.neighbors(u)
+          console.log(idNeighborsVertex) 
 
           d3.selectAll(".node.enter")
             .filter(function(d) { 
@@ -520,6 +668,7 @@ text = d3.select("body")
                     
                     // console.log(selectingThisId)  
                     selectingThis.selectAll("rect")
+                                  .transition(400)
                                  .style("fill", "orange")
                                   .style("opacity", .8);         
 
@@ -528,13 +677,22 @@ text = d3.select("body")
                 // else { console.log("buuu") }              // WORKS!! :D
                 
                 else { selectingThis.selectAll("rect")
-                                   .style("opacity", .2);      
-
-                 }             
- 
-
+                                  .transition(400)
+                                  .style("opacity", .1);      
+                        selectingThis.selectAll("text")
+                                  .transition(400)
+                                   .style("opacity", .1);      
+                 };             
             })
+
+          
+          d3.select(this)
+                .style("opacity", .5)
+        
+
         });
+
+
 
 
 

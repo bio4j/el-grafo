@@ -10,6 +10,61 @@ g.type-DT rect {
   fill:#FFCC00;
 }*/
 
+
+/*from Scott Murray*/
+/*#tooltip {
+  position: absolute;
+  width: 150px;
+  height: auto;
+  padding: 2px;
+  background-color: lightblue;
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+#tooltip.hidden {
+  display: none;
+}
+
+#tooltip p {
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 12px;
+  line-height: 14px;
+}*/
+     
+
+/*from WEbsite example*/
+/*.tooltip {
+    pointer-events:none; 
+    opacity:0;
+    transition: opacity 0.3s;
+    text-shadow:1px 1px 0px gray;
+}
+
+div.tooltip {
+    background: lightblue;
+    border:solid gray;
+    position: absolute;
+    max-width: 8em;
+    text-align:center;
+}
+div.fixed {
+    position:fixed;
+}
+g.tooltip:not(.css) {
+  fill:currentColor;
+}
+g.tooltip rect {
+    fill: lightblue;
+    stroke: gray;
+}
+.node:hover rect + g.tooltip.css {
+  opacity:1;*/
+
+
+
+
 body { 
   font-family: sans-serif;
   font-size: 12px;
