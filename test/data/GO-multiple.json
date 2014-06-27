@@ -81,6 +81,12 @@
         "outArity": "many",
         "targetType": "lilili"
     }, {
+        "sourceType": "lelele",
+        "label": "edge-lelele-doble",
+        "inArity": "many",
+        "outArity": "many",
+        "targetType": "lelele"
+    }, {
         "sourceType": "lilili",
         "label": "edge-lololo",
         "inArity": "many",

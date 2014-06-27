@@ -22,7 +22,7 @@
 
 <body onLoad="draw();">
 <div id="attach">
-  <svg id="svg-dagred3graph" width=650 height=650>
+  <svg id="svg-dagred3graph" width=700 height=400>
     <g transform="translate(20, 20)"/>
   </svg>
   
@@ -497,6 +497,14 @@ text = d3.select("body")
   // Implemented: now on click 
   d3.selectAll(".node rect")
        .on("click", function(u, value) {
+
+
+          // UPDATE to normal status
+          d3.selectAll(".node rect")
+             .style("fill", "teal")
+             .style("opacity", .4);  
+
+
            idNeighborsVertex = graph.neighbors(u)
            console.log(idNeighborsVertex) 
 
@@ -512,13 +520,20 @@ text = d3.select("body")
                     
                     // console.log(selectingThisId)  
                     selectingThis.selectAll("rect")
-                                 .style("fill", "orange");         
+                                 .style("fill", "orange")
+                                  .style("opacity", .8);         
+
                 }
                 
-                else { console.log("buuu") }              // WORKS!! :D
+                // else { console.log("buuu") }              // WORKS!! :D
+                
+                else { selectingThis.selectAll("rect")
+                                   .style("opacity", .2);      
+
+                 }             
+ 
+
             })
-
-
         });
 
 
