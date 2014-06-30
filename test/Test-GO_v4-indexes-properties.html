@@ -612,7 +612,14 @@ RouteMap = svgRouteMap.select("g")
             .style("stroke", "brown")
             .style("stroke-width", 4);
 
+          //Graph features possibilities
           idNeighborsVertex = graph.neighbors(u)
+          console.log(idNeighborsVertex) 
+
+          idSuccessorsVertex = graph.successors(u)
+          console.log(idNeighborsVertex) 
+
+          idPredecessorsVertex = graph.predecessors(u)
           console.log(idNeighborsVertex) 
 
           d3.selectAll(".node.enter")
@@ -621,7 +628,9 @@ RouteMap = svgRouteMap.select("g")
                 selectingThisId = selectingThis.attr("id")
 
                 myArray = idNeighborsVertex
-                
+                // myArray = idSuccessorsVertex
+                // myArray = idPredecessorsVertex
+
                 //Array Based method with `indexOf` to see whether the value matches one of the values in the array
                 if (myArray.indexOf(selectingThisId) >= 0)  {
                     
@@ -750,7 +759,7 @@ RouteMap = svgRouteMap.select("g")
              alert("Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
          })
 
-    d3.selectAll("[id=GoTerm]")
+ /*   d3.selectAll("[id=GoTerm]")
           .selectAll("rect")
           .style("fill", "brown");
 
@@ -773,7 +782,7 @@ RouteMap = svgRouteMap.select("g")
     d3.selectAll("[outArity=one]")    // NO WORKING. Something wrong when selecting by some attributes
            .selectAll("path")
           .style("stroke", "red");
-
+*/
 
 // Returning a specif atribute of a variable
 /*d3.select("body")
