@@ -34,36 +34,6 @@ g.type-DT rect {
 }*/
      
 
-/*from WEbsite example*/
-/*.tooltip {
-    pointer-events:none; 
-    opacity:0;
-    transition: opacity 0.3s;
-    text-shadow:1px 1px 0px gray;
-}
-
-div.tooltip {
-    background: lightblue;
-    border:solid gray;
-    position: absolute;
-    max-width: 8em;
-    text-align:center;
-}
-div.fixed {
-    position:fixed;
-}
-g.tooltip:not(.css) {
-  fill:currentColor;
-}
-g.tooltip rect {
-    fill: lightblue;
-    stroke: gray;
-}
-.node:hover rect + g.tooltip.css {
-  opacity:1;*/
-
-
-
 
 body { 
   font-family: sans-serif;

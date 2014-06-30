@@ -70,37 +70,37 @@
         "targetType": "GoSlims"
     }, {
         "sourceType": "lalala",
-        "label": "edge-lelele",
+        "label": "edgelelele",
         "inArity": "many",
         "outArity": "many",
         "targetType": "GoTerm"
     }, {
         "sourceType": "lelele",
-        "label": "edge-lilili",
+        "label": "edgelilili",
         "inArity": "many",
         "outArity": "many",
         "targetType": "lilili"
     }, {
         "sourceType": "lelele",
-        "label": "edge-lelele-doble",
+        "label": "edgeleleledoble",
         "inArity": "many",
         "outArity": "many",
         "targetType": "lelele"
     }, {
         "sourceType": "lilili",
-        "label": "edge-lololo",
+        "label": "edgelololo",
         "inArity": "many",
         "outArity": "many",
         "targetType": "GoSlims"
     }, {
         "sourceType": "GoSlims",
-        "label": "edge-lalala",
+        "label": "edgelalala",
         "inArity": "many",
         "outArity": "many",
         "targetType": "lololo"
     }, {
         "sourceType": "SubOntologies",
-        "label": "edge-lululu",
+        "label": "edgelululu",
         "inArity": "many",
         "outArity": "many",
         "targetType": "lululu"

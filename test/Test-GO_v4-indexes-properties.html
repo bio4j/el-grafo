@@ -524,9 +524,9 @@ text = d3.select("body")
         // console.log(yPosition);
         
         ParentNode = d3.select(this)[0][0].parentNode;
-        // console.log(ParentNode);
+        console.log(ParentNode);
         ParentNodeID = ParentNode.id;
-        // console.log(ParentNodeID);
+        console.log(ParentNodeID);
 
         svgGraph.append("text")
               .attr("id", "tooltip")
@@ -540,7 +540,8 @@ text = d3.select("body")
               .text(function(u) {                
                     return "Click to see '" + ParentNodeID + "'' Neighbor vertex";     
               });
-         })
+
+        })
 
         .on("mouseout", function() {
               d3.select("#tooltip").remove()
@@ -581,6 +582,14 @@ text = d3.select("body")
 
 
 ////////////////////////////////////////////
+
+// ROUTE MAP:
+
+svgRouteMap = d3.select("svg#svg-routemap");
+
+RouteMap = svgRouteMap.select("g")
+                      .append("g")
+                      .attr("id", "RouteMap");
 
 
   // Implemented: now on click 
@@ -635,7 +644,6 @@ text = d3.select("body")
                  };             
             })
 
-          
           d3.select(this)
                 .transition(400)
                 .style("opacity", .8);
@@ -648,112 +656,49 @@ text = d3.select("body")
                                     // .style("font-size", "16px")
                                     .style("font-weight", "bold")
                                     .style("opacity", 1);
-         
-          // d3.select(this)[0][0].parentNode.select(this).selectAll("text")
 
 
-          
-           // console.log(d3.select(this)[0][0].parentNode.select(this))
+        // INDEXES-PROPERTIES INFO                            
+        //Accessing to the properties info through .parentNode      
+        ParentNode2 =  d3.select(this.parentNode);
+        ParentNode2Label = ParentNode2.attr("label");
+        ParentNode2Properties = ParentNode2.attr("propertyTypes");
 
+        console.log(ParentNode2.attr("propertyTypes"));
 
+        //removing previous text
+        svgRouteMap.selectAll(".VertexIndexProperties") 
+                    .remove();         
+  
+        //adding INDEX info
+        svgRouteMap.append("text")
+          .attr("class", "VertexIndexProperties")
+          .attr("x", function(d,i) { return i + 40 })
+          .attr("y", function(d,i) { return i + 40 })
+          .attr("text-anchor", "left")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "14px")
+          .attr("font-weight", "bold")
+          .attr("fill", "brown")
+          .text(function(u) {                
+                return (ParentNode2Label);     
+          })
 
-        
-
+        //adding PROPERTIES info
+        svgRouteMap.append("text")
+          .attr("class", "VertexIndexProperties")
+          .attr("x", function(d,i) { return i + 40 })
+          .attr("y", function(d,i) { return i + 55 })
+          .attr("text-anchor", "left")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "11px")
+          .attr("font-weight", "normal")
+          .attr("fill", "brown")
+          .text(function(u) {                
+                return ("PropertyTypes:  " + ParentNode2Properties);     
+          });
         });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// ----------------------- >
-// TO DO: implement this with click on events :D
-
-
-
-/*      // .each( function(d, i) {
-      .selectAll("rect")
-      .style("fill", "green");      */
-      
-
-
-/*    .each( function(d, i) {
-        idSelection = d3.select(this).attr("id");
-    
-        d3.selectAll("#"+idSelection)          
-          .selectAll("rect")
-          .style("fill", "brown");                 
-    });*/
-
-
-
-/*    d3.selectAll(".node rect")
-         .on("click", function(u, value) {
-             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
-          });*/
-    
-
-/*    d3.selectAll(".node rect").each
-         .on("click", function(d, i) {
-         // .on("click", function(u) {
-
-              myNeighbor = graph.neighbors(u);
-              
-              idNeighbors = d3.select(myNeighbor).attr("id");
-              
-              d3.selectAll("#"+idNeighbors)          
-                .selectAll("rect")
-                .style("fill", "brown");              // DOESNT WORK
-              
-          });*/
-
-/*    d3.selectAll(".node rect").each
-         .on("click", dosomething });
-
-    dosomething      function(u) {
-              
-              myNeighbor = graph.neighbors(u);
-              
-              idNeighbors = d3.select(myNeighbor).attr("id");
-              
-              d3.selectAll("#"+idNeighbors)          
-                .selectAll("rect")
-                .style("fill", "brown");              // DOESNT WORK
-              
-          });
-*/
- /*        ------> function nodeclick 
-            iddd = graph.successors(u);
-            d3.selectAll("#"+iddd)          
-              .selectAll("rect")
-              .style("fill", "red");  
-          });
-
-
-    d3.selectAll(".node.enter")
-         .on("click", nodeclick);*/
-
-
-/*
-    d3.selectAll(".node.enter")
-         .on("click", function(u) {
-            iddd = graph.successors(u);
-            d3.selectAll("#"+iddd)          
-              .selectAll("rect")
-              .style("fill", "red");  
-          });
-*/
 
 
 /*    d3.selectAll(".node rect")
@@ -805,15 +750,29 @@ text = d3.select("body")
              alert("Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
          })
 
-/*    d3.selectAll("[id=GoTerm]")
+    d3.selectAll("[id=GoTerm]")
           .selectAll("rect")
-          .style("fill", "brown");*/
+          .style("fill", "brown");
 
-/*    // d3.selectAll("[outArity=one]") // Something wrong when selecting EDGE PATHS instead of vertex, doesnt do anything!
-    d3.selectAll("#PositivelyRegulates")
-          // .selectAll("path")
-          .style("fill", "red")
-          .style("stroke", "blue");*/
+    d3.selectAll("[label=lululu]")
+      .selectAll("rect")
+      .style("fill", "yellow");
+
+    d3.selectAll("[id=GoSlim]")
+      .selectAll("path")
+      .style("stroke", "brown");
+
+    d3.selectAll("[id=PositivelyRegulates]")
+          .selectAll("path")
+          .style("stroke", "blue");
+
+    d3.selectAll("[label=edgeleleledoble]") 
+           .selectAll("path")
+          .style("stroke", "green");
+
+    d3.selectAll("[outArity=one]")    // NO WORKING. Something wrong when selecting by some attributes
+           .selectAll("path")
+          .style("stroke", "red");
 
 
 // Returning a specif atribute of a variable
@@ -825,55 +784,13 @@ text = d3.select("body")
 });*/
 
 
-//all work in progress ---->>
-
-/*  // TEST2
-    // nodes on click! 
-    d3.selectAll(".node rect")
-         .on("click", function(u, value) {
-             alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'");
-         })*/
-
-
-    //Starting some trials
 
 
 
 
 
-/*  //Show some vertex-info while hovering or clicking...
-   d3.selectAll(".node rect")
-    .append("svg:text")
-    .attr("class", "nodetext")
-    .attr("dx", 12)
-    .attr("dy", ".35em")
-    .text("lala");
-   */ // .text(function(d) { return d.name });
 
 
-/*    RouteMap.selectAll("text")
-         .data(graph)
-         .enter()
-         .append("text")
-         .text(function(d) {
-            return d.source;
-         })
-         .attr("text-anchor", "middle")
-         .attr("x", 20)
-         .attr("y", 30)
-         .attr("font-family", "sans-serif")
-         .attr("font-size", "11px")cd
-         .attr("fill", "red");
-*/
-
-
-// ROUTE MAP:
-
-svgRouteMap = d3.select("svg#svg-routemap");
-
-RouteMap = svgRouteMap.select("g")
-                      .append("g")
-                      .attr("id", "RouteMap");
 
 
 /*    d3.selectAll(".node.enter")
