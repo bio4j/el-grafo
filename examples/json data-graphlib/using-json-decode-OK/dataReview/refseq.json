@@ -1,0 +1,57 @@
+{
+    "label": "refseq",
+    "properties": [{
+        "label": "comment",
+        "type": "java.lang.String"
+    }, {
+        "label": "definition",
+        "type": "java.lang.String"
+    }],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "GenomeElement",
+        "properties": [
+            "comment",
+            "definition"
+        ]
+    }, {
+        "label": "Gene",
+        "properties": [
+
+        ]
+    }, {
+        "label": "CDS",
+        "properties": [
+
+        ]
+    }],
+    "edgeTypes": [{
+        "label": "HasGene",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GenomeElement",
+            "arity": "many"
+        },
+        "target": {
+            "type": "Gene",
+            "arity": "one"
+        }
+    }, {
+        "label": "HasCDS",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GenomeElement",
+            "arity": "many"
+        },
+        "target": {
+            "type": "CDS",
+            "arity": "one"
+        }
+    }]
+}

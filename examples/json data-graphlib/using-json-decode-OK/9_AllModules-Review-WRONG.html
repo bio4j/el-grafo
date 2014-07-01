@@ -1,0 +1,187 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Dagre D3 Renderer Demo</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="js/d3.js" charset="utf-8"></script>
+<script src="js/graphlib.min.js"></script>
+<script src="js/dagre-d3.js"></script>
+
+<body onLoad="draw();">
+<div id="attach">
+  <svg id="svg-canvas1" width=400 height=400>
+    <g transform="translate(20, 20)"/>
+  </svg>
+</div>
+
+<div id="attach">
+  <svg id="svg-canvas2" width=400 height=400>
+    <g transform="translate(400, 400)"/>
+  </svg>
+</div>
+
+<!-- <div id="attach">
+  <svg id="svg-canvas3" width=800 height=600>
+    <g transform="translate(400, 400)"/>
+  </svg>
+</div>
+
+<div id="attach">
+  <svg id="svg-canvas4" width=800 height=600>
+    <g transform="translate(400, 400)"/>
+  </svg>
+</div>
+
+<div id="attach">
+  <svg id="svg-canvas5" width=800 height=600>
+    <g transform="translate(400, 400)"/>
+  </svg>
+</div>
+
+<div id="attach">
+  <svg id="svg-canvas6" width=800 height=600>
+    <g transform="translate(400, 400)"/>
+  </svg>
+</div> -->
+
+<script>
+
+var graph = new dagreD3.Digraph();
+
+  
+
+
+// ADDING MODULE NAME:
+
+
+functionLalala =  function(jsonGO) {
+
+    var module = jsonGO.label;
+    console.log(module)
+    var properties = jsonGO.properties;
+    console.log(properties)
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x.label,        
+            value: { module: module, label: x.label, propertyTypes: x.properties }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+    /////
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+        var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.source.type,     
+            v: x.target.type,
+            value: { module: module, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+/*  var renderer = new dagreD3.Renderer();
+  var graph = dagreD3.json.decode(newVertex, newEdges);*/
+
+
+  /*var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return  u });
+    // svgNodes.attr("module", function(u) { return  u.module });
+    
+    return svgNodes;
+  });*/
+
+  // drawEdgePaths
+
+/*  var layout = dagreD3.layout();
+
+  var renderinglayout = renderer.layout(layout)
+              .run(graph, svgGraph1);*/
+
+  // console.log(graph);
+  // console.log(g.nodes);
+  // console.log(g.edges);
+  
+   // EDGES/NODE LIST (general: all edges)
+ // digraph.edges()
+
+  
+  console.log(graph.edges());
+  console.log(graph.nodes());
+
+};
+
+
+
+
+svgGraph1 = d3.select("svg#svg-canvas1");
+svgGraph2 = d3.select("svg#svg-canvas2");
+svgGraph3 = d3.select("svg#svg-canvas3");
+svgGraph4 = d3.select("svg#svg-canvas4");
+svgGraph5 = d3.select("svg#svg-canvas5");
+svgGraph6 = d3.select("svg#svg-canvas6");
+
+
+
+function draw() {
+d3.json("dataReview/ncbiTaxonomy.json", functionLalala);
+
+  var renderer = new dagreD3.Renderer();
+  var graph = dagreD3.json.decode(newVertex, newEdges);
+
+var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return  u });
+    // svgNodes.attr("module", function(u) { return  u.module });
+    
+    return svgNodes;
+  });
+
+    var renderinglayout = renderer.layout(layout)
+              .run(graph, svgGraph1);
+
+}
+
+function draw() {
+d3.json("dataReview/go.json", functionLalala);
+
+  var renderer = new dagreD3.Renderer();
+  var graph = dagreD3.json.decode(newVertex, newEdges);
+
+var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return  u });
+    // svgNodes.attr("module", function(u) { return  u.module });
+    
+    return svgNodes;
+  });
+  
+  var renderinglayout = renderer.layout(layout)
+              .run(graph, svgGraph2);
+}
+
+
+
+</script>
+
+

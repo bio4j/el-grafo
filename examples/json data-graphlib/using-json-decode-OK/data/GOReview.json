@@ -1,0 +1,147 @@
+{
+    "label": "go",
+    "properties": [{
+        "label": "id",
+        "type": "java.lang.String"
+    }, {
+        "label": "name",
+        "type": "java.lang.String"
+    }, {
+        "label": "synonyms",
+        "type": "scala.collection.immutable.List"
+    }, {
+        "label": "definition",
+        "type": "java.lang.String"
+    }, {
+        "label": "comment",
+        "type": "java.lang.String"
+    }],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "GoTerm",
+        "properties": [
+            "id",
+            "name",
+            "synonyms",
+            "definition",
+            "comment"
+        ]
+    }, {
+        "label": "GoSlims",
+        "properties": [
+
+        ]
+    }, {
+        "label": "SubOntologies",
+        "properties": [
+
+        ]
+    }],
+    "edgeTypes": [{
+        "label": "IsA",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "PartOf",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "HasPartOf",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "Regulates",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "PositivelyRegulates",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "NegativelyRegulates",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "SubOntology",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "SubOntologies",
+            "arity": "one"
+        }
+    }, {
+        "label": "GoSlim",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoSlims",
+            "arity": "many"
+        }
+    }]
+} +
