@@ -25,7 +25,13 @@
   <svg id="svg-dagred3graph" width=700 height=400>
     <g transform="translate(20, 20)"/>
   </svg>
-  
+
+  <p id="enzymedb">Enzymedb module</p>
+  <p id="go">go module</p>
+  <p id="cbiTaxonomy">ncbiTaxonomy module</p>
+  <p id="refseq">refseq module</p>
+  <p id="uniprot">uniprot module</p>
+  <p id="uniprot_go">uniprot_go module</p>  
 
   <svg id="svg-routemap" width=450 height=350>
     <g transform="translate(20, 20)"/>
@@ -40,12 +46,60 @@
 <script>
 
 
-  
 function draw() {
+
+  url1 = "data/rev_enzymedb.json";
+  url2 = "data/rev_go.json";
+  url3 = "data/rev_ncbiTaxonomy.json";
+  url4 = "data/rev_refseq.json";
+  url5 = "data/rev_uniprot.json";
+  url6 = "data/rev_uniprot_go.json";
+
+  d3.select("#enzymedb")
+    .on("click", function() {
+        console.log("Loading enzymedb!");
+        url = url1;
+        return draw();
+      });
+
+  d3.select("#go")
+    .on("click", function() {
+        console.log("Loading go!");
+        url = url2;
+        return draw();
+      });
+
+  d3.select("#cbiTaxonomy")
+    .on("click", function() {
+        console.log("Loading cbiTaxonomy!");
+        url = url3;
+        return draw();
+      });
+
+  d3.select("#refseq")
+  .on("click", function() {
+      console.log("Loading refseq!");
+      url = url4;
+      return draw();
+      }); 
+
+  d3.select("#uniprot")
+  .on("click", function() {
+      console.log("Loading uniprot!");
+      url = url5;
+      return draw();
+      });
+
+  d3.select("#uniprot_go")
+  .on("click", function() {
+      console.log("Loading uniprot_go!");
+      url = url6;
+      return draw();
+      });
 
 // 1-MODEL/DATA/FROM/SERVICE
 // Loading GO data from local file after and transforming json initial structure.
-d3.json("data/GO-multiple.json", function(jsonGO) {
+d3.json(url, function(jsonGO) {
 
     svgGraph = d3.select("svg g");
 
@@ -59,13 +113,15 @@ d3.json("data/GO-multiple.json", function(jsonGO) {
     console.log(jsonGO.vertexTypes)
 
     var newVertex = jsonGO.vertexTypes.map(function(x) {
+          
           console.log(x.label)
+
           return {
-            id: x.label,        
-            value: { module: module, label: x.label, propertyTypes: x.properties }            
+            id: x,
+            value: { module: jsonGO.label, label: x, propertyTypes: properties  }            
             };
         });
-        
+    
     console.log("Transformed structure of vertexTypes for Graphlib:")
     console.log(newVertex);
 
@@ -75,11 +131,12 @@ d3.json("data/GO-multiple.json", function(jsonGO) {
     console.log("Original json structure of edgeTypes from GO file:")
     console.log(jsonGO.edgeTypes)
 
-       var newEdges = jsonGO.edgeTypes.map(function(x) {
+        var newEdges = jsonGO.edgeTypes.map(function(x) {
           return {
-            u: x.source.type,     
-            v: x.target.type,
-            value: { module: module, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
+            id: x.label,
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { module: jsonGO.label, label: x.label, inArity: x.inArity, outArity: x.outArity, propertyTypes: properties }            
           };
         });
     
