@@ -22,8 +22,6 @@
 
 <body onLoad="draw();">
 
-    <!-- <div id="svg-dagred3graph"></div> -->
-
   <p id="enzymedb">Enzymedb module</p>
   <p id="go">go module</p>
   <p id="cbiTaxonomy">ncbiTaxonomy module</p>
@@ -31,7 +29,10 @@
   <p id="uniprot">uniprot module</p>
   <p id="uniprot_go">uniprot_go module</p>  
 
-<div id="attach">
+<!--     <div id="svg-dagred3graph"></div>
+    <div id="svg-routemap"></div>
+ -->
+<!-- <div id="attach">
   <svg id="svg-dagred3graph" width=650 height=400>
     <g transform="translate(20, 20)"/>
   </svg>
@@ -41,7 +42,7 @@
   <svg id="svg-routemap" width=350 height=200>
     <g transform="translate(20, 20)"/>
   </svg>
-
+ -->
   
 
 </div>
@@ -52,9 +53,54 @@
 </div> -->
 
 <script>
+var GraphWidth = 650;
+var GraphHeight = 400;
+
+
+    // svgGraph = d3.select("svg g");
+/*    svgGraph = d3.select("#svg-dagred3graph")
+                .append("svg")
+                .attr("width", 650)
+                .attr("height", 400);
+
+    // svgGraph = d3.select("svg g");
+    svgRouteMap = d3.select("svg#svg-routemap")
+                // .append("g")
+                .append("svg")
+                .attr("width", 350)
+                .attr("height", 200);*/
+
+    svgGraph = d3.select("body")
+                .append("svg")
+                .attr("id", "#svg-dagred3graph")
+                .attr("width", GraphWidth)
+                .attr("height", GraphHeight);
+                // .attr("transform", "translate(20,0)");
+
+
+    // svgGraph = d3.select("svg g");
+    svgRouteMap = d3.select("body")
+                // .append("g")
+                .append("svg")
+                .attr("id", "svg#svg-routemap")
+                .attr("width", 350)
+                .attr("height", 200);
+                // .attr("transform", "translate(20,0)");
 
 
 function draw() {
+
+
+
+/*  <p id="enzymedb">Enzymedb module</p>
+  <p id="go">go module</p>
+  <p id="cbiTaxonomy">ncbiTaxonomy module</p>
+  <p id="refseq">refseq module</p>
+  <p id="uniprot">uniprot module</p>
+  <p id="uniprot_go">uniprot_go module</p>  
+
+*/
+
 
   url1 = "data/rev_enzymedb.json";
   url2 = "data/rev_go.json";
@@ -114,7 +160,6 @@ function draw() {
 // Loading GO data from local file after and transforming json initial structure.
 d3.json(url, function(jsonGO) {
 
-    svgGraph = d3.select("svg g");
 
     var module = jsonGO.label;
     var properties = jsonGO.propertyTypes;
@@ -209,6 +254,7 @@ d3.json(url, function(jsonGO) {
               
               .run(graph, svgGraph);
 
+
 /*  //Configuring the renderer-modified:
   var renderinglayout = renderer.layout(layout)
               // .edgeTension(.9)   //1=default
@@ -271,6 +317,8 @@ d3.json(url, function(jsonGO) {
       ;
 
     //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
+
+
 
 
 ////////////////////////////////////////////////////////////
@@ -354,10 +402,24 @@ d3.json(url, function(jsonGO) {
 ////////////////////////////////////////////////////////////
 
 
-
-text = d3.select("body")
+/*text = d3.select("body")
           .append("p")
           .text("Dagre-d3 graph representation: '" + module + "' module")
+          .style("text-transform", "uppercase");*/
+
+svgGraph.selectAll("#moduleTitle")
+        .remove()
+
+text = svgGraph.append("text")
+          .attr("id", "moduleTitle")
+          .attr("x", GraphWidth/2)
+          .attr("y", GraphHeight - 20)
+          .text("Dagre-d3 graph representation: '" + module + "' module")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "14px")
+          .attr("font-weight", "normal")
+          .attr("fill", "teal")
+          .style("text-anchor", "middle")
           .style("text-transform", "uppercase");
 
       d3.select("body")
@@ -365,6 +427,29 @@ text = d3.select("body")
           .text("Nº of VERTEX loaded: " + graph.order())
           .append("p")
           .text("Nº of EGES loaded: " + graph.size());
+
+
+
+
+/*        //adding PROPERTIES info
+        svgRouteMap.append("text")
+          .attr("class", "VertexIndexProperties")
+          .attr("x", function(d,i) { return i + 40 })
+          .attr("y", function(d,i) { return i + 55 })
+          .attr("text-anchor", "left")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "11px")
+          .attr("font-weight", "normal")
+          .attr("fill", "brown")
+          .text(function(u) {                
+                if (ParentNode2Properties.length == 0) { 
+                  return ("PropertyTypes: none ") ;
+                }                
+                else { 
+                  return ("PropertyTypes:  " + ParentNode2Properties) ;
+              };
+          });
+        });*/
 
 
 ////////////////////////////////////////////////////////////
@@ -655,11 +740,11 @@ text = d3.select("body")
 
 // ROUTE MAP:
 
-svgRouteMap = d3.select("svg#svg-routemap");
+/*svgRouteMap = d3.select("svg#svg-routemap");
 
 RouteMap = svgRouteMap.select("g")
                       .append("g")
-                      .attr("id", "RouteMap");
+                      .attr("id", "RouteMap");*/
 
 
   // Implemented: now on click 
@@ -964,6 +1049,11 @@ RouteMap = svgRouteMap.select("g")
         
   });
   }
+/*
+//Changing graph position!
+
+  d3.select("#svg-dagred3graph").select("g.edgePaths")
+    .attr("transform", "translate(50,20)");*/
 
 </script>
 
