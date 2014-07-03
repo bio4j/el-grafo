@@ -114,7 +114,7 @@ d3.json("data/miserables.json", function(json) {
     /*        .data(json.nodes, function(d) {
             return d.name
         })*/
-        .data(json.nodes);
+    .data(json.nodes);
 
 
     circles.append("title")

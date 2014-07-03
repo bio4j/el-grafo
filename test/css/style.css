@@ -46,7 +46,7 @@ body {
 
 svg {
   border: 1px solid #999;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 
 /*text {

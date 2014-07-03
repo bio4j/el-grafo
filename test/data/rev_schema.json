@@ -1,0 +1,382 @@
+[{
+    "label": "enzymedb",
+    "properties": [{
+        "label": "id",
+        "type": "java.lang.String"
+    }, {
+        "label": "officialName",
+        "type": "java.lang.String"
+    }, {
+        "label": "alternateNames",
+        "type": "scala.collection.immutable.List"
+    }, {
+        "label": "comment",
+        "type": "java.lang.String"
+    }, {
+        "label": "cofactors",
+        "type": "scala.collection.immutable.List"
+    }, {
+        "label": "catalyticActivity",
+        "type": "scala.collection.immutable.List"
+    }, {
+        "label": "prositeCrossRefs",
+        "type": "scala.collection.immutable.List"
+    }],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "Enzyme",
+        "properties": [
+            "id",
+            "officialName",
+            "alternateNames",
+            "comment",
+            "cofactors",
+            "catalyticActivity"
+        ]
+    }],
+    "edgeTypes": [
+
+    ]
+}, {
+    "label": "go",
+    "properties": [{
+        "label": "id",
+        "type": "java.lang.String"
+    }, {
+        "label": "name",
+        "type": "java.lang.String"
+    }, {
+        "label": "synonyms",
+        "type": "scala.collection.immutable.List"
+    }, {
+        "label": "definition",
+        "type": "java.lang.String"
+    }, {
+        "label": "comment",
+        "type": "java.lang.String"
+    }],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "GoTerm",
+        "properties": [
+            "id",
+            "name",
+            "synonyms",
+            "definition",
+            "comment"
+        ]
+    }, {
+        "label": "GoSlims",
+        "properties": [
+
+        ]
+    }, {
+        "label": "SubOntologies",
+        "properties": [
+
+        ]
+    }],
+    "edgeTypes": [{
+        "label": "IsA",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "PartOf",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "HasPartOf",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "Regulates",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "PositivelyRegulates",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "NegativelyRegulates",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }, {
+        "label": "SubOntology",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "SubOntologies",
+            "arity": "one"
+        }
+    }, {
+        "label": "GoSlim",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GoTerm",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoSlims",
+            "arity": "many"
+        }
+    }]
+}, {
+    "label": "ncbiTaxonomy",
+    "properties": [{
+        "label": "id",
+        "type": "java.lang.String"
+    }, {
+        "label": "name",
+        "type": "java.lang.String"
+    }, {
+        "label": "comment",
+        "type": "java.lang.String"
+    }, {
+        "label": "scientificName",
+        "type": "java.lang.String"
+    }],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "NcbiTaxon",
+        "properties": [
+            "id"
+        ]
+    }, {
+        "label": "Rank",
+        "properties": [
+            "name"
+        ]
+    }],
+    "edgeTypes": [{
+        "label": "Parent",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "NcbiTaxon",
+            "arity": "many"
+        },
+        "target": {
+            "type": "NcbiTaxon",
+            "arity": "one"
+        }
+    }, {
+        "label": "AssignedRank",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "NcbiTaxon",
+            "arity": "many"
+        },
+        "target": {
+            "type": "Rank",
+            "arity": "one"
+        }
+    }, {
+        "label": "Subrank",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "Rank",
+            "arity": "many"
+        },
+        "target": {
+            "type": "Rank",
+            "arity": "one"
+        }
+    }]
+}, {
+    "label": "refseq",
+    "properties": [{
+        "label": "comment",
+        "type": "java.lang.String"
+    }, {
+        "label": "definition",
+        "type": "java.lang.String"
+    }],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "GenomeElement",
+        "properties": [
+            "comment",
+            "definition"
+        ]
+    }, {
+        "label": "Gene",
+        "properties": [
+
+        ]
+    }, {
+        "label": "CDS",
+        "properties": [
+
+        ]
+    }],
+    "edgeTypes": [{
+        "label": "HasGene",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GenomeElement",
+            "arity": "many"
+        },
+        "target": {
+            "type": "Gene",
+            "arity": "one"
+        }
+    }, {
+        "label": "HasCDS",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "GenomeElement",
+            "arity": "many"
+        },
+        "target": {
+            "type": "CDS",
+            "arity": "one"
+        }
+    }]
+}, {
+    "label": "uniprot",
+    "properties": [
+
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "Protein",
+        "properties": [
+
+        ]
+    }],
+    "edgeTypes": [
+
+    ]
+}, {
+    "label": "enzymedb",
+    "properties": [
+
+    ],
+    "dependencies": [
+        "uniprot",
+        "enzymedb"
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [{
+        "label": "EnzymaticActivity",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "Protein",
+            "arity": "many"
+        },
+        "target": {
+            "type": "Enzyme",
+            "arity": "many"
+        }
+    }]
+}, {
+    "label": "uniprot_go",
+    "properties": [
+
+    ],
+    "dependencies": [
+        "go",
+        "uniprot"
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [{
+        "label": "GoAnnotation",
+        "properties": [
+
+        ],
+        "source": {
+            "type": "Protein",
+            "arity": "many"
+        },
+        "target": {
+            "type": "GoTerm",
+            "arity": "many"
+        }
+    }]
+}]
