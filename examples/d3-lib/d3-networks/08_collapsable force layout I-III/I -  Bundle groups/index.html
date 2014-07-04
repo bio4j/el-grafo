@@ -48,7 +48,7 @@ var width = 960,      // svg width
  
 var curve = d3.svg.line()
     .interpolate("cardinal-closed")
-    .tension(.85);    // No le afecta si lo cambio
+    .tension(.85);   
  
 var fill = d3.scale.category20();
  
@@ -184,7 +184,7 @@ var vis = body.append("svg")
    .attr("width", width)
    .attr("height", height);
  
-d3.json("data/miserables.json", function(json) {
+d3.json("data/Miserables.json", function(json) {
   data = json;
   for (var i=0; i<data.links.length; ++i) {
     o = data.links[i];

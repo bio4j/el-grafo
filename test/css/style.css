@@ -45,7 +45,7 @@ body {
 }
 
 svg {
-  border: 1px solid #999;
+  border: 1px solid #E8E8E8     ;
   overflow: hidden;
 }
 
@@ -54,6 +54,10 @@ svg {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
   font-size: 14px;
 }*/
+
+circle:hover {
+  cursor: pointer;
+}
 
 /*Node-labels*/
 .node text {

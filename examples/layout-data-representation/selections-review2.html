@@ -117,6 +117,14 @@ d3.json("data/GO.json", function(jsonGO) {
 						.attr("width", w)
 						.attr("height", h);
 
+			svg.append("text") 
+		        .text("Bio4j MODULES")
+		        .attr("x", 50 )
+		        .attr("y", 50 )
+		        .attr("dy", ".35em")
+		        .attr("text-anchor", "middle");
+
+
 /*			svg.selectAll("circle")
 			   .data(newEdges)
 			   .enter()

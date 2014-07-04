@@ -22,29 +22,6 @@
 
 <body onLoad="draw();">
 
-  <p id="enzymedb">Enzymedb module</p>
-  <p id="go">go module</p>
-  <p id="cbiTaxonomy">ncbiTaxonomy module</p>
-  <p id="refseq">refseq module</p>
-  <p id="uniprot">uniprot module</p>
-  <p id="uniprot_go">uniprot_go module</p>  
-
-<!--     <div id="svg-dagred3graph"></div>
-    <div id="svg-routemap"></div>
- -->
-<!-- <div id="attach">
-  <svg id="svg-dagred3graph" width=650 height=400>
-    <g transform="translate(20, 20)"/>
-  </svg>
-
-
-
-  <svg id="svg-routemap" width=350 height=200>
-    <g transform="translate(20, 20)"/>
-  </svg>
- -->
-  
-
 </div>
 
 <!-- <div id="tooltip" class="hidden">
@@ -56,146 +33,130 @@
 var GraphWidth = 650;
 var GraphHeight = 400;
 
-
-    // svgGraph = d3.select("svg g");
-/*    svgGraph = d3.select("#svg-dagred3graph")
+    //SVG canvas for modules loading
+    svgModules = d3.select("body")
                 .append("svg")
-                .attr("width", 650)
-                .attr("height", 400);
+                .attr("id", "svg-modules")
+                .attr("width", 500)
+                .attr("height", 90);
+    svgModules.append("g")
+                .attr("transform", "translate(40,10)");
 
-    // svgGraph = d3.select("svg g");
-    svgRouteMap = d3.select("svg#svg-routemap")
-                // .append("g")
-                .append("svg")
-                .attr("width", 350)
-                .attr("height", 200);*/
-
+    //SVG canvas for GRAPH representation
     svgGraph = d3.select("body")
                 .append("svg")
-                .attr("id", "#svg-dagred3graph")
+                .attr("id", "svg-dagred3graph")
                 .attr("width", GraphWidth)
                 .attr("height", GraphHeight);
     svgGraph.append("g")
                 // .attr("transform", "translate(20,20)");
 
+    //SVG canvas for modules loading
     svgRouteMap = d3.select("body")
                 // .append("g")
                 .append("svg")
-                .attr("id", "svg#svg-routemap")
+                .attr("id", "svg-routemap")
                 .attr("width", 350)
                 .attr("height", 200);
                 // .attr("transform", "translate(20,0)");
 
 
+    //TITLE
+    d3.select("#svg-modules").append("text") 
+        .text("Bio4j MODULES")
+        .attr("x", 5 )
+        .attr("y", 5 )
+        .attr("dy", ".35em")
+        .attr("text-anchor", "left");
+
+
+
 function draw() {
 
-
-
-/*  <p id="enzymedb">Enzymedb module</p>
-  <p id="go">go module</p>
-  <p id="cbiTaxonomy">ncbiTaxonomy module</p>
-  <p id="refseq">refseq module</p>
-  <p id="uniprot">uniprot module</p>
-  <p id="uniprot_go">uniprot_go module</p>  
-
-*/
-
-  // Need to read/refresh the Bio4j schema and read the number of modules and their names.
-  // Then populate buttons based on this
-  // On click on then, a function to load each module picking its name and returning the right url
-  //
-
-
-  url0 = "data/rev_schema.json";
-  // var color = d3.scale.category10();
+  //Complete Domain Model schema:
+  url0 = "data/rev_schema_new.json";
+  var color = d3.scale.category10();
 
   d3.json(url0, function(json0) {
-
+/*
      var length = json0.length;
      console.log(length);
 
      ModulesArray = [];        //Initialize empty array 
-      for (var i = 0; i < json0.length; i++) {       //Loop 25 times
-              ModulesArray.push(i);       //Add new number to array
+      for (var i = 0; i < json0.length; i++) {         
+        ModulesArray.push(i);       //Add new number to array
             };
+
       console.log(ModulesArray);
+      console.log(json0[3].label);*/
 
+    console.log(json0);
 
-/*     ModulesMod = function(i)
-      for (var i = 0; i < json0.length; i++) {       //Loop 25 times
-              ModulesArray.push(json0[i].label);       //Add new number to array
+    var newjson0 = json0.map(function(x) {
+      function colorModule(d, i) { return color(i); }
+          return {
+            id: x.label,        
+            Nvertex: x.vertexTypes.length,
+            Nedges: x.edgeTypes.length,
+            Dependencies: x.dependencies.length,
+            // Color: function(d, i) { return color(i); }
+            Color: colorModule(x)
             };
+        });
+      
+    console.log(newjson0);
+    
+    // Each module -> circle:
+     svgModules.select("g").selectAll("circle")
+        .data(newjson0)
+        .enter()
+        .append("circle")
+        .attr("id", function(d) { return d.id; })
+        .attr("cx", function(d,i) { return i*75} )
+        .attr("cy", 30 )
+        .attr("r", function(d) { return (1 + d.Nvertex + d.Nedges)*1.5 } )
+        .attr("fill", function(d, i) { return color(i); });
+        // .attr("fill", function(d, i) { return d.Color });
+/*        .attr("fill", function(d,i) {
+          if (+d.Dependencies >= 1) { return color(i); });
+      });*/
+   
+   //Module titles: 
+   svgModules.select("g").selectAll("text")
+        .data(newjson0)
+        .enter()
+        .append("text")
+        .text(function(d) {
+              return d.id;
+            })
+        .attr("x", function(d,i) { return i*75} )
+        .attr("text-anchor", "middle")
+        .attr("y", 65 );
 
-      console.log(ModulesMod);
-*/
-      console.log(json0[0].label);
-
-   });
-
+ 
+    var urlFunction = function(d) {
+      return ("data/rev_" + d + ".json")
+    };
 
 
+//////////////
 
+    //Onclick on each Module, highlight it, define the url path and run the dagre-d3 lib
+    svgModules.select("g").selectAll("circle")
+        .on("click", function(d) {
+            svgModules.select("g").selectAll("circle")
+              .style("stroke-width", 0);
 
+            d3.select(this)
+              .style("stroke", d3.select(this).attr("fill"))
+              .style("stroke-width", 10)
+              .style("stroke-opacity", .3);
+            console.log(d.id);
+            url = urlFunction(d.id);
+            console.log(url);
+            return draw();
 
-
-
-      // .style("fill", function(d) { return color(d.length); })
-
-
-
-
-
-  //TO DO: convert this on a function, so is independent of the number of modules of the database, as well as of their names...
-
-  url1 = "data/rev_enzymedb.json";
-  url2 = "data/rev_go.json";
-  url3 = "data/rev_ncbiTaxonomy.json";
-  url4 = "data/rev_refseq.json";
-  url5 = "data/rev_uniprot.json";
-  url6 = "data/rev_uniprot_go.json";
-
-  d3.select("#enzymedb")
-    .on("click", function() {
-        console.log("Loading enzymedb!");
-        url = url1;
-        return draw();
-      });
-
-  d3.select("#go")
-    .on("click", function() {
-        console.log("Loading go!");
-        url = url2;
-        return draw();
-      });
-
-  d3.select("#cbiTaxonomy")
-    .on("click", function() {
-        console.log("Loading cbiTaxonomy!");
-        url = url3;
-        return draw();
-      });
-
-  d3.select("#refseq")
-  .on("click", function() {
-      console.log("Loading refseq!");
-      url = url4;
-      return draw();
-      }); 
-
-  d3.select("#uniprot")
-  .on("click", function() {
-      console.log("Loading uniprot!");
-      url = url5;
-      return draw();
-      });
-
-  d3.select("#uniprot_go")
-  .on("click", function() {
-      console.log("Loading uniprot_go!");
-      url = url6;
-      return draw();
-      });
-
+          });
 
 
 ////////////////////////////////////////////////////////////
@@ -296,7 +257,7 @@ d3.json(url, function(json) {
   var renderinglayout = renderer.layout(layout)
               // .edgeTension(.5)
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
-              
+              // .transition(500)
               .run(graph, svgGraph.select("g"));
 
   wGraph = renderinglayout.graph().width;
@@ -471,12 +432,12 @@ d3.json(url, function(json) {
           .style("text-transform", "uppercase");*/
 
 svgGraph.selectAll("#moduleTitle")
-        .remove()
+        .remove();
 
 text = svgGraph.append("text")
           .attr("id", "moduleTitle")
           .attr("x", GraphWidth/2)
-          .attr("y", GraphHeight - 20)
+          .attr("y", GraphHeight - 30)
           .text("Dagre-d3 graph representation: '" + module + "' module")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
@@ -485,12 +446,26 @@ text = svgGraph.append("text")
           .style("text-anchor", "middle")
           .style("text-transform", "uppercase");
 
+svgGraph.selectAll("#moduleInfo")
+        .remove();
+
+text2 = svgGraph.append("text")
+          .attr("id", "moduleInfo")
+          .attr("x", GraphWidth/2)
+          .attr("y", GraphHeight - 15)
+          .text(graph.order() + " vertex + " + graph.size() + " edges")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "12px")
+          .attr("font-weight", "normal")
+          .attr("fill", "teal")
+          .style("text-anchor", "middle");
+/*          
       d3.select("body")
           .append("p")
           .text("Nº of VERTEX loaded: " + graph.order())
           .append("p")
           .text("Nº of EGES loaded: " + graph.size());
-
+*/
 
 
 
@@ -797,6 +772,19 @@ text = svgGraph.append("text")
 
           });*/
 
+////////////////////////////////////////////
+  
+  //trying to connect the modules color with the graph colors. IN PROGRES--------->>>>
+/*  var 1level = d3.select(this.parentNode).attr("id");
+
+  var fillingNodes = function(d) {
+    return d3.select("#"+ 1level).attr("fill");
+  
+    }
+
+    d3.selectAll(".node rect")
+      .style("fill", fillingNodes);
+*/
 
 
 ////////////////////////////////////////////
@@ -1109,7 +1097,7 @@ RouteMap = svgRouteMap.select("g")
             var newNumber2 = Math.floor(Math.random() * maxRange);  //New random integer
             dataset.push([newNumber1, newNumber2]);         //Add new number to array
           }*/
-        
+      });   
   });
   }
 /*
