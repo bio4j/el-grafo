@@ -5,6 +5,7 @@ git add <filename>
 git add .
 git commit -m "Commit message"
 git push origin master
+
 ga -A // to remove?
 
 SEE BRANCHES
@@ -12,11 +13,13 @@ git branch
 git branch -a   // all branches, the ones that are on remote and not on local
 
 
+
 CREATE NEW BRANCH
 git checkout -b feature_x
 git checkout master
 
 git push origin <branch>
+
 RENAME BRANCH
 git branch (-m | -M) [<oldbranch>] <newbranch>
 
