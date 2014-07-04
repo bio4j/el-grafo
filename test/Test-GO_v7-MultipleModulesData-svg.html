@@ -37,10 +37,10 @@ var GraphHeight = 400;
     svgModules = d3.select("body")
                 .append("svg")
                 .attr("id", "svg-modules")
-                .attr("width", 500)
-                .attr("height", 90);
+                .attr("width", 400)
+                .attr("height", 250);
     svgModules.append("g")
-                .attr("transform", "translate(40,10)");
+                .attr("transform", "translate(40,40)");
 
     //SVG canvas for GRAPH representation
     svgGraph = d3.select("body")
@@ -60,15 +60,20 @@ var GraphHeight = 400;
                 .attr("height", 200);
                 // .attr("transform", "translate(20,0)");
 
+  titles = ["Bio4j MODULES", "Bio4j DEPENDENCIES"]
 
-    //TITLE
-    d3.select("#svg-modules").append("text") 
-        .text("Bio4j MODULES")
-        .attr("x", 5 )
-        .attr("y", 5 )
-        .attr("dy", ".35em")
-        .attr("text-anchor", "left");
 
+    d3.select("#svg-modules")
+        .selectAll("text")
+        .data(titles)
+        .enter()
+        .append("text") 
+        .attr("x", 20)
+        .attr("y", function(d, i) { return 30 + i*150; } )
+        .attr("text-anchor", "left")
+        .text( function(d) { return d; })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "14px");
 
 
 function draw() {
@@ -105,35 +110,59 @@ function draw() {
         });
       
     console.log(newjson0);
-    
-    // Each module -> circle:
-     svgModules.select("g").selectAll("circle")
-        .data(newjson0)
-        .enter()
-        .append("circle")
+
+
+    //MODULES AND DEPENDENCIES
+    //Filtering between modules and dependencies. For example with circles and rects
+    var shapesToFilter = svgModules.select("g").selectAll("circle")
+                          .data(newjson0)
+                          .enter();
+
+    //svg for MODULES
+    shapesToFilter.append("circle")
+        .filter(function(d) { return d.Dependencies < 1;})
         .attr("id", function(d) { return d.id; })
-        .attr("cx", function(d,i) { return i*75} )
+        .attr("cx", function(d, i) { return i*75} )
         .attr("cy", 30 )
         .attr("r", function(d) { return (1 + d.Nvertex + d.Nedges)*1.5 } )
         .attr("fill", function(d, i) { return color(i); });
-        // .attr("fill", function(d, i) { return d.Color });
-/*        .attr("fill", function(d,i) {
-          if (+d.Dependencies >= 1) { return color(i); });
-      });*/
-   
-   //Module titles: 
-   svgModules.select("g").selectAll("text")
-        .data(newjson0)
-        .enter()
-        .append("text")
+        // .attr("fill", "teal");
+    
+    //svg for DEPENDENCIES
+    shapesToFilter.append("rect")
+        .filter(function(d) { return d.Dependencies >= 1;})
+        .attr("x", function(d, i) { return 20 + i*150 })
+        .attr("y", 30+140 )
+        .attr("width", 20 )
+        .attr("height", 1.5 );
+
+
+   //Filtering between modules and dependencies
+   textToFilter = svgModules.select("g").selectAll("text")
+                            .data(newjson0)
+                            .enter();
+    //texts for MODULES
+    textToFilter.append("text")
+        .filter(function(d) { return d.Dependencies < 1;})
         .text(function(d) {
               return d.id;
             })
         .attr("x", function(d,i) { return i*75} )
         .attr("text-anchor", "middle")
         .attr("y", 65 );
-
+    
+    //texts for DEPENDENCIES
+    textToFilter.append("text")
+        .filter(function(d) { return d.Dependencies >= 1;})
+        .text(function(d) {
+              return d.id;
+            })
+        .attr("x", function(d,i) { return 20 + i*150 +10; } )
+        .attr("text-anchor", "middle")
+        .attr("y", 55+140 );
  
+
+
     var urlFunction = function(d) {
       return ("data/rev_" + d + ".json")
     };
@@ -441,7 +470,7 @@ text = svgGraph.append("text")
           .text("Dagre-d3 graph representation: '" + module + "' module")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
-          .attr("font-weight", "normal")
+          .attr("font-weight", "bold")
           .attr("fill", "teal")
           .style("text-anchor", "middle")
           .style("text-transform", "uppercase");
