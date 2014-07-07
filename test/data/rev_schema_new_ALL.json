@@ -39,6 +39,96 @@
     "edgeTypes": [
 
     ]
+
+}, {
+    "label": "_isoforms",
+    "properties": [
+
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [
+
+    ]
+}, {
+    "label": "_enums",
+    "properties": [
+
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [
+
+    ]
+}, {
+    "label": "_properties",
+    "properties": [
+
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [
+
+    ]
+}, {
+    "label": "_proteinInteractions",
+    "properties": [
+
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [
+
+    ]
+}, {
+    "label": "_uniprot_isoforms",
+    "properties": [
+
+    ],
+    "dependencies": [
+        "uniprot",
+        "isoforms"
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [
+
+    ]
+}, {
+    "label": "_uniref",
+    "properties": [
+
+    ],
+    "dependencies": [
+        "uniprot",
+        "isoforms"
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [
+
+    ]
+
+
+
 }, {
     "label": "go",
     "properties": [{
@@ -328,7 +418,7 @@
 
     ]
 }, {
-    "label": "enzymedb",
+    "label": "uniprot_enzymedb",
     "properties": [
 
     ],
