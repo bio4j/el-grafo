@@ -14,6 +14,16 @@ To get full advantage of RequireJS, see the API docs to learn more about definin
 
 */
 
+requirejs.config({
+    //By default load any module IDs from js/lib
+    baseUrl: 'scripts',
+
+    paths: {
+        d3: 'lib/d3',
+
+    }
+
+});
 
 
 require(["lib/d3"], function(d3) {
@@ -48,7 +58,7 @@ require(["lib/d3"], function(d3) {
         .append("g")
         .attr("transform", "translate(" + radius + "," + radius + ")");
 
-    d3.json("data/flare-imports.json", function(error, classes) {
+    d3.json("data/flareImports.json", function(error, classes) {
         var nodes = cluster.nodes(packageHierarchy(classes)),
             links = packageImports(nodes);
 
