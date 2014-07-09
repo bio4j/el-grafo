@@ -31,13 +31,13 @@
 
 <script>
 var GraphWidth = 650;
-var GraphHeight = 400;
+var GraphHeight = 350;
 
     //SVG canvas for modules loading
     svgModules = d3.select("body")
                 .append("svg")
                 .attr("id", "svg-modules")
-                .attr("width", 700)
+                .attr("width", 800)
                 .attr("height", 250);
     svgModules.append("g")
                 .attr("transform", "translate(40,40)");
@@ -52,13 +52,13 @@ var GraphHeight = 400;
                 // .attr("transform", "translate(20,20)");
 
     //SVG canvas for ROUTEMAP loading
-/*    svgRouteMap = d3.select("body")
+    svgRouteMap = d3.select("body")
                 // .append("g")
                 .append("svg")
                 .attr("id", "svg-routemap")
-                .attr("width", 350)
-                .attr("height", 200);
-                // .attr("transform", "translate(20,0)");*/
+                .attr("width", 250)
+                .attr("height", 100);
+                // .attr("transform", "translate(20,0)");
 
 
   titles = ["Bio4j MODULES", "Bio4j DEPENDENCIES"]
@@ -124,7 +124,7 @@ function draw() {
     shapesToFilter.append("circle")
         .filter(function(d) { return d.Dependencies < 1;})
         .attr("id", function(d) { return d.id; })
-        .attr("cx", function(d, i) { return i*75} )
+        .attr("cx", function(d, i) { return i*90} )
         .attr("cy", 30 )
         .attr("r", function(d) { return (1 + d.Nvertex + d.Nedges)*1.5 } )
         .attr("fill", function(d, i) { return color(i); });
@@ -133,7 +133,7 @@ function draw() {
     //svg for DEPENDENCIES
     shapesToFilter.append("rect")
         .filter(function(d) { return d.Dependencies >= 1;})
-        .attr("x", function(d, i) { return 20 + i*150 })
+        .attr("x", function(d, i) { return 20 + i*100 })
         .attr("y", 30+140 )
         .attr("width", 20 )
         .attr("height", 1.5 );
@@ -149,9 +149,10 @@ function draw() {
         .text(function(d) {
               return d.id;
             })
-        .attr("x", function(d,i) { return i*75} )
+        .attr("x", function(d,i) { return i*90} )
         .attr("text-anchor", "middle")
-        .attr("y", 65 );
+        .attr("y", 65 )
+        .attr("font-size", "11px");
     
     //texts for DEPENDENCIES
     textToFilter.append("text")
@@ -159,9 +160,11 @@ function draw() {
         .text(function(d) {
               return d.id;
             })
-        .attr("x", function(d,i) { return 20 + i*150 +10; } )
+        .attr("x", function(d,i) { return 20 + i*100 +10; } )
         .attr("text-anchor", "middle")
-        .attr("y", 55+140 );
+        .attr("y", 55+140 )
+        .attr("font-size", "11px");
+
  
 
 
@@ -191,6 +194,8 @@ function draw() {
 
           });
 
+    //  1_MODULES AND DEPENDENCIES buttons/loading   <-------
+
 
 ////////////////////////////////////////////////////////////
 
@@ -200,12 +205,14 @@ function draw() {
 d3.json(url, function(json) {
 
 
-    var module = json.label;
-    var properties = json.propertyTypes;
-
+    // -------> 2_AdaptJSON-GraphLib
 
     // 2-ADAPT/JSON/DATA/GRAPHLIB
     // Transforming json vertex structure with a .map function:
+
+    var module = json.label;
+    var properties = json.propertyTypes;
+
     console.log("Original json structure of vertexTypes from GO file:")
     console.log(json.vertexTypes)
 
@@ -236,6 +243,8 @@ d3.json(url, function(json) {
     console.log("Transformed structure of edgeTypes for Graphlib:")
     console.log(newEdges);
 
+
+    //  2_AdaptJSON-GraphLib  < -------
 
   ////////
 
@@ -492,35 +501,7 @@ text2 = svgGraph.append("text")
           .attr("font-weight", "normal")
           .attr("fill", "teal")
           .style("text-anchor", "middle");
-/*          
-      d3.select("body")
-          .append("p")
-          .text("Nº of VERTEX loaded: " + graph.order())
-          .append("p")
-          .text("Nº of EGES loaded: " + graph.size());
-*/
 
-
-
-/*        //adding PROPERTIES info
-        svgRouteMap.append("text")
-          .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 40 })
-          .attr("y", function(d,i) { return i + 55 })
-          .attr("text-anchor", "left")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "11px")
-          .attr("font-weight", "normal")
-          .attr("fill", "brown")
-          .text(function(u) {                
-                if (ParentNode2Properties.length == 0) { 
-                  return ("PropertyTypes: none ") ;
-                }                
-                else { 
-                  return ("PropertyTypes:  " + ParentNode2Properties) ;
-              };
-          });
-        });*/
 
 
 ////////////////////////////////////////////////////////////
@@ -831,9 +812,50 @@ RouteMap = svgRouteMap.select("g")
                       .attr("id", "RouteMap");*/
 
 
+  /*  var textFeatures = d3.select("#svg-dagred3graph")
+                            .selectAll("text")
+                            .data(GraphFeatures)
+                            .enter()
+                            .append("text")
+                            .text(function(d) {
+                                  return d;
+                                })
+                            .attr("x", 20)
+                            .attr("text-anchor", "middle")
+                            .attr("y", 65 )
+                            .attr("font-family", "sans-serif")
+                            .attr("font-size", "14px");*/
+
+
+var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsVertex"];
+
+    var textFeatures = d3.select("#svg-routemap")
+          .selectAll("text")
+          .data(GraphFeatures)
+          .enter()
+          .append("text")
+          .attr("id", "GraphFeatures")
+          .attr("x", 10)
+          .attr("y", function(d,i) { return 160 + i*15 })
+          .text(function(d) { return d; })
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "10px")
+          .attr("font-weight", "regular")
+          .attr("fill", "brown")
+
+          .on("click", function(d,i) {
+              myArray = d;
+              console.log(myArray);
+ 
+              // return Options();
+          });
+          
+
+  // function Options() {
   // Implemented: now on click 
   d3.selectAll(".node rect")
        .on("click", function(u, value) {
+        // console.log(myArray);
 
           // UPDATE to normal status
           d3.selectAll(".node rect")
@@ -851,15 +873,20 @@ RouteMap = svgRouteMap.select("g")
             .style("stroke", "brown")
             .style("stroke-width", 4);
 
-          //Graph features possibilities
+
+          //GRAPH Features Possibilities
           idNeighborsVertex = graph.neighbors(u)
-          console.log(idNeighborsVertex) 
+          // console.log(idNeighborsVertex) 
 
           idSuccessorsVertex = graph.successors(u)
           console.log(idNeighborsVertex) 
 
           idPredecessorsVertex = graph.predecessors(u)
-          console.log(idNeighborsVertex) 
+          // console.log(idNeighborsVertex) 
+    
+
+
+
 
           d3.selectAll(".node.enter")
             .filter(function(d) { 
@@ -921,8 +948,8 @@ RouteMap = svgRouteMap.select("g")
         //adding INDEX info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 40 })
-          .attr("y", function(d,i) { return i + 40 })
+          .attr("x", function(d,i) { return i + 20 })
+          .attr("y", function(d,i) { return i + 20 })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
@@ -935,8 +962,8 @@ RouteMap = svgRouteMap.select("g")
         //adding PROPERTIES info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 40 })
-          .attr("y", function(d,i) { return i + 55 })
+          .attr("x", function(d,i) { return i + 20 })
+          .attr("y", function(d,i) { return i + 35 })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "11px")
@@ -948,11 +975,10 @@ RouteMap = svgRouteMap.select("g")
                 }                
                 else { 
                   return ("PropertyTypes:  " + ParentNode2Properties) ;
-              };
+                };
           });
         });
-
-
+ // }
 
 /*    d3.selectAll(".node rect")
          .on("click", function(u, value) {
@@ -1003,30 +1029,107 @@ RouteMap = svgRouteMap.select("g")
              alert("Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
          })
 
- /*   d3.selectAll("[id=GoTerm]")
+/*    d3.selectAll("[id=GoTerm]")
           .selectAll("rect")
-          .style("fill", "brown");
+          .style("fill", "brown");*/
 
-    d3.selectAll("[label=lululu]")
-      .selectAll("rect")
-      .style("fill", "yellow");
+    d3.selectAll(".edgePaths")
+      .style("stroke", "green");
 
-    d3.selectAll("[id=GoSlim]")
+/*    d3.selectAll("[label=GoSlim]")
+      // .selectAll("rect")
+      .style("stroke", "red");*/
+
+/*    d3.selectAll("[id=GoSlim]")
       .selectAll("path")
-      .style("stroke", "brown");
+      .style("stroke", "brown");*/
 
-    d3.selectAll("[id=PositivelyRegulates]")
+/*    d3.selectAll("[id=PositivelyRegulates]")
           .selectAll("path")
           .style("stroke", "blue");
 
-    d3.selectAll("[label=edgeleleledoble]") 
+    d3.selectAll("[label=iSa]") 
            .selectAll("path")
-          .style("stroke", "green");
+           .style("stroke", "green");*/
+    
+/*      d3.selectAll(".edgePaths")
+        .selectAll("[label=SubOntology]")    //works
+          .style("stroke", "blue");*/
 
-    d3.selectAll("[outArity=one]")    // NO WORKING. Something wrong when selecting by some attributes
-           .selectAll("path")
-          .style("stroke", "red");
-*/
+/*      d3.selectAll(".edgePaths")
+        .selectAll("[v=SubOntologies]")     //works
+          .style("stroke", "blue");*/
+
+      // d3.selectAll(".edgePaths")
+        d3.selectAll("[outArity=one]")    
+        .style("stroke", "blue");
+
+  var arties = d3.selectAll(".edgePath").each( function(d,i) {
+    OUTarityInfo = d3.select(this).attr("outArity");
+    INarityInfo = d3.select(this).attr("inArity");
+    arityInfo = OUTarityInfo + "-" + INarityInfo;
+    console.log(arityInfo);
+/*    if (OUTarityInfo == "many") {
+      var OUTmany = d3.select(this);
+      // data = [1,2,3];
+      return OUTmany.style("stroke", "blue")
+                   // .attr("transform", "translate(0,2)");
+                    .data([1,2,3])
+                    .enter()
+                    .append()
+                    .attr("transform", function(d,i) {
+                        "translate(0," + i + ")"
+                      }) 
+                    }*/
+
+    if (arityInfo == "many-many") {
+      var manyMany = d3.select(this);
+      // data = [1,2,3];
+      return manyMany.style("stroke", "blue")
+/*                   // .attr("transform", "translate(0,2)");
+                    .data([1,2,3])
+                    .enter()
+                    .append()
+                    .attr("transform", function(d,i) {
+                        "translate(0," + i + ")"
+                      }) */
+                    }
+
+    if (arityInfo == "many-one") {
+      var manyOne = d3.select(this);
+      return manyOne.style("stroke", "red")
+      }
+    
+
+    if (arityInfo == "one-many") {
+      var oneMany = d3.select(this);
+      return oneMany.style("stroke", "yellow")
+      }
+
+/*    else {
+      var OUTone = d3.select(this);
+      return OUTone.style("stroke", "yellow");
+    }*/
+  })
+
+/*  var cosa = d3.selectAll(".edgePath").each( function(d,i) {
+    arityInfo = d3.select(this).attr("outArity");
+    d3.select(this)
+      .attr("class", arityInfo)
+        // .classed(function(d) { return outArity }, true);
+  })*/
+
+  // var cosa = d3.selectAll("edgePath")
+  // console.log(cosa)
+   
+
+
+  
+
+/*        .selectAll("[inArity=many]")    // NO WORKING. Something wrong when selecting by some attributes
+          .style("stroke", "blue");*/
+
+
 
 // Returning a specif atribute of a variable
 /*d3.select("body")
@@ -1142,4 +1245,3 @@ RouteMap = svgRouteMap.select("g")
 </script>
 
 
-  <script src="parallel.js"></script>

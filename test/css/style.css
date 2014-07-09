@@ -108,7 +108,7 @@ circle:hover {
 
 /*solid path*/
 .edgePath path {
-  stroke: #333;
+  /*stroke: #333;*/
   stroke-width: .8px;
   fill: none;
   pointer-events:all;
@@ -126,6 +126,6 @@ circle:hover {
   fill: none;
 }*/
 
-svg text {
+/*svg text {
   pointer-events: none;
-}
+}*/
