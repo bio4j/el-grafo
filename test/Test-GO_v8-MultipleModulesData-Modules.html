@@ -3,10 +3,14 @@
 <meta charset="utf-8">
 <title>json data to representation</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/colorbrewer.css">
+
 
 <script src="scripts/lib/d3.js" charset="utf-8"></script>
 <script src="scripts/lib/graphlib.js"></script>
 <script src="scripts/lib/dagre-d3.js"></script>
+
+<script src="scripts/lib/colorbrewer.js"></script>
 
 <script src="scripts/alg/topsort.js"></script>
 <script src="scripts/alg/tarjan.js"></script>
@@ -79,7 +83,20 @@ function draw() {
 
   //Complete Domain Model schema:
   url0 = "data/rev_schema_new_ALL.json";
-  var color = d3.scale.category10();
+
+  //Color scheme:
+  // var color = d3.scale.category10();
+  // var color = d3.scale.quantile().range(d3.range(9));
+/*  var color = d3.scale.quantize()
+      // .range(colorbrewer.PiYG[9]);
+      .range(colorbrewer.Dark2);*/
+
+  //TO DEFINE THE COLOR PALETTE:
+  var bio4jColors = ["#FF0000  ","#addd8e","#d9f0a3","#addd8e","#a1dab4","#41ab5d","#0000FF ","#006837","#004529"];
+
+  var color = d3.scale.category10()
+      // .range(colorbrewer.PiYG[9]);
+      .range(bio4jColors);
 
   d3.json(url0, function(json0) {
 /*
@@ -127,7 +144,8 @@ function draw() {
         .attr("cx", function(d, i) { return i*90} )
         .attr("cy", 30 )
         .attr("r", function(d) { return (1 + d.Nvertex + d.Nedges)*1.5 } )
-        .attr("fill", function(d, i) { return color(i); });
+        .attr("fill", function(d, i) { return color(i); })
+        .style("opacity", 0.5);
         // .attr("fill", "teal");
     
     //svg for DEPENDENCIES
@@ -190,6 +208,8 @@ function draw() {
             console.log(d.id);
             url = urlFunction(d.id);
             console.log(url);
+            colorMod = d3.select(this).attr("fill");
+            console.log(colorMod);
             return draw();
 
           });
@@ -330,6 +350,13 @@ d3.json(url, function(json) {
   
   //
 
+
+/*renderinglayout.eachEdge(function(e, value) {
+    console.log(JSON.stringify(value))
+
+});*/
+
+
    renderinglayout.eachNode(function(u, value) {
        console.log("VertexTypes " + u + ": " + JSON.stringify(value));
    });
@@ -467,11 +494,10 @@ d3.json(url, function(json) {
 
 ////////////////////////////////////////////////////////////
 
+//Color-code by module
+d3.selectAll(".node rect")
+    .style("fill", colorMod);
 
-/*text = d3.select("body")
-          .append("p")
-          .text("Dagre-d3 graph representation: '" + module + "' module")
-          .style("text-transform", "uppercase");*/
 
 svgGraph.selectAll("#moduleTitle")
         .remove();
@@ -484,7 +510,7 @@ text = svgGraph.append("text")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
           .attr("font-weight", "bold")
-          .attr("fill", "teal")
+          .attr("fill", colorMod)
           .style("text-anchor", "middle")
           .style("text-transform", "uppercase");
 
@@ -499,7 +525,7 @@ text2 = svgGraph.append("text")
           .attr("font-family", "sans-serif")
           .attr("font-size", "12px")
           .attr("font-weight", "normal")
-          .attr("fill", "teal")
+          .attr("fill", colorMod)
           .style("text-anchor", "middle");
 
 
@@ -859,7 +885,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
 
           // UPDATE to normal status
           d3.selectAll(".node rect")
-             .style("fill", "teal")
+             .style("fill", colorMod)
              .style("opacity", .4)
              .style("stroke", "#999")
              .style("stroke-width", 1);
@@ -903,7 +929,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
                     // console.log(selectingThisId)  
                     selectingThis.selectAll("rect")
                                   .transition(400)
-                                  .style("fill", "orange")
+                                  // .style("fill", "orange")
                                   .style("opacity", .8);         
 
                 }
@@ -954,7 +980,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
           .attr("font-weight", "bold")
-          .attr("fill", "brown")
+          .attr("fill", colorMod)
           .text(function(u) {                
                 return (ParentNode2Label);     
           })
@@ -968,7 +994,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
           .attr("font-family", "sans-serif")
           .attr("font-size", "11px")
           .attr("font-weight", "normal")
-          .attr("fill", "brown")
+          .attr("fill", colorMod)
           .text(function(u) {                
                 if (ParentNode2Properties.length == 0) { 
                   return ("PropertyTypes: none ") ;
@@ -1064,6 +1090,8 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
         d3.selectAll("[outArity=one]")    
         .style("stroke", "blue");
 
+
+
   var arties = d3.selectAll(".edgePath").each( function(d,i) {
     OUTarityInfo = d3.select(this).attr("outArity");
     INarityInfo = d3.select(this).attr("inArity");
@@ -1079,20 +1107,44 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
                     .append()
                     .attr("transform", function(d,i) {
                         "translate(0," + i + ")"
-                      }) 
-                    }*/
+                      }) */
+                    
+
+  // Multiple lines with different tension:
+/*  vis.selectAll("path")
+    .data([0, 0.2, 0.4, 0.6, 0.8, 1])
+  .enter().append("svg:path")
+    .attr("d", function(d) { return line.tension(d)(data); })
+    .style("stroke", d3.interpolateRgb("teal", "lightblue"));
+*/
 
     if (arityInfo == "many-many") {
       var manyMany = d3.select(this);
-      // data = [1,2,3];
+      // console.log(manyMany.node().getTotalLength);
+      // console.log(manyMany);
+
       return manyMany.style("stroke", "blue")
-/*                   // .attr("transform", "translate(0,2)");
-                    .data([1,2,3])
+                    .selectAll("circle")
+                    .data([0,1,2,3])
                     .enter()
-                    .append()
+                    .append("circle")
                     .attr("transform", function(d,i) {
-                        "translate(0," + i + ")"
-                      }) */
+                        "translate(0," + d*2 + ")"
+                      }); 
+
+/*                    .select("url#arrowhead")
+                    .remove();*/                //doesn't work yet
+                   
+
+/*      var pathEl = manyMany.node();
+
+      var pathLength = pathEl.getTotalLength();
+      console.log('path length: ', pathLength);
+
+      var pathPoint = pathEl.getPointAtLength(pathLength*0.8);
+*/
+
+
                     }
 
     if (arityInfo == "many-one") {
@@ -1106,10 +1158,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
       return oneMany.style("stroke", "yellow")
       }
 
-/*    else {
-      var OUTone = d3.select(this);
-      return OUTone.style("stroke", "yellow");
-    }*/
+
   })
 
 /*  var cosa = d3.selectAll(".edgePath").each( function(d,i) {
