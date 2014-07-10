@@ -1,0 +1,184 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>el-grafo INTRO page</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="scripts/lib/d3.js" charset="utf-8"></script>
+<script src="scripts/lib/dagre-d3.js"></script>
+
+<body onLoad="draw0();">
+<h2> el-grafo INTRO page </h2>
+<div id="introModules">
+  <svg id="svgIntroModules">
+  </svg>
+</div>
+
+
+<script>
+
+var introModulesWidth = 800;
+var introModulesHeight = 250;
+
+    //SVG canvas for modules loading
+    svgModules = d3.select("#svgIntroModules")
+                .attr("width", 800)
+                .attr("height", 250);
+    svgModules.append("g")
+                .attr("transform", "translate(40,40)")
+
+
+  titles = ["Bio4j MODULES", "Bio4j DEPENDENCIES"]
+  d3.select("#svgIntroModules")
+        .selectAll("text")
+        .data(titles)
+        .enter()
+        .append("text") 
+        .attr("x", 20)
+        .attr("y", function(d, i) { return 30 + i*150; } )
+        .attr("text-anchor", "left")
+        .text( function(d) { return d; })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "14px");
+
+
+function draw0() {
+
+  //Complete Domain Model schema:
+  url0 = "data/rev_schema_new_ALL_lengths.json";
+
+  //TO DEFINE THE COLOR PALETTE:
+  var bio4jColors = ["#0E6580  ","#68DCFF","#1BCAFF","#587680","#16A2CC","#68DCFF","#0E6580 ","#1BCAFF","#587680"];
+
+  var color = d3.scale.category10()
+      .range(bio4jColors);
+
+  d3.json(url0, function(json0) {
+
+    console.log(json0);
+
+    var newjson0 = json0.map(function(x) {
+      function colorModule(d, i) { return color(i); }
+          return {
+            id: x.label,
+            //To be updated when the scala model is ready finally        
+/*            Nvertex: x.vertexTypes.length,
+            Nedges: x.edgeTypes.length,*/
+
+            //Handy numbers took from https://github.com/bio4j/bio4j/tree/master/src/main/java/com/bio4j/model  
+            Nvertex: x.vertexTypesLength,
+            Nedges: x.edgeTypesLength,
+
+            Dependencies: x.dependencies.length,
+            Color: colorModule(x)
+            };
+        });
+      
+    console.log(newjson0);
+
+////////////////////////////////////////////////////////////
+  
+      //TO DO
+/*      var forcelayoutjson = newjson0.map(function(x) {
+          return {
+            nodes: { module: module, label: x.label, propertyTypes: x.properties },
+            links: { module: module, label: x.label, propertyTypes: x.properties }     
+            };
+        });
+      
+    console.log(newjson0);*/
+    urlForceLayout = "data/rev_schema_new_forceLayout.json";
+
+
+////////////////////////////////////////////////////////////
+
+    // -------> 1_MODULES AND DEPENDENCIES buttons/loading
+
+    //MODULES AND DEPENDENCIES
+    //Filtering between modules and dependencies. For example with circles and rects
+    var shapesToFilter = svgModules.select("g").selectAll("circle")
+                          .data(newjson0)
+                          .enter();
+
+    //svg for MODULES
+    shapesToFilter.append("a")
+        .attr("xlink:href", "Test-GO_v9_Main.html")
+        .append("circle")
+        .filter(function(d) { return d.Dependencies < 1;})
+        .attr("id", function(d) { return d.id; })
+        .attr("cx", function(d, i) { return i*90} )
+        .attr("cy", 30 )
+        .attr("r", function(d) { return (1 + (+d.Nvertex) + (+d.Nedges)) } )
+        .attr("fill", function(d, i) { return color(i); })
+        .style("opacity", 0.5);
+
+
+    //svg for DEPENDENCIES
+    shapesToFilter.append("rect")
+        .filter(function(d) { return d.Dependencies >= 1;})
+        .attr("x", function(d, i) { return 20 + i*100 })
+        .attr("y", 30+140 )
+        .attr("width", 20 )
+        .attr("height", 1.5 );
+
+
+   //Filtering between modules and dependencies
+   textToFilter = svgModules.select("g").selectAll("text")
+                            .data(newjson0)
+                            .enter();
+    //texts for MODULES
+    textToFilter.append("text")
+        .filter(function(d) { return d.Dependencies < 1;})
+        .text(function(d) {
+              return d.id;
+            })
+        .attr("x", function(d,i) { return i*90} )
+        .attr("text-anchor", "middle")
+        .attr("y", 65 )
+        .attr("font-size", "11px");
+    
+    //texts for DEPENDENCIES
+    textToFilter.append("text")
+        .filter(function(d) { return d.Dependencies >= 1;})
+        .text(function(d) {
+              return d.id;
+            })
+        .attr("x", function(d,i) { return 20 + i*100 +10; } )
+        .attr("text-anchor", "middle")
+        .attr("y", 55+140 )
+        .attr("font-size", "11px");
+
+
+ //Function for each module url:
+    var urlFunction = function(d) {
+      return ("data/rev_" + d + ".json")
+    };
+
+
+    //Onclick on each Module, highlight it, define the url path and run the dagre-d3 lib
+    svgModules.select("g").selectAll("circle")
+        .on("click", function(d) {
+            svgModules.select("g").selectAll("circle")
+              .style("stroke-width", 0);
+
+            d3.select(this)
+              .style("stroke", d3.select(this).attr("fill"))
+              .style("stroke-width", 10)
+              .style("stroke-opacity", .3);
+            console.log(d.id);
+            url = urlFunction(d.id);
+            console.log(url);
+            colorMod = d3.select(this).attr("fill");
+            console.log(colorMod);
+            return draw();
+
+          });
+
+
+})
+}
+
+
+</script>
+
+

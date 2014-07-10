@@ -25,6 +25,29 @@
 <script src="scripts/alg/prim.js"></script>
 
 <body onLoad="draw();">
+<h2> el-grafo MAIN page </h2>
+
+<div id="mainModules">
+  <svg id="svgMainModules">
+  </svg>
+  <h4> main Modules </h4>
+</div>
+
+<div id="mainGraph">
+  <svg id="svgMainGraph">
+  </svg>
+    <h4> main Graph </h4>
+</div>
+
+<div id="mainRoute">
+  <svg id="svgMainRoute">
+  </svg>
+</div>
+
+<!-- <div id="mainLocalView">
+  <svg id="svgMainLocalView">
+  </svg>
+</div> -->
 
 
 <!-- <div id="tooltip" class="hidden">
@@ -33,39 +56,54 @@
 </div> -->
 
 <script>
-var GraphWidth = 650;
-var GraphHeight = 350;
 
-    //SVG canvas for modules loading
-    svgModules = d3.select("body")
-                .append("svg")
-                .attr("id", "svg-modules")
-                .attr("width", 800)
-                .attr("height", 250);
-    svgModules.append("g")
-                .attr("transform", "translate(40,40)");
+//SVG canvas for modules loading
+var mainModulesWidth = 800;
+var mainModulesHeight = 250;
 
-    //SVG canvas for GRAPH representation
-    svgGraph = d3.select("body")
-                .append("svg")
-                .attr("id", "svg-dagred3graph")
-                .attr("width", GraphWidth)
-                .attr("height", GraphHeight);
-    svgGraph.append("g")
-                // .attr("transform", "translate(20,20)");
+  svgModules = d3.select("#svgMainModules")
+              .attr("width", mainModulesWidth)
+              .attr("height", mainModulesHeight);
+  svgModules.append("g")
+              .attr("transform", "translate(40,40)");
 
-    //SVG canvas for ROUTEMAP loading
-    svgRouteMap = d3.select("body")
-                // .append("g")
-                .append("svg")
-                .attr("id", "svg-routemap")
-                .attr("width", 250)
-                .attr("height", 100);
-                // .attr("transform", "translate(20,0)");
 
+//SVG canvas for GRAPH representation
+var mainGraphWidth = 650;
+var mainGraphHeight = 350;
+      
+  svgGraph = d3.select("#svgMainGraph")
+              .attr("width", mainGraphWidth)
+              .attr("height", mainGraphHeight);
+  svgGraph.append("g")
+              // .attr("transform", "translate(20,20)");
+
+
+//SVG canvas for ROUTEMAP loading
+var mainRouteWidth = 300;
+var mainRouteHeight = 200;
+
+  svgRouteMap = d3.select("#svgMainRoute")
+              // .append("g")
+              .attr("width", mainRouteWidth)
+              .attr("height", mainRouteHeight);
+              // .attr("transform", "translate(20,0)");
+
+
+//SVG canvas for LOCAL VIEW loading
+/*var mainLocalViewWidth = 250;
+var mainLocalViewHeight = 100;
+
+  svgLocalView = d3.select("#svgMainLocalView")
+            .attr("width", mainLocalViewWidth)
+            .attr("height", mainLocalViewHeight);
+  svgLocalview.append("g")
+            // .attr("transform", "translate(20,20)");
+*/
+ ////////////////
 
   titles = ["Bio4j MODULES", "Bio4j DEPENDENCIES"]
-  d3.select("#svg-modules")
+  d3.select("#svgMainModules")
         .selectAll("text")
         .data(titles)
         .enter()
@@ -119,7 +157,6 @@ function draw() {
             Nvertex: x.vertexTypes.length,
             Nedges: x.edgeTypes.length,
             Dependencies: x.dependencies.length,
-            // Color: function(d, i) { return color(i); }
             Color: colorModule(x)
             };
         });
@@ -503,8 +540,8 @@ svgGraph.selectAll("#moduleTitle")
 
 text = svgGraph.append("text")
           .attr("id", "moduleTitle")
-          .attr("x", GraphWidth/2)
-          .attr("y", GraphHeight - 30)
+          .attr("x", mainGraphWidth/2)
+          .attr("y", mainGraphHeight - 30)
           .text("Dagre-d3 graph representation: '" + module + "' module")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
@@ -518,8 +555,8 @@ svgGraph.selectAll("#moduleInfo")
 
 text2 = svgGraph.append("text")
           .attr("id", "moduleInfo")
-          .attr("x", GraphWidth/2)
-          .attr("y", GraphHeight - 15)
+          .attr("x", mainGraphWidth/2)
+          .attr("y", mainGraphHeight - 15)
           .text(graph.order() + " vertex + " + graph.size() + " edges")
           .attr("font-family", "sans-serif")
           .attr("font-size", "12px")
@@ -763,12 +800,12 @@ text2 = svgGraph.append("text")
         svgGraph.append("text")
               .attr("id", "tooltip")
               .attr("x", xPosition + 50)
-              .attr("y", yPosition -30)
+              .attr("y", yPosition -20)
               .attr("text-anchor", "middle")
               .attr("font-family", "sans-serif")
               .attr("font-size", "11px")
               .attr("font-weight", "bold")
-              .attr("fill", "ED553B")
+              .attr("fill", "lightgrey")
               .text(function(u) {                
                     return "Click to see '" + ParentNodeID + "'' Neighbor vertex";     
               });
@@ -854,7 +891,7 @@ RouteMap = svgRouteMap.select("g")
 
 var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsVertex"];
 
-    var textFeatures = d3.select("#svg-routemap")
+    var textFeatures = d3.select("#svgMainRoute")
           .selectAll("text")
           .data(GraphFeatures)
           .enter()
@@ -1284,11 +1321,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
       });   
   });
   }
-/*
-//Changing graph position!
 
-  d3.select("#svg-dagred3graph").select("g.edgePaths")
-    .attr("transform", "translate(50,20)");*/
 
 </script>
 
