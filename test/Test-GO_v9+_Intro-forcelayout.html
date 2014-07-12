@@ -26,18 +26,17 @@ svg text {
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
-<script src='http://code.jquery.com/jquery-1.8.3.js'></script>
-<script src="http://www.trendskitchens.co.nz/jquery/contextmenu/jquery.contextmenu.r2.js"></script>
-
-
 <script>
+
+//TO DEFINE THE COLOR PALETTE:
+var bio4jColors = ["#1BCAFF","#587680","#16A2CC","#68DCFF","#0E6580 ","#1BCAFF","#587680"];
+
+var color = d3.scale.category10()
+    .range(bio4jColors);
 
 //Width and height
 var w = 960,
     h = 700;
-
-//Escala de colores por defecto hasta 20 elementos
-var color = d3.scale.category10();
 
 //Force layout
 var force = d3.layout.force()
@@ -52,8 +51,8 @@ var svg = d3.select("body")
     .attr("width", w)
     .attr("height", h);
 
-//Uploading json file
-d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
+  //Uploading json file
+  d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
   var nodes = graph.nodes.slice(),
       links = [],
       bilinks = [];
@@ -72,12 +71,7 @@ d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
       .links(links)
       .start();
 
-  //Draw LINKS as PATHS    
-  var link = svg.selectAll(".link")
-      .data(bilinks)
-      .enter()
-      .append("path")
-      .attr("class", "link");
+
 
  //Draw NODES as CIRCLES    
   var node = svg.selectAll(".node")
@@ -87,12 +81,22 @@ d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
       .attr("class", "node")
 
       // .attr("r", function(d) { return ((+d.vertexTypesLength) + (+d.edgeTypesLength)); })
-      .attr("r", function(d) { return (+d.vertexTypesLength)})
+      .attr("r", function(d) { return 5 +(+d.vertexTypesLength)})
 
-      .style("fill", function(d) { return color(d.source); })
+      .style("fill", function(d, i) { return color(i); })
+      .style("opacity", .5)
 /*      .on("click", click)
       .on("dblclick", dblclick)*/
       .call(force.drag);
+
+// console.log(function(graph.nodes) return {vertexTypesLength(1)});
+
+  //Draw LINKS as PATHS    
+  var link = svg.selectAll(".link")
+      .data(bilinks)
+      .enter()
+      .append("path")
+      .attr("class", "link");
 
   //Labels vertex
   var labelsVertex = svg.selectAll("text1")
@@ -108,10 +112,9 @@ d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
          .attr("fill", "black");
          //.remove();
 
-console.log(graph.links);
    
   //Labels edges
-      var labelsEdges = svg.selectAll("text3")
+  var labelsEdges = svg.selectAll("text3")
          .data(graph.links)
          .enter()
          .append("text")
@@ -183,33 +186,27 @@ function dblclick() {
 
 
 
-// CONTEXT MENU!!
+//////////////////////////////////////////////////////
 
-   //right click menu items
-    $("circle").contextMenu('cntxtMenu',
-    {
-        itemStyle:
-        {
-            fontFamily : 'sans-serif',
-            fontSize: '12px'
-        },
-        bindings:
-        {
-            'open': function(t) {
-                alert(t.__data__.name);
-            },
-            'email': function(t) {
-                alert('Trigger was '+t.__data__.name+'\nAction was Email');
-            },
-            'save': function(t) {
-                alert('Trigger was '+t.__data__.name+'\nAction was Save');
-            },
-            'delete': function(t) {
-                $('g.node').remove();
-            }
-        }
-    });
+//ConvexHull
+/*var groupPath = function(d) {
+    return "M" + 
+      d3.geom.hull(d.values.map(function(i) { return [i.x, i.y]; }))
+        .join("L")
+    + "Z";
+};
 
+  svg.selectAll("path")
+    .data(graph)
+      .attr("d", groupPath)
+      .enter().insert("path", "circle")
+      .style("fill", "red")
+      .style("stroke", "red")
+      .style("stroke-width", 20)
+      .style("stroke-linejoin", "round")
+      .style("opacity", .2)
+      .attr("d", groupPath);*/
+/*});*/
 
 });
 

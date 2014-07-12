@@ -92,7 +92,7 @@ var mainGraphHeight = 350;
 
 //SVG canvas for ROUTEMAP loading
 var mainRouteWidth = 300;
-var mainRouteHeight = 200;
+var mainRouteHeight = 100;
 
   svgRouteMap = d3.select("#svgMainRoute")
               // .append("g")
@@ -553,7 +553,7 @@ text = svgGraph.append("text")
           .attr("id", "moduleTitle")
           .attr("x", mainGraphWidth/2)
           .attr("y", mainGraphHeight - 30)
-          .text("Dagre-d3 graph representation: '" + module + "' module")
+          .text("Graph representation: '" + module + "' module")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
           .attr("font-weight", "bold")
@@ -811,12 +811,12 @@ text2 = svgGraph.append("text")
         svgGraph.append("text")
               .attr("id", "tooltip")
               .attr("x", xPosition + 50)
-              .attr("y", yPosition -20)
+              .attr("y", yPosition -10)
               .attr("text-anchor", "middle")
               .attr("font-family", "sans-serif")
               .attr("font-size", "11px")
-              .attr("font-weight", "bold")
-              .attr("fill", "lightgrey")
+              .attr("font-weight", "normal")
+              .attr("fill", "#ED553B")
               .text(function(u) {                
                     return "Click to see '" + ParentNodeID + "'' Neighbor vertex";     
               });
@@ -899,7 +899,8 @@ RouteMap = svgRouteMap.select("g")
                             .attr("font-size", "14px");*/
 
 
-var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsVertex"];
+// Selecting from a list of graphlib options to interact
+/*var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsVertex"];
 
     var textFeatures = d3.select("#svgMainRoute")
           .selectAll("text")
@@ -920,7 +921,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
               console.log(myArray);
  
               // return Options();
-          });
+          });*/
           
 
   // function Options() {
@@ -942,7 +943,7 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
 
           // HIGHLIGHT the vertex clicked
           d3.select(this)
-            .style("stroke", "ED553B")
+            .style("stroke", "#ED553B")
             .style("stroke-width", 4);
 
 
@@ -1049,7 +1050,30 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
                   return ("PropertyTypes:  " + ParentNode2Properties) ;
                 };
           });
+
+
+
+        ////////////////////////////////////
+
+
+
+        //PATH DRAWING STARTING
+
+/*        d3.selectAll("selectedEdge")
+          .style("fill", "none");*/
+
+/*        var d = d3.select(this);
+        // console.log(function(u, value) {return graph.inEdges(d)})
+        var findingEdgesId = graph.inEdges(u);
+        d3.select("#"+ findingEdgesId)
+          .attr("class", "selectedEdge");
+          // .style("stroke-width", "4px")*/
+
         });
+
+
+
+
  // }
 
 /*    d3.selectAll(".node rect")
@@ -1105,8 +1129,8 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
           .selectAll("rect")
           .style("fill", "brown");*/
 
-    d3.selectAll(".edgePaths")
-      .style("stroke", "green");
+/*    d3.selectAll(".edgePaths")
+      .style("stroke", "green");*/
 
 /*    d3.selectAll("[label=GoSlim]")
       // .selectAll("rect")
@@ -1133,8 +1157,8 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
           .style("stroke", "blue");*/
 
       // d3.selectAll(".edgePaths")
-        d3.selectAll("[outArity=one]")    
-        .style("stroke", "blue");
+/*        d3.selectAll("[outArity=one]")    
+        .style("stroke", "blue");*/
 
 
 ////////////////////////////
@@ -1171,14 +1195,16 @@ var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsV
       // console.log(manyMany.node().getTotalLength);
       // console.log(manyMany);
 
-      return manyMany.style("stroke", colorMod)
-                    .selectAll("circle")
+      return manyMany.style("stroke", colorMod);
+                    // .style("stroke-width", "2");
+
+/*                    .selectAll("circle")
                     .data([0,1,2,3])
                     .enter()
                     .append("circle")
                     .attr("transform", function(d,i) {
                         "translate(0," + d*2 + ")"
-                      }); 
+                      }); */
 
 /*                    .select("url#arrowhead")
                     .remove();*/                //doesn't work yet

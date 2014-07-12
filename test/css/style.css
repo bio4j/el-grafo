@@ -21,6 +21,15 @@
   line-height: 14px;
 }*/
 
+/*from Aux2*/
+.link {
+  fill: none;
+  stroke: grey;
+  stroke-dasharray: 2, 3;
+  stroke-width: 1;
+}
+
+
 svg {
   border: 1px solid #E8E8E8     ;
   overflow: hidden;
@@ -28,10 +37,24 @@ svg {
 
 /*DIV-SVG Intro page*/
 #introModules {
-  /*background: teal;*/
-  /*color: teal;*/
-  margin: 100px 0 0 100px;
+  position:absolute;
+  left: 100px;
+  top: 100px;
+  /*margin: 100px 0 0 100px;*/
 }
+
+#introModulesAux1 {
+  position:absolute;
+  left: 400px;
+  top: 350px;
+}
+
+#introModulesAux2 {
+  position:absolute;
+  left: 100px;
+  top: 350px;
+}
+
 
 
 /*DIV-SVG Main page*/
@@ -128,6 +151,12 @@ circle:hover {
   fill: none;
   /*fill: #fff;*/
   pointer-events: none;
+}
+
+.selectedEdge path {
+  stroke-width: 3px;
+  fill:none;
+  opacity: .2;
 }
 
 /*dots path*/
