@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Convex Hull</title>
+<style>
+
+rect {
+  fill: none;
+  pointer-events: all;
+}
+
+.hull {
+  fill: steelblue;
+  stroke: steelblue;
+  stroke-width: 32px;
+  stroke-linejoin: round;
+}
+
+circle {
+  fill: white;
+  stroke: black;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+/*var introModulesWidthAux2 = 900;
+var introModulesHeightAux2 = 300;
+*/
+var randomX7 = d3.random.normal(200, 50),
+        randomY7 = d3.random.normal(200, 50),
+    
+    vertices7 = d3.range(50).map(function() { return [randomX7(), randomY7()]; });
+    
+    console.log(vertices7);
+
+
+/*var randomX = d3.random.normal(width / 2, 60),
+    randomY = d3.random.normal(height / 2, 60),
+    vertices = d3.range(100).map(function() { return [randomX(), randomY()]; });*/
+
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+/*    .on("mousemove", function() { vertices[0] = d3.mouse(this); redraw(); })
+    .on("click", function() { vertices.push(d3.mouse(this)); redraw(); });*/
+
+
+var hull = svg.append("path")
+    .attr("class", "hull");
+
+var circle = svg.selectAll("circle");
+
+redraw();
+
+function redraw() {
+  hull.datum(d3.geom.hull(vertices7)).attr("d", function(d) { return "M" + d.join("L") + "Z"; });
+  circle = circle.data(vertices7);
+  circle.enter().append("circle").attr("r", 3);
+  circle.attr("transform", function(d) { return "translate(" + d + ")"; });
+}
+
+
+/*     hulling();
+
+    var randomX7 = d3.random.normal(200, 50),
+        randomY7 = d3.random.normal(200, 50),
+        
+        vertices7 = d3.range(50).map(function() { return [randomX7(), randomY7()]; });
+    
+    console.log(vertices7);
+
+        var hull = svgModulesAux2.append("path")
+          .attr("class", "hull");
+  
+    function hulling() {
+      hull(d3.geom.hull(vertices7)).attr("d", function(d) { return "M" + d.join("L") + "Z"; });
+    }*/
+
+    
+</script>

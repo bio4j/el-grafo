@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Convex Hull</title>
+<style>
+
+rect {
+  fill: none;
+  pointer-events: all;
+}
+
+.hull {
+  fill: steelblue;
+  stroke: steelblue;
+  stroke-width: 32px;
+  stroke-linejoin: round;
+}
+
+circle {
+  fill: white;
+  stroke: black;
+  stroke-width: 1.5px;
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 960,
+    height = 500;
+
+
+
+
+
+    var randomX7 = d3.random.normal(200, 50),
+        randomY7 = d3.random.normal(200, 50),
+        
+        vertices7 = d3.range(50).map(function() { return [randomX7(), randomY7()]; });
+    
+    console.log(vertices7);
+
+  var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+
+  var hull = svg.append("path")
+                .attr("class", "hull");
+
+var circle = svg.selectAll("circle");
+
+
+    draw();
+
+    function draw() {
+      hull(d3.geom.hull(vertices7)).attr("d", function(d) { return "M" + d.join("L") + "Z"; })
+      circle = circle.data(vertices7);
+      circle.enter().append("circle").attr("r", 3);
+      circle.attr("transform", function(d) { return "translate(" + d + ")"; });
+    }
+
+
+
+
+
+
+
+</script>
+

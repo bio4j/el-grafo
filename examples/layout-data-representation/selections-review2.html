@@ -150,7 +150,7 @@ d3.json("data/GO.json", function(jsonGO) {
 								return (i * 75) + 25;
 							})
 							.attr("r", function(d, i) {
-								return (i * 10);
+								return (4 +i * 6);
 							})
 							.attr("class", function(d) {
 								return d.value.inArity
@@ -169,6 +169,29 @@ d3.json("data/GO.json", function(jsonGO) {
              });
 
 
+	circulito = d3.select("circle");
+	
+	circulito.style("fill", "red");
+
+  	theData = [1, 2, 3];
+
+     circulito
+        .data(theData)
+        .enter()
+        .append("circle")
+        .attr("class", "lalala")
+		.attr("cx", (+circulito.attr("cx") + (+5)))
+		.attr("cy", (+circulito.attr("cy") + (+5)))
+		.attr("r", +circulito.attr("r"));
+/*        .attr("transform", function(d,i) {
+                        "translate(0," + i*4 + ")"
+        });
+*/	
+	console.log(circulito);
+
+	ofu = d3.selectAll(".lalala");
+
+	svg.append(ofu);
 
 
   	});

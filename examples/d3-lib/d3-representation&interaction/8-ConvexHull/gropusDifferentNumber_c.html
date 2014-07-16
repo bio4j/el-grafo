@@ -38,11 +38,11 @@
           Nodes = function(num, id, name){
             return d3.range(num).map(function(d){
               return {
-                id : id
-                , x : Math.random() * w
-                , y : Math.random() * h
-                , charge : -10
-                , name : name
+                id : id, 
+                x : Math.random() * w,
+                y : Math.random() * h,
+                charge : -10,
+                name : name,
               }
             })
           },
@@ -59,11 +59,19 @@
           })
         },
         
-        fill = function(d){
+
+      //TO DEFINE THE COLOR PALETTE:
+      bio4jColors = ["#0E6580","#68DCFF","#1BCAFF","#587680","#16A2CC","#68DCFF","#0E6580 ","#1BCAFF","#587680"],
+
+      color = d3.scale.category10()
+                     .range(bio4jColors),
+
+
+/*        fill = function(d){
           if(d) return 'red'
           else return 'blue'
         }, 
-
+*/
 
       nodes1 = Nodes(50, 0, 'node-1'), 
       nodes2 = Nodes(3, 1, 'node-2'),
@@ -72,16 +80,16 @@
       nodes5 = Nodes(2, 4, 'node-5'),
 
 
-      foci1 = Foci(w / 2, h / 2, 'foci-1')
-      foci2 = Foci(w / 2 + 100, h / 2, 'foci-2')
-      foci3 = Foci(w / 2 + 200, h / 2, 'foci-3')
-      foci4 = Foci(w / 2 + 300, h / 2, 'foci-4')
-      foci5 = Foci(w / 2 + 400, h / 2, 'foci-5')
+      foci1 = Foci(w / 2, h / 2, 'foci-1'),
+      foci2 = Foci(w / 2 + 500, h / 2, 'foci-2'),
+      foci3 = Foci(w / 2 + 100, h / 2, 'foci-3'),
+      foci4 = Foci(w / 2 + 150, h / 2, 'foci-4'),
+      foci5 = Foci(w / 2 + 200, h / 2, 'foci-5'),
       
-      links1 = Links(nodes1, foci1)
-      links2 = Links(nodes2, foci2)
-      links3 = Links(nodes3, foci3)
-      links4 = Links(nodes4, foci4)
+      links1 = Links(nodes1, foci1),
+      links2 = Links(nodes2, foci2),
+      links3 = Links(nodes3, foci3),
+      links4 = Links(nodes4, foci4),
       links5 = Links(nodes5, foci5)
 
       
@@ -97,15 +105,19 @@
         .data(all)
         .enter().append('circle')
         .attr({
-          cx: function(d) { return d.x }
-          , cy: function(d){ return d.y }
-          , r: 2
-          , 'class': function(d){ return d.name }
-        }).style({
+          cx: function(d) { return d.x },
+          cy: function(d){ return d.y },
+            r: 2,
+          'class': function(d){ return d.name }
+        })
+          .style("fill", function(d) { return color(d.id) })
+
+
+/*        .style({
           fill: function(d){ return fill(d.id) }
           , stroke: 'while'
           , 'stroke-width': 1
-        })
+        })*/
 
       force.start()
 

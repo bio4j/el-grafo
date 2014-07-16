@@ -71,6 +71,7 @@
 //SVG canvas for modules loading
 var mainModulesWidth = 800;
 var mainModulesHeight = 250;
+var distance = 0;
 
   svgModules = d3.select("#svgMainModules")
               .attr("width", mainModulesWidth)
@@ -87,7 +88,7 @@ var mainGraphHeight = 350;
               .attr("width", mainGraphWidth)
               .attr("height", mainGraphHeight);
   svgGraph.append("g")
-              // .attr("transform", "translate(20,20)");
+              .attr("transform", "translate(20,20)");
 
 
 //SVG canvas for ROUTEMAP loading
@@ -231,8 +232,6 @@ function draw() {
         .attr("font-size", "11px");
 
  
-
-
 //////////////
 
 
@@ -352,7 +351,80 @@ d3.json(url, function(json) {
     .attr("d", function(d) { return line.tension(d)(data); })
     .style("stroke", d3.interpolateRgb("teal", "lightblue"));
 */
+ 
 
+
+
+////////////////////
+
+// Trying to alter the edgepath function
+
+/* var DrawEdgePaths = function(g, root) {
+                var svgEdgePaths = root
+                    .selectAll('g.edgePath')
+                    .classed('enter', false)
+                    .data(g.edges(), function(e) {
+                        return e;
+                    });
+
+                svgEdgePaths
+                    .enter()
+                    .append('g')
+                    .attr('class', 'edgePath enter')
+                    .append('path')
+                    .style('opacity', 0)
+                    .attr('marker-end', 'url(#arrowhead)');
+
+                this._transition(svgEdgePaths.exit())
+                    .style('opacity', 0)
+                    .remove();
+
+                return svgEdgePaths;
+            };
+
+                   
+////////
+
+ function defaultPositionEdgePaths(g, svgEdgePaths) {
+                var interpolate = this._edgeInterpolate,
+                    tension = this._edgeTension;
+
+                function calcPoints(e) {
+                    var value = g.edge(e);
+                    var source = g.node(g.incidentNodes(e)[0]);
+                    var target = g.node(g.incidentNodes(e)[1]);
+                    var points = value.points.slice();
+
+
+
+                    var p0 = points.length === 0 ? target : points[0];
+                    var p1 = points.length === 0 ? source : points[points.length - 1];
+
+                    points.unshift(intersectRect(source, p0));
+                    // TODO: use bpodgursky's shortening algorithm here
+                    points.push(intersectRect(target, p1));
+
+                    return d3.svg.line()
+                        .x(function(d) {
+                            return (d.x + 20);
+                        })
+                        .y(function(d) {
+                            return d.y;
+                        })
+                        .interpolate(interpolate)
+                        .tension(tension)
+                    (points);
+                }
+
+                svgEdgePaths.filter('.enter').selectAll('path')
+                    .attr('d', calcPoints);
+
+                this._transition(svgEdgePaths.selectAll('path'))
+                    .attr('d', calcPoints)
+                    .style('opacity', 1);
+            }*/
+
+/////////////////////////
   
   //Configuring the layout:
   var layout = dagreD3.layout()
@@ -364,6 +436,8 @@ d3.json(url, function(json) {
   
   //Configuring the renderer-original:
   var renderinglayout = renderer.layout(layout)
+              // .data([0,1])
+              // .edgeTension(function(d,i) {return (i*.5)})
               // .edgeTension(.5)
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
               // .transition(500)
@@ -373,7 +447,7 @@ d3.json(url, function(json) {
   hGraph = renderinglayout.graph().height;
 
   svgGraph.select("g")
-          .attr("transform", "translate(20,20)"); 
+          .attr("transform", "translate(distance,distance)"); 
 
 
 /*  var transform = d3.transform()
@@ -457,7 +531,6 @@ d3.json(url, function(json) {
       ;
 
     //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
-
 
 
 
@@ -1066,7 +1139,6 @@ RouteMap = svgRouteMap.select("g")
         // console.log(function(u, value) {return graph.inEdges(d)})
         var findingEdgesId = graph.inEdges(u);
         d3.select("#"+ findingEdgesId)
-          .transition(500)
           .attr("class", "selectedEdge");
           // .style("stroke-width", "4px")
 
@@ -1121,9 +1193,14 @@ RouteMap = svgRouteMap.select("g")
                   .attr("width", (+ww + 20))
          });*/
 
+
+
+
+
     d3.selectAll(".edgePath path")
          .on("click", function(e, u, v, value) {
-             alert("Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
+             alert("hola" + e[0] +
+              "Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
          })
 
 /*    d3.selectAll("[id=GoTerm]")
@@ -1170,6 +1247,9 @@ RouteMap = svgRouteMap.select("g")
     INarityInfo = d3.select(this).attr("inArity");
     arityInfo = OUTarityInfo + "-" + INarityInfo;
     console.log(arityInfo);
+
+    var offset = 2.5;
+
 /*    if (OUTarityInfo == "many") {
       var OUTmany = d3.select(this);
       // data = [1,2,3];
@@ -1193,10 +1273,145 @@ RouteMap = svgRouteMap.select("g")
 
     if (arityInfo == "many-many") {
       var manyMany = d3.select(this);
+      // console.log(manyMany);
+
       // console.log(manyMany.node().getTotalLength);
       // console.log(manyMany);
 
-      return manyMany.style("stroke", colorMod);
+  /*    return manyMany.style("stroke", colorMod)
+                      .each( function(d, i) {
+                            allPath = d3.select(this);     
+                            allPathData = allPath.selectAll("path").attr("d");
+                            // console.log(allPathData);
+                            return lalala()
+                    })
+
+      var example = "M54.97305389221557,150.25L46.31837574850299,167.1520833333333C37.663697604790414,184.05416666666665,20.354341317365268,217.8583333333333,21.961551896207585,234.76041666666663C23.5687624750499,251.66249999999997,44.09253992015968,251.66249999999997,69.60381736526946,251.66249999999997C95.11509481037925,251.66249999999997,125.61387225548901,251.66249999999997,127.95775948103793,234.76041666666663C130.30164670658684,217.8583333333333,104.49064371257485,184.05416666666665,91.58514221556887,167.1520833333333L78.67964071856288,150.25"
+      
+      function lalala() {
+            svgGraph.append("path")
+                        // .data(example)
+                        // .enter()
+                        // .attr("d", function(d) { return d} )
+                        .attr("d", "M54.97305389221557,150.25L46.31837574850299,167.1520833333333C37.663697604790414,184.05416666666665,20.354341317365268,217.8583333333333,21.961551896207585,234.76041666666663C23.5687624750499,251.66249999999997,44.09253992015968,251.66249999999997,69.60381736526946,251.66249999999997C95.11509481037925,251.66249999999997,125.61387225548901,251.66249999999997,127.95775948103793,234.76041666666663C130.30164670658684,217.8583333333333,104.49064371257485,184.05416666666665,91.58514221556887,167.1520833333333L78.67964071856288,150.25")
+                        .attr("transform", "translate(0,3)")
+                        .style("stroke-width", .3)
+                        .attr("id", "extraa")
+                        .style("stroke", colorMod)
+                        .style("fill", "none")
+                        .style("fill", "none"); 
+            }*/
+
+    return manyMany.style("stroke", colorMod)
+                      .each( function(d, i) {
+                            allPath = d3.select(this);     
+                            allPathData = allPath.selectAll("path").attr("d");
+                            // console.log(allPathData);
+                            return svgGraph.append("path")
+                        // .data(example)
+                        // .enter()
+                        // .attr("d", function(d) { return d} )
+                        .attr("d", allPathData)
+                        .attr("transform", "translate(0,2.5)")
+                        .style("stroke-width", .3)
+                        .attr("class", "manymanyOuter")
+                        .style("stroke", colorMod)
+                        .style("fill", "none")
+                        .style("fill", "none"),
+
+                        svgGraph.append("path")
+                        // .data(example)
+                        // .enter()
+                        // .attr("d", function(d) { return d} )
+                        .attr("d", allPathData)
+                        .attr("transform", "translate(0,-2.5)")
+                        .style("stroke-width", .3)
+                        .attr("class", "manymanyOuter")
+                        .style("stroke", colorMod)
+                        .style("fill", "none")
+                        .style("fill", "none"),
+                    
+
+                        svgGraph.append("path")
+                        // .data(example)
+                        // .enter()
+                        // .attr("d", function(d) { return d} )
+                        .attr("d", allPathData)
+                        .style("stroke-width", .3)
+                        .attr("class", "manymanyIn")
+                        .style("stroke", colorMod)
+                        .style("fill", "none")
+                        .style("fill", "none"),
+                    
+
+                   manyMany.remove();
+              })    
+
+     /* d3.selectAll(manymany)
+        .data([0,1,2])
+        .enter()
+        .attr("transform", function(d,i) {
+                        "translate(0," + i*4 + ")"
+                      }); */
+
+
+
+     // console.log(graph.node(graph.incidentNodes(e)[0]));
+
+       // console.log(d3.select("_8").selectAll("path").attr("d"));
+
+      /* tooma = d3.selectAll("path").attr("d");
+       console.log(tooma);*/
+
+        //Selecting d info of edgepaths
+      /*    d3.selectAll("path").each( function(d, i) {
+              allPathData = d3.select(this).attr("d");     
+              console.log(allPathData);
+              allPathData.selectAll("")
+              // console.log(allPathData.length)
+              // return drawPath()
+              // var dPath8 = d3.select("_8").attr("d");   
+          });*/
+       
+    
+    }
+
+        //Selecting d info of edgepaths
+          /*d3.selectAll(".edgePath").each( function(d, i) {
+              allPath = d3.select(this);     
+              // console.log(allPath);
+              allPathData = allPath.selectAll("path").attr("d");
+              // console.log(allPathDataD)
+              // path8 = allPath.select("_8").selectAll("path").attr("d");
+              // console.log(path8);
+              // console.log(allPathData.length)
+              // return drawPath()
+              // var dPath8 = d3.select("_8").attr("d");   
+          });
+*/
+      /*function drawPath() {
+      svgModules.append("path")
+                  .data(allPathData)
+                  .enter()
+                  .attr("d", function(d) { return d} )
+                  .style("stroke-width", 1)
+                  .style("stroke", "red")
+                  .style("fill", "none")
+                  .style("fill", "none"); 
+      }
+
+      // var edgeData = [  ];
+
+
+
+
+
+
+        // .attr("transform", "translate(0,5)");
+/*            .attr("transform", function(d,i) {
+                        "translate(0," + i*2 + ")"
+                      });*/
+    
                     // .style("stroke-width", "2");
 
 /*                    .selectAll("circle")
@@ -1220,18 +1435,96 @@ RouteMap = svgRouteMap.select("g")
 */
 
 
-                    }
+    
 
     if (arityInfo == "many-one") {
       var manyOne = d3.select(this);
       return manyOne.style("stroke", "green")
-      }
+                    .each( function(d, i) {
+                          allPath = d3.select(this);     
+                          allPathData = allPath.selectAll("path").attr("d");
+                          return svgGraph.append("path")
+                                        .attr("d", allPathData)
+                                        .attr("transform", "translate(0,3)")
+                                        .style("stroke-width", .3)
+                                        .attr("class", "manyoneOuter")
+                                        .style("stroke", "green")
+                                        .style("fill", "none")
+                                        .style("fill", "none"),
+
+                                svgGraph.append("path")
+                                        .attr("d", allPathData)
+                                        .attr("transform", "translate(0,-3)")
+                                        .style("stroke-width", .3)
+                                        .attr("class", "manyoneOuter")
+                                        .style("stroke", "green")
+                                        .style("fill", "none")
+                                        .style("fill", "none");
+                                })
+                                }
     
 
     if (arityInfo == "one-many") {
       var oneMany = d3.select(this);
       return oneMany.style("stroke", "brown")
-      }
+                    .each( function(d, i) {
+                          allPath = d3.select(this);     
+                          allPathData = allPath.selectAll("path").attr("d");
+                          console.log(allPathData);
+
+                          //TO DO: A function that generate those modified paths!!
+                          var SubontolyPath = "M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+
+                          //Case MANY-ONE
+                          var SubontolyPathDown = "M101,118.2109375L110.86249999999998,113.82978515624998C120.725,109.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+
+                          var SubontolyPathUp = "M101,112.2109375L110.86249999999998,107.82978515624998C120.725,103.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+
+                          //Case OONE-MANY
+                          var SubontolyPathDown = "M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,91.36233723958333L207,91.25";
+
+                          var SubontolyPathUp = "M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,85.36233723958333L207,85.25";
+
+
+                          // var SubontolyPathDown = "M101,118.2109375L110.86249999999998,113.82978515624998C120.725,109.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+
+                          // var SubontolyPathUp = "M101,(115.2109375 + offset), L110.86249999999998,107.82978515624998C120.725,103.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+
+                          return svgGraph.append("path")
+                                        .attr("d", SubontolyPathDown)
+                                        // .attr("transform", "translate(0,3)")
+                                        .style("stroke-width", .5)
+                                        .attr("class", "onemanyOuter")
+                                        .style("stroke", "brown")
+                                        .style("fill", "none")
+                                        .style("fill", "none"),
+
+                                svgGraph.append("path")
+                                        .attr("d", SubontolyPathUp)
+                                        // .attr("transform", "translate(0,-3)")
+                                        .style("stroke-width", .3)
+                                        .attr("class", "onemanyOuter")
+                                        .style("stroke", "brown")
+                                        .style("fill", "none")
+                                        .style("fill", "none"),
+
+        
+                                  svgGraph.append("path")
+                                  // .data(example)
+                                  // .enter()
+                                  // .attr("d", function(d) { return d} )
+                                  .attr("d", allPathData)
+                                  .style("stroke-width", .3)
+                                  .attr("class", "onemanyIn")
+                                  .style("stroke", "brown")
+                                  .style("fill",  "brown")
+                                  .style("fill", "none"),
+                              
+
+                           oneMany.remove();
+
+                            })
+                        }
 
 
   })
@@ -1380,7 +1673,11 @@ svgGraph.append("text")
   // var cosa = d3.selectAll("edgePath")
   // console.log(cosa)
    
-
+/*
+  svgGraph.style("opacity", 1e-6)
+  .transition()
+    .duration(1000)
+    .style("opacity", 1);*/
 
   
 
