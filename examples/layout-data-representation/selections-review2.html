@@ -161,7 +161,14 @@ d3.json("data/GO.json", function(jsonGO) {
 
 			console.log(d3.selectAll("circle"));
 
-
+svg.selectAll("pathLegend")
+          .data(["blue", "green", "brown"])
+          .enter()
+          .append("path")
+          .attr("id", "legendPath")
+          .attr("d","M500,50L400,50")
+          // .style("strokewidth", 1)
+          .style("stroke", function(d) {return d });
 
      d3.selectAll("circle")
 		.on("click", function(e) {

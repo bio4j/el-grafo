@@ -1248,7 +1248,6 @@ RouteMap = svgRouteMap.select("g")
     arityInfo = OUTarityInfo + "-" + INarityInfo;
     console.log(arityInfo);
 
-    var offset = 2.5;
 
 /*    if (OUTarityInfo == "many") {
       var OUTmany = d3.select(this);
@@ -1472,10 +1471,28 @@ RouteMap = svgRouteMap.select("g")
                           allPathData = allPath.selectAll("path").attr("d");
                           console.log(allPathData);
 
-                          //TO DO: A function that generate those modified paths!!
-                          var SubontolyPath = "M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+            var SubontolyPath = "M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
 
+              var patron = /[^\d^.]/;
+              var offset = 3;
+              var n = 2;
+
+            // Divide la cadena en piezas separadas por el patrón anterior y
+            // almacena las piezas en un arreglo llamado PathList
+            var PathList = SubontolyPath.split(patron);
+            var i, longitud;
+            for (i = 0, longitud = PathList.length; i < longitud; i++){
+              if(i%2 == 0)
+                      console.log(+PathList[i]+(+offset));
+                              
+
+
+  
                           //Case MANY-ONE
+                          //On this case, ADD the "offset" value to the y component (the second element of each point defined by x,y). Each value is separated either by a "," or by a letter. That should affect to the first "n" parameters (n being a controlable parameter). On the following case, the parameters were:
+
+
+
                           var SubontolyPathDown = "M101,118.2109375L110.86249999999998,113.82978515624998C120.725,109.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
 
                           var SubontolyPathUp = "M101,112.2109375L110.86249999999998,107.82978515624998C120.725,103.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
