@@ -12,6 +12,11 @@
 <body onLoad="draw0();">
 <h2> el-grafo INTRO page </h2>
 
+<!-- <div id="textoVariable">
+    <h2> </h2>
+</div>
+ -->
+
 <div id="introModules">
   <svg id="svgIntroModules">
   </svg>
@@ -29,9 +34,9 @@
 
     <style>
       /* show or hide the foci for debugging */
-/*      .foci-0, .foci-1, .foci-2, .foci-3, .foci-4, .foci-5, .foci-6, .foci-7, .foci-8{
+      .foci-0, .foci-1, .foci-2, .foci-3, .foci-4, .foci-5, .foci-6, .foci-7, .foci-8{
         display: none;
-      }*/
+      }
 
 
       .hull {
@@ -40,12 +45,27 @@
           opacity: .2;
       }
 
+
+    .link {
+      fill: none;
+      stroke: grey;
+      stroke-dasharray: 2, 3;
+      stroke-width: 1;
+    }
+
+
+    line {
+      fill: none;
+      stroke: grey;
+      stroke-dasharray: 2, 3;
+      stroke-width: 1;
+    }
     </style>
 
 <script>
 
 //Linking texts from another url on server
-    var myUrl1 = 'Test-GO_v12_Main.html';
+    var myUrl1 = 'Test-GO_v13_Main.html';
      function ParseUrl(myUrl){
              $.ajax({
                       url: myUrl,
@@ -56,6 +76,20 @@
              });
      }
      ParseUrl(myUrl1);
+
+
+//Linking texts from another url on server
+/*    var myUrl1 = "https://github.com/bio4j/ncbi-taxonomy-module";
+     function ParseUrl(myUrl){
+             $.ajax({
+                      url: myUrl,
+                      success: function(data) {
+                             document.getElementById("textoVariable").innerHTML = data;
+                             document.getElementById("textoVariable").innerHTML = $("#ncbi-taxonomy-bio4j-module").html();
+                      }
+             });
+     }
+     ParseUrl(myUrl1);*/
 
 ////////////////////////////////////
 
@@ -104,7 +138,7 @@ var introModulesHeightAux1 = 300;
 /////////
 
 var introModulesWidthAux2 = 900;
-var introModulesHeightAux2 = 300;
+var introModulesHeightAux2 = 400;
 
     //SVG canvas for modules loading
     svgModulesAux2 = d3.select("#svgIntroModulesAux2")
@@ -247,7 +281,7 @@ function draw0() {
             colorMod = d3.select(this).attr("fill");
             console.log(colorMod);
 			color = colorMod.replace("#",""); 
-			location.href="Test-GO_v12_Main.html?url="+url+"&color="+color;
+			location.href="Test-GO_v13_Main.html?url="+url+"&color="+color;
             return draw();
 
           });
@@ -273,10 +307,7 @@ function draw0() {
             .gravity(0)
             .size([introModulesWidthAux2, introModulesHeightAux2])
             .linkDistance(0)
-            // .linkDistance(3)
-            // .linkStrength(0.1)
             .linkStrength(.1)
-            .friction(0.9)
             .friction(0.9)
 
             .charge(function(d, i) {
@@ -302,7 +333,7 @@ function draw0() {
         return {
             x: x,
             y: y,
-            charge: 0,
+            charge: -2.5,
             fixed: true,
             name: name
         }
@@ -318,6 +349,14 @@ function draw0() {
         })
     };
 
+    ////
+
+    var LinksModules = function(foci, foci) {
+            return {
+                source: foci,
+                target: foci
+            }
+    };
 //////////////
 /*
     var groupPath = function(d) {
@@ -400,7 +439,7 @@ function draw0() {
     var nodes0v = Nodes(NumNodes0, 0, 'node-0'),
         nodes0e = Nodes(NumEdges0, 0, 'edge-0'),
           nodes0 = nodes0v.concat(nodes0e);
-          console.log("nodes0", nodes0);
+          // console.log("nodes0", nodes0);
         
         nodes1v = Nodes(NumNodes1, 1, 'node-1'),
         nodes1e = Nodes(NumEdges1, 1, 'edge-1'),
@@ -435,25 +474,24 @@ function draw0() {
         nodes8e = Nodes(NumEdges8, 8, 'edge-8');
           nodes8 = nodes8v.concat(nodes8e);
 
-      console.log(nodes0v);
+/*      console.log(nodes0v);
       console.log(nodes0e);
       console.log(nodes0);
-
+*/
     //Number of modules
     var n = 9,
-    xModPosition = (introModulesWidthAux2 / (n+1));
+    xUniprot = introModulesWidthAux2 / (n+1) + 300;
+    yUniprot = (introModulesHeightAux2 / 2);
 
-
-
-    var foci0 = Foci(xModPosition, introModulesHeightAux2 / 2, 'foci-0'),
-        foci1 = Foci(introModulesWidthAux2 / (n+1) + 75, introModulesHeightAux2 / 2, 'foci-1'),
-        foci2 = Foci(introModulesWidthAux2 / (n+1) + 150, introModulesHeightAux2 / 2 + 20, 'foci-2'),
-        foci3 = Foci(introModulesWidthAux2 / (n+1) + 225, introModulesHeightAux2 / 2, 'foci-3'),
-        foci4 = Foci(introModulesWidthAux2 / (n+1) + 300, introModulesHeightAux2 / 2 + 10, 'foci-4'),
-        foci5 = Foci(introModulesWidthAux2 / (n+1) + 375, introModulesHeightAux2 / 2, 'foci-5'),
-        foci6 = Foci(introModulesWidthAux2 / (n+1) + 450, introModulesHeightAux2 / 2 + 30, 'foci-6'),
-        foci7 = Foci(introModulesWidthAux2 / (n+1) + 525, introModulesHeightAux2 / 2, 'foci-7'),
-        foci8 = Foci(introModulesWidthAux2 / (n+1) + 600, introModulesHeightAux2 / 2 + 60, 'foci-8');
+    var   foci0 = Foci(xUniprot + 110, yUniprot + 80, graph.nodes[0].label),
+          foci1 = Foci(xUniprot - 75, yUniprot + 100, graph.nodes[1].label),
+        foci2 = Foci(xUniprot + 200, yUniprot + 100, graph.nodes[2].label),
+        foci3 = Foci(xUniprot - 200, yUniprot + 60, graph.nodes[3].label),
+        foci4 = Foci(xUniprot + 200, (introModulesHeightAux2 / 2) - 30, graph.nodes[4].label),
+          foci5 = Foci(xUniprot + 70, yUniprot - 70, graph.nodes[5].label),
+          foci6 = Foci(xUniprot - 50, yUniprot - 90, graph.nodes[6].label),
+        foci7 = Foci(xUniprot - 200, (introModulesHeightAux2 / 2) - 20, graph.nodes[7].label),
+          foci8 = Foci(xUniprot, yUniprot, graph.nodes[8].label);
 
     var links0 = Links(nodes0, foci0),
         links1 = Links(nodes1, foci1),
@@ -465,23 +503,35 @@ function draw0() {
         links7 = Links(nodes7, foci7),
         links8 = Links(nodes8, foci8);
 
+        linksAux = LinksModules(foci7, foci8);
 
+        console.log("links8", links8);
+        console.log("linksAux", linksAux);
 
     var all = nodes0.concat(nodes1).concat(nodes2).concat(nodes3).concat(nodes4).concat(nodes5).concat(nodes6).concat(nodes7).concat(nodes8).concat([             foci0, foci1, foci2, foci3, foci4, foci5, foci6, foci7, foci8]);
 
-    force = Force(all, links0.concat(links1).concat(links2).concat(links3).concat(links4).concat(links5).concat(links6).concat(links7).concat(links8))
+    force = Force(all, links0.concat(links1).concat(links2).concat(links3).concat(links4).concat(links5).concat(links6).concat(links7).concat(links8).concat(linksAux));
 
+    // forceAux = Force(foci7.concat(foci8), linksAux);
 
-
+/*    force = Force(all, links0.concat(links1).concat(links2).concat(links3).concat(links4).concat(links5).concat(links6).concat(links7).concat(links8).concat(linksAux))
+    */
+    console.log("all", all);
+    console.log("force", force);
+    // console.log("forceAux", forceAux);
 
     force.on('tick', function() {
         // svgModulesAux2.selectAll('circle')
             types.attr('cx', function(d) {
-                return d.x
+                return d.x = Math.max(r, Math.min(introModulesWidthAux2 - r, d.x));
             })
             .attr('cy', function(d) {
-                return d.y
+                return d.y = Math.max(r, Math.min(introModulesHeightAux2 - r, d.y)); 
             });
+
+            labels.attr("x", function(d) { return d.x + 40; })       
+                .attr("y", function(d) { return d.y; }); 
+
 
             //SIMPLE NO GROUPING PATH, WORKING
 /*            svgModulesAux2.selectAll("path")
@@ -510,6 +560,19 @@ function draw0() {
 /*            svgModulesAux2.select("#path5")
                 .data([d3.geom.hull(nodes5.map(function(d) { return [ d.x, d.y ]; }))])
                 .attr("d", function(d) { return "M" + d.join("L") + "Z"; });*/
+
+/*            console.log("nodes1", nodes1);
+            console.log("newnodes1", newnodes1);*/
+
+            newnodes0 = nodes0.concat(foci0);
+            newnodes1 = nodes1.concat(foci1);
+            newnodes2 = nodes2.concat(foci2);
+            newnodes3 = nodes3.concat(foci3);
+            newnodes4 = nodes4.concat(foci4);
+            newnodes5 = nodes5.concat(foci5);
+            newnodes6 = nodes6.concat(foci6);
+            newnodes7 = nodes7.concat(foci7);
+            newnodes8 = nodes8.concat(foci8);
 
             svgModulesAux2.select("#path1")
                 .data([d3.geom.hull(nodes1.map(function(d) { return [ d.x, d.y ]; }))])
@@ -581,6 +644,8 @@ function draw0() {
 
     console.log("all", all);
 
+    var r = 1.6; 
+
     types = svgtypes.append('circle')
         // .filter(function(d, i) { return i < 2;})
         .attr({
@@ -590,15 +655,72 @@ function draw0() {
             cy: function(d) {
                 return d.y
             },
-            r: 1.6,
+            r: r,
             'class': function(d) {
                 return d.name
             }
         })
         .style("fill", function(d) {
             return color(d.id)
-        });
-        // .call(force.drag);
+        })
+        .call(force.drag);
+
+
+    //LINKS MANUALLY
+
+/*    var lineData = [ { "x": foci7.x,   "y": foci7.y},  { "x": foci8.x,  "y": foci8.y } ];
+
+    console.log("lineData", lineData);
+    
+    var lineFunction = d3.svg.line()
+                          .x(function(d) { return d.x; })
+                          .y(function(d) { return d.y; })
+                          .interpolate("linear");
+
+    svgModulesAux2.append("line")
+        .attr("d", lineFunction(lineData))
+        .attr("stroke", "blue")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");*/
+
+    svgModulesAux2.append('line')
+        .attr("x1", foci1.x)
+        .attr("x2", foci8.x)
+        .attr("y1", foci1.y)
+        .attr("y2", foci8.y)
+        .style("stroke", "#ccc");
+
+    svgModulesAux2.append('line')
+        .attr("x1", foci6.x)
+        .attr("x2", foci8.x)
+        .attr("y1", foci6.y)
+        .attr("y2", foci8.y)
+        .style("stroke", "#ccc");
+
+    svgModulesAux2.append('line')
+        .attr("x1", foci0.x)
+        .attr("x2", foci8.x)
+        .attr("y1", foci0.y)
+        .attr("y2", foci8.y)
+        .style("stroke", "#ccc");
+
+    svgModulesAux2.append('line')
+        .attr("x1", foci5.x)
+        .attr("x2", foci8.x)
+        .attr("y1", foci5.y)
+        .attr("y2", foci8.y)
+        .style("stroke", "#ccc");
+
+/*    var lineFunction = d3.svg.line()
+                          .x(function(d) { return d.x; })
+                          .y(function(d) { return d.y; })
+                          .interpolate("linear");*/
+
+/*  var linkAux = svgModulesAux2.selectAll(".link")
+      .data(linkAux)
+      .enter()
+      .append("path")
+      .attr("class", "link");*/
 
     var allMap = all.map(function(d) { return [ d.x, d.y ]});
     console.log("all.map", allMap);
@@ -616,8 +738,12 @@ function draw0() {
         .transition(500)
         .attr("r", .7);
 
-    names = [graph.nodes[0].label, graph.nodes[1].label, graph.nodes[2].label, graph.nodes[3].label, graph.nodes[4].label, graph.nodes[5].label, graph.nodes[6].label, graph.nodes[7].label,  graph.nodes[8].label ];
-    console.log(names);
+/*    names = [graph.nodes[0].label, graph.nodes[1].label, graph.nodes[2].label, graph.nodes[3].label, graph.nodes[4].label, graph.nodes[5].label, graph.nodes[6].label, graph.nodes[7].label,  graph.nodes[8].label ];*/
+    
+    focis = [foci0, foci1, foci2, foci3, foci4, foci5, foci6, foci7, foci8 ];
+    
+    console.log("focis", focis);
+
 
 /*      labels = svgModulesAux2
         .append("g")
@@ -644,19 +770,19 @@ function draw0() {
         .append("g")
         .attr("id", "modulesText")
         .selectAll("text")        
-        .data(names)
+        .data(focis)
         .enter()
         .append("text")
-        .text(function(d) { return d })
-        .attr("x", function(d, i) {
-            return introModulesWidthAux2 / (n+1) + i*75;
-        })
-        .attr("y", introModulesHeightAux2 / 2)
+        .text(function(d) { return d.name })
+        .attr("x", function(d) { return d.x })
+        .attr("y", function(d) { return d.y })
         .attr("text-anchor", "middle")
         .attr("font-family", "sans-serif")
         .attr("font-weight", "bold")
-        .attr("font-size", "16px")
+        .attr("font-size", "14px")
         .attr("fill", function(d, i) { return color(i)} );
+
+        console.log(foci5.x);
 
     force.start();
     

@@ -27,7 +27,12 @@
 <script src="scripts/alg/prim.js"></script>
 
 <body onLoad="draw();">
-<h2> el-grafo MAIN page </h2>
+
+
+<div id="origenTexto">
+  <h2> el-grafo MAIN page </h2>
+</div>
+
 
 <div id="mainModules">
   <svg id="svgMainModules">
@@ -68,9 +73,22 @@
   
 <script>
 
+//Parameters from url
+var paramstr = window.location.search.substr(1);
+var paramarr = paramstr.split ("&");
+var params = {};
+
+for ( var i = 0; i < paramarr.length; i++) {
+    var tmparr = paramarr[i].split("=");
+    params[tmparr[0]] = tmparr[1];
+}
+url = params['url'];
+colorMod = "#"+params['color'];
+
 //SVG canvas for modules loading
 var mainModulesWidth = 800;
 var mainModulesHeight = 250;
+
 
   svgModules = d3.select("#svgMainModules")
               .attr("width", mainModulesWidth)
@@ -82,12 +100,20 @@ var mainModulesHeight = 250;
 //SVG canvas for GRAPH representation
 var mainGraphWidth = 650;
 var mainGraphHeight = 350;
-      
+var distance1 = 20;     
+var distance2 = 0;     
+
   svgGraph = d3.select("#svgMainGraph")
               .attr("width", mainGraphWidth)
               .attr("height", mainGraphHeight);
   svgGraph.append("g")
-              // .attr("transform", "translate(20,20)");
+              .attr("id", "grafo")
+            .attr("transform", "translate(" + distance1 +"," + distance1 + ")"); 
+
+  svgGraphLegend = svgGraph.append("g")
+              .attr("id", "legend")
+              .attr("class", "legend")
+              .attr("transform", "translate(" + distance2 +"," + distance2 + ")"); 
 
 
 //SVG canvas for ROUTEMAP loading
@@ -231,8 +257,6 @@ function draw() {
         .attr("font-size", "11px");
 
  
-
-
 //////////////
 
 
@@ -352,7 +376,80 @@ d3.json(url, function(json) {
     .attr("d", function(d) { return line.tension(d)(data); })
     .style("stroke", d3.interpolateRgb("teal", "lightblue"));
 */
+ 
 
+
+
+////////////////////
+
+// Trying to alter the edgepath function
+
+/* var DrawEdgePaths = function(g, root) {
+                var svgEdgePaths = root
+                    .selectAll('g.edgePath')
+                    .classed('enter', false)
+                    .data(g.edges(), function(e) {
+                        return e;
+                    });
+
+                svgEdgePaths
+                    .enter()
+                    .append('g')
+                    .attr('class', 'edgePath enter')
+                    .append('path')
+                    .style('opacity', 0)
+                    .attr('marker-end', 'url(#arrowhead)');
+
+                this._transition(svgEdgePaths.exit())
+                    .style('opacity', 0)
+                    .remove();
+
+                return svgEdgePaths;
+            };
+
+                   
+////////
+
+ function defaultPositionEdgePaths(g, svgEdgePaths) {
+                var interpolate = this._edgeInterpolate,
+                    tension = this._edgeTension;
+
+                function calcPoints(e) {
+                    var value = g.edge(e);
+                    var source = g.node(g.incidentNodes(e)[0]);
+                    var target = g.node(g.incidentNodes(e)[1]);
+                    var points = value.points.slice();
+
+
+
+                    var p0 = points.length === 0 ? target : points[0];
+                    var p1 = points.length === 0 ? source : points[points.length - 1];
+
+                    points.unshift(intersectRect(source, p0));
+                    // TODO: use bpodgursky's shortening algorithm here
+                    points.push(intersectRect(target, p1));
+
+                    return d3.svg.line()
+                        .x(function(d) {
+                            return (d.x + 20);
+                        })
+                        .y(function(d) {
+                            return d.y;
+                        })
+                        .interpolate(interpolate)
+                        .tension(tension)
+                    (points);
+                }
+
+                svgEdgePaths.filter('.enter').selectAll('path')
+                    .attr('d', calcPoints);
+
+                this._transition(svgEdgePaths.selectAll('path'))
+                    .attr('d', calcPoints)
+                    .style('opacity', 1);
+            }*/
+
+/////////////////////////
   
   //Configuring the layout:
   var layout = dagreD3.layout()
@@ -364,6 +461,8 @@ d3.json(url, function(json) {
   
   //Configuring the renderer-original:
   var renderinglayout = renderer.layout(layout)
+              // .data([0,1])
+              // .edgeTension(function(d,i) {return (i*.5)})
               // .edgeTension(.5)
               .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
               // .transition(500)
@@ -372,8 +471,7 @@ d3.json(url, function(json) {
   wGraph = renderinglayout.graph().width;
   hGraph = renderinglayout.graph().height;
 
-  svgGraph.select("g")
-          .attr("transform", "translate(20,20)"); 
+
 
 
 /*  var transform = d3.transform()
@@ -457,7 +555,6 @@ d3.json(url, function(json) {
       ;
 
     //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
-
 
 
 
@@ -1063,11 +1160,15 @@ RouteMap = svgRouteMap.select("g")
           .style("fill", "none");*/
 
 /*        var d = d3.select(this);
-        // console.log(function(u, value) {return graph.inEdges(d)})
+        // console.log(function(u, value) {return graph.inEdges(d)});
+
         var findingEdgesId = graph.inEdges(u);
         d3.select("#"+ findingEdgesId)
           .attr("class", "selectedEdge");
-          // .style("stroke-width", "4px")*/
+          // .style("stroke-width", "4px")
+
+        console.log(findingEdgesId);*/
+
 
         });
 
@@ -1120,9 +1221,14 @@ RouteMap = svgRouteMap.select("g")
                   .attr("width", (+ww + 20))
          });*/
 
+
+
+
+
     d3.selectAll(".edgePath path")
          .on("click", function(e, u, v, value) {
-             alert("Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
+             alert("hola" + e[0] +
+              "Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
          })
 
 /*    d3.selectAll("[id=GoTerm]")
@@ -1163,39 +1269,198 @@ RouteMap = svgRouteMap.select("g")
 
 ////////////////////////////
 
+  //Modifying the edge arrowheads:
+/*      .append('svg:defs')
+        .append('svg:marker')
+          .attr('id', 'arrowhead')
+          .attr('viewBox', '0 0 10 10')
+          .attr('refX', 8)
+          .attr('refY', 5)
+          .attr('markerUnits', 'strokewidth')
+          .attr('markerWidth', 8)
+          .attr('markerHeight', 5)
+          .attr('orient', 'auto')
+          .attr('style', 'fill: #333')
+          .append('svg:path')
+            .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+  }
+}*/
+  
+  //Re-doing arrowheads:
+  d3.select("#arrowhead")
+    .select("path").remove();
 
-  var arties = d3.selectAll(".edgePath").each( function(d,i) {
+  //TO DO:
+/*  d3.select("#arrowhead")
+    .append("circle")
+    // .style("fill", colorMod.darker)
+    .style("fill", d3.rgb(colorMod).darker(3))
+    .attr('viewBox', '-20 -20 20 20')
+    .attr('refX', 12)
+    .attr('refY', 0)
+    .attr('markerWidth', 12)
+    .attr('markerHeight', 12)
+    .attr("cx", 3)
+    .attr("cy", 3)
+    .attr("r", 6);*/
+
+  d3.select("#arrowhead")
+    .append("circle")
+    // .style("fill", colorMod.darker)
+    .style("fill", d3.rgb(colorMod).darker(2))
+    .attr('viewBox', '30 30 30 30')
+    .attr('refX', 0)
+    .attr('refY', 6)
+    .attr('markerWidth', 30)
+    .attr('markerHeight', 30)
+    .attr("cx", 0)
+    .attr("cy", 6)
+    .attr("r", 12);
+
+
+    // .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+
+
+  //Some generic parameters for arity paths
+  var patron = /[^\d^.]/;
+  var offset = 2.5;
+
+  //Removing previous arity paths
+  d3.selectAll("path.manymanyOuter").remove();
+  d3.selectAll("path.onemanyOuter").remove();
+  d3.selectAll("path.manyoneOuter").remove();
+
+  //also legend:
+  d3.selectAll("path.pathLegend").remove();
+  d3.selectAll("path.edgePathLe").remove();
+  
+  d3.selectAll("#pathLegend0").remove();
+  d3.selectAll("#pathLegend1").remove();
+  d3.selectAll("#pathLegend2").remove();
+
+  var arities = d3.selectAll(".edgePath").each( function(d,i) {
     OUTarityInfo = d3.select(this).attr("outArity");
     INarityInfo = d3.select(this).attr("inArity");
     arityInfo = OUTarityInfo + "-" + INarityInfo;
     console.log(arityInfo);
-/*    if (OUTarityInfo == "many") {
-      var OUTmany = d3.select(this);
-      // data = [1,2,3];
-      return OUTmany.style("stroke", "blue")
-                   // .attr("transform", "translate(0,2)");
-                    .data([1,2,3])
-                    .enter()
-                    .append()
-                    .attr("transform", function(d,i) {
-                        "translate(0," + i + ")"
-                      }) */
-                    
+    arityStrokeWidth = .5;
+    offset = 3;
+    n = 9;
+    // 2 steps: n=5
+    // 3 steps: n=7
+    // 4 steps; n=9
 
-  // Multiple lines with different tension:
-/*  vis.selectAll("path")
-    .data([0, 0.2, 0.4, 0.6, 0.8, 1])
-  .enter().append("svg:path")
-    .attr("d", function(d) { return line.tension(d)(data); })
-    .style("stroke", d3.interpolateRgb("teal", "lightblue"));
-*/
 
     if (arityInfo == "many-many") {
       var manyMany = d3.select(this);
-      // console.log(manyMany.node().getTotalLength);
       // console.log(manyMany);
 
-      return manyMany.style("stroke", colorMod);
+
+
+    return manyMany.style("stroke", colorMod)
+                      .each( function(d, i) {
+                            allPath = d3.select(this);     
+                            allPathData = allPath.selectAll("path").attr("d");
+       
+                            return svgGraph.select("g.edgePaths").append("path")
+                                .attr("d", allPathData)
+                                // .transition(4500)
+                                .attr("transform", "translate(0," + offset + ")")
+                                .style("stroke-width", arityStrokeWidth)
+                                .attr("class", "manymanyOuter")
+                                .style("stroke", colorMod)
+                                .style("fill", "none")
+                                .style("fill", "none"),
+        /*                        .attr('marker-end', 'url(#arrowhead)')*/
+
+                        svgGraph.select("g.edgePaths").append("path")
+                                .attr("d", allPathData)
+                                // .transition(4500)
+                                .attr("transform", "translate(0," + (-offset) + ")")
+                                .style("stroke-width", arityStrokeWidth)
+                                .attr("class", "manymanyOuter")
+                                .style("stroke", colorMod)
+                                .style("fill", "none")
+                                .style("fill", "none");
+        /*                        .attr("marker-end", "url(#arrowhead)");
+*/
+                    
+/*
+                        svgGraph.append("path")
+                        // .data(example)
+                        // .enter()
+                        // .attr("d", function(d) { return d} )
+                        .attr("d", allPathData)
+                        .style("stroke-width", .3)
+                        .attr("class", "manymanyIn")
+                        .style("stroke", colorMod)
+                        .style("fill", "none")
+                        .style("fill", "none"),
+                    
+
+                   manyMany.remove();*/
+              })    
+
+
+
+
+
+     // console.log(graph.node(graph.incidentNodes(e)[0]));
+
+       // console.log(d3.select("_8").selectAll("path").attr("d"));
+
+      /* tooma = d3.selectAll("path").attr("d");
+       console.log(tooma);*/
+
+        //Selecting d info of edgepaths
+      /*    d3.selectAll("path").each( function(d, i) {
+              allPathData = d3.select(this).attr("d");     
+              console.log(allPathData);
+              allPathData.selectAll("")
+              // console.log(allPathData.length)
+              // return drawPath()
+              // var dPath8 = d3.select("_8").attr("d");   
+          });*/
+       
+    
+    }
+
+        //Selecting d info of edgepaths
+          /*d3.selectAll(".edgePath").each( function(d, i) {
+              allPath = d3.select(this);     
+              // console.log(allPath);
+              allPathData = allPath.selectAll("path").attr("d");
+              // console.log(allPathDataD)
+              // path8 = allPath.select("_8").selectAll("path").attr("d");
+              // console.log(path8);
+              // console.log(allPathData.length)
+              // return drawPath()
+              // var dPath8 = d3.select("_8").attr("d");   
+          });
+*/
+      /*function drawPath() {
+      svgModules.append("path")
+                  .data(allPathData)
+                  .enter()
+                  .attr("d", function(d) { return d} )
+                  .style("stroke-width", 1)
+                  .style("stroke", "red")
+                  .style("fill", "none")
+                  .style("fill", "none"); 
+      }
+
+      // var edgeData = [  ];
+
+
+
+
+
+
+        // .attr("transform", "translate(0,5)");
+/*            .attr("transform", function(d,i) {
+                        "translate(0," + i*2 + ")"
+                      });*/
+    
                     // .style("stroke-width", "2");
 
 /*                    .selectAll("circle")
@@ -1219,23 +1484,212 @@ RouteMap = svgRouteMap.select("g")
 */
 
 
-                    }
+    
 
     if (arityInfo == "many-one") {
       var manyOne = d3.select(this);
-      return manyOne.style("stroke", "green")
-      }
+      return manyOne.style("stroke", colorMod)
+                 .each( function(d, i) {
+                          allPath = d3.select(this);     
+                          allPathData = allPath.selectAll("path").attr("d");
+                          console.log(allPathData);
+
+            var patronNums = /[^\d^.]/;
+            var patronSymbols = /\d+\.?/;
+
+
+////////////////////////
+
+            //Case MANY-ONE
+            var PathListNums4Down = allPathData.split(patronNums);
+
+            var SubontolyPath4 = allPathData.replace(/\./g,'');
+            var PathListSymbols = SubontolyPath4.split(patronSymbols);
+            var i, longitud;
+            for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
+                if ((i%2 == 0) && (i<n)) {
+                    PathListNums4Down[i] -= -offset;
+                }
+                else {
+                    PathListNums4Down[i] =  PathListNums4Down[i]; 
+                }
+            }
+
+
+            var SubontolyPathManyOneDown = "";
+            for (i = 1, longitud = PathListSymbols.length; i < longitud; i++){
+                SubontolyPathManyOneDown = SubontolyPathManyOneDown+PathListSymbols[i-1]+PathListNums4Down[i];
+            }
+
+            console.log("SubontolyPathManyOneDown", SubontolyPathManyOneDown);          
+
+
+/////////////////////////////////////////////
+ 
+            var PathListNums4Up = allPathData.split(patronNums);
+            
+            console.log("PathListNums4Up", PathListNums4Up);
+
+            var SubontolyPath4 = allPathData.replace(/\./g,'');
+            var PathListSymbols = SubontolyPath4.split(patronSymbols);
+            console.log("PathListSymbols", PathListSymbols);
+
+            var i, longitud;
+            for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
+                if ((i%2 == 0) && (i<n)) {
+                    PathListNums4Up[i] -= +offset;
+                }
+                else {
+                    PathListNums4Up[i] =  PathListNums4Up[i]; 
+                }
+            }
+
+
+            var SubontolyPathManyOneUp = "";
+            for (i = 1, longitud = PathListSymbols.length; i < longitud; i++){
+                SubontolyPathManyOneUp = SubontolyPathManyOneUp+PathListSymbols[i-1]+PathListNums4Up[i];
+            }
+
+            console.log("SubontolyPathManyOneUp", SubontolyPathManyOneUp)
+
+//////////////////////////////////////////////////// 
+
+
+
+                          return svgGraph.select("g.edgePaths").append("path")
+                                        .attr("d", SubontolyPathManyOneDown)
+                                        // .attr("transform", "translate(0,3)")
+                                        .style("stroke-width", arityStrokeWidth)
+                                        .attr("class", "manyoneOuter")
+                                        .style("stroke", colorMod)
+                                        .style("fill", "none")
+                                        .style("fill", "none"),
+
+                                svgGraph.select("g.edgePaths").append("path")
+                                        .attr("d", SubontolyPathManyOneUp)
+                                        // .attr("transform", "translate(0,-3)")
+                                        .style("stroke-width", arityStrokeWidth)
+                                        .attr("class", "manyoneOuter")
+                                        .style("stroke", colorMod)
+                                        .style("fill", "none")
+                                        .style("fill", "none");
+                                })
+                                }
     
 
-    if (arityInfo == "one-many") {
+  if (arityInfo == "one-many") {
       var oneMany = d3.select(this);
-      return oneMany.style("stroke", "brown")
-      }
+      return oneMany.style("stroke", colorMod)
+                    .each( function(d, i) {
+                          allPath = d3.select(this);     
+                          allPathData = allPath.selectAll("path").attr("d");
+                          console.log(allPathData);
+
+            var patronNums = /[^\d^.]/;
+            var patronSymbols = /\d+\.?/;
+
+
+////////////////////////
+
+            //Case ONE-MANY
+            var PathListNums3Down = allPathData.split(patronNums);
+
+            var SubontolyPath2 = allPathData.replace(/\./g,'');
+            var PathListSymbols = SubontolyPath2.split(patronSymbols);
+            var i, longitud;
+            for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
+                if ((i%2 == 0) && (i>(PathListSymbols.length-n))) {
+                    PathListNums3Down[i] -= -offset;
+                }
+                else {
+                    PathListNums3Down[i] =  PathListNums3Down[i]; 
+                }
+            }
+
+
+            var SubontolyPathOneManyDown = "";
+            for (i = 1, longitud = PathListSymbols.length; i < longitud; i++){
+                SubontolyPathOneManyDown = SubontolyPathOneManyDown+PathListSymbols[i-1]+PathListNums3Down[i];
+            }
+
+            console.log("SubontolyPathOneManyDown", SubontolyPathOneManyDown);          
+
+
+/////////////////////////////////////////////
+ 
+            var PathListNums3Up = allPathData.split(patronNums);
+            
+            console.log("PathListNums3Up", PathListNums3Up);
+
+            var SubontolyPath3 = allPathData.replace(/\./g,'');
+            var PathListSymbols = SubontolyPath3.split(patronSymbols);
+            console.log("PathListSymbols", PathListSymbols);
+
+            var i, longitud;
+            for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
+                if ((i%2 == 0) && (i>(PathListSymbols.length-n))) {
+                    PathListNums3Up[i] -= +offset;
+                }
+                else {
+                    PathListNums3Up[i] =  PathListNums3Up[i]; 
+                }
+            }
+
+
+            var SubontolyPathOneManyUp = "";
+            for (i = 1, longitud = PathListSymbols.length; i < longitud; i++){
+                SubontolyPathOneManyUp = SubontolyPathOneManyUp+PathListSymbols[i-1]+PathListNums3Up[i];
+            }
+
+            console.log("SubontolyPathOneManyUp", SubontolyPathOneManyUp)
+
+//////////////////////////////////////////////////// 
+                              
+  
+
+                          return svgGraph.select("g.edgePaths").append("path")
+                                        .attr("d", SubontolyPathOneManyDown)
+                                        // .attr("transform", "translate(0,3)")
+                                        .style("stroke-width", arityStrokeWidth)
+                                        .attr("class", "onemanyOuter")
+                                        .style("stroke", colorMod)
+                                        .style("fill", "none")
+                                        .style("fill", "none"),
+
+                                svgGraph.select("g.edgePaths").append("path")
+                                        .attr("d", SubontolyPathOneManyUp)
+                                        // .attr("transform", "translate(0,-3)")
+                                        .style("stroke-width", arityStrokeWidth)
+                                        .attr("class", "onemanyOuter")
+                                        .style("stroke", colorMod)
+                                        .style("fill", "none")
+                                        .style("fill", "none");
+
+        
+/*                                  svgGraph.append("path")
+                                  // .data(example)
+                                  // .enter()
+                                  // .attr("d", function(d) { return d} )
+                                  .attr("d", allPathData)
+                                  .style("stroke-width", .3)
+                                  .attr("class", "onemanyOuter")
+                                  .style("stroke", colorMod)
+                                  .style("fill",  colorMod)
+                                  .style("fill", "none"),
+                              
+
+                           oneMany.remove();*/
+
+                            })
+                        }
 
 
   })
 
-svgGraph.selectAll("#legendRect")
+var offset2 = 4;
+var verticalSeparation = 25;
+
+svgGraph.selectAll("#legendPath")
         .remove();
 svgGraph.selectAll("#legendText")
         .remove();
@@ -1243,7 +1697,8 @@ svgGraph.selectAll("#arityTitle")
         .remove();
 
 ////LEYEND
-svgGraph.selectAll("rect2")
+//TO DO: CONVERT TO PATHS AND TRANSFORM THEM
+/*svgGraph.selectAll("rect2")
           .data([colorMod, "green", "brown"])
           .enter()
           .append("rect")
@@ -1252,21 +1707,102 @@ svgGraph.selectAll("rect2")
           .attr("y", function(d, i) { return 50 + (i*15) })
           .attr("width", 30 )
           .attr("height", .8 )
-          .style("fill", function(d) {return d });
+          .style("fill", function(d) {return d });*/
 
-svgGraph.selectAll("text2")
+var classes = ["many-many", "many-one", "one-many"];
+
+// svgGraph.select("g.edgePaths").selectAll("pathLegend")
+
+svgGraphLegend.selectAll("pathLegend")
+          .data(classes)
+          .enter()
+          .append("path")
+          .attr("id", function(d,i) {return "pathLegend"+i })
+          .attr("class", "edgePathLegend")
+          .attr("arityInfo", function(d,i) {return d})
+          // .style("strokewidth", 1)
+          .attr("d", function(d, i) { 
+            var Ycord = +50 + (i*verticalSeparation);
+            return "M480," + Ycord + "L530," + Ycord  })
+          .style("stroke-width", .5)          
+          .style("stroke", colorMod)
+          .attr("marker-end", "url(#arrowhead)");
+
+//Many-many legend
+var manyManyLegendInfo = d3.select("#pathLegend0").attr("d");
+console.log(manyManyLegendInfo);
+
+svgGraphLegend.append("path")
+        .attr("class", "pathLegend")
+        .attr("d", manyManyLegendInfo)
+        .attr("transform", "translate(0," + offset + ")")
+        .style("stroke", colorMod)
+        .style("stroke-width", .5);
+
+svgGraphLegend.append("path")
+        .attr("class", "pathLegend")
+        .attr("d", manyManyLegendInfo)
+        .attr("transform", "translate(0," + (-offset) + ")")
+        .style("stroke", colorMod)
+        .style("stroke-width", .5);
+
+
+//Many-one legend
+var manyOneLegendInfo = d3.select("#pathLegend1").attr("d");
+console.log(manyOneLegendInfo);
+
+svgGraphLegend.append("path")
+        .attr("class", "pathLegend")
+        // .attr("d", "M480,"+(75+offset2)+"75,510,L530,75")
+        .attr("d", "M480,"+(75+offset2)+",510,75L530,75")
+        .style("stroke", colorMod)
+        .style("stroke-width", .5)
+        .style("fill", "none");
+
+svgGraphLegend.append("path")
+        .attr("class", "pathLegend")
+        .attr("d", "M480,"+(75-offset2)+",510,75L530,75")
+        // .attr("d", "M480,"+(75-offset2)+"75,510,L530,75")
+        .style("stroke", colorMod)
+        .style("stroke-width", .5)
+        .style("fill", "none");
+
+
+//One-many legend
+var oneManyLegendInfo = d3.select("#pathLegend2").attr("d");
+console.log(oneManyLegendInfo);
+
+svgGraphLegend.append("path")
+        .attr("class", "pathLegend")
+        .attr("d", "M480,100,500,100L530," + (+100+offset2))
+        .style("stroke", colorMod)
+        .style("stroke-width", .5)
+        .style("fill", "none");
+
+svgGraphLegend.append("path")
+        .attr("class", "pathLegend")
+        .attr("d", "M480,100,500,100L530," + (+100-offset2))
+        .style("stroke", colorMod)
+        .style("stroke-width", .5)        
+        .style("fill", "none");
+
+
+
+
+//Arity titles
+svgGraphLegend.selectAll("text2")
           .data(["many-many", "many-one", "one-many"])
           .enter()
           .append("text")
           .attr("id", "legendText")
           .attr("x", 545)
-          .attr("y", function(d, i) { return 53 + (i*15) })
+          .attr("y", function(d, i) { return 53 + (i*verticalSeparation) })
           .text(function(d) { return d})
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "11px");
 
-svgGraph.append("text")
+svgGraphLegend.append("text")
           .attr("id", "arityTitle")
           .attr("x", 545)
           .attr("y", 30)
@@ -1277,8 +1813,7 @@ svgGraph.append("text")
 
 ////////////////////////////////////
 
-         .on("click", function(u, value) {
-             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
+
 
 
 // +info here http://www.trendskitchens.co.nz/jquery/contextmenu/
@@ -1305,11 +1840,11 @@ svgGraph.append("text")
 
         bindings:
         {
-/*            'neighbour': function(u, value) {
+/*            'neighbour': function(u) {
                 
                 //GRAPH Features Possibilities
                 idNeighborsVertex = graph.neighbors(u)
-                // console.log(idNeighborsVertex) 
+                console.log("idNeighborsVertex", idNeighborsVertex) 
 
                 idSuccessorsVertex = graph.successors(u)
                 console.log(idNeighborsVertex) 
@@ -1354,8 +1889,8 @@ svgGraph.append("text")
 
             },*/
 
-            'neighbour': function(u) {
-                alert(u);
+            'neighbour': function(t) {
+                alert(d3.select(this));
                 myArray = idSuccessorsVertex;
             },
             'antecessors': function(t) {
@@ -1385,7 +1920,11 @@ svgGraph.append("text")
   // var cosa = d3.selectAll("edgePath")
   // console.log(cosa)
    
-
+/*
+  svgGraph.style("opacity", 1e-6)
+  .transition()
+    .duration(1000)
+    .style("opacity", 1);*/
 
   
 

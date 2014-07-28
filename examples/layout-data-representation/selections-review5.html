@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: A simple scatterplot with value labels</title>
+		
+		<script src="js/d3.js" charset="utf-8"></script>
+		<script src="js/graphlib.min.js"></script>
+		<script src="js/dagre-d3.js"></script>
+
+		<style type="text/css">
+    
+    .link {
+      fill: none;
+      stroke: grey;
+      stroke-dasharray: 2, 3;
+      stroke-width: 1;
+    }
+
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+
+			//Width and height
+			var w = 500;
+			var h = 800;
+
+
+
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+
+
+
+
+
+    var lineData = [ { "x": 300,   "y": 200},  { "x": 400,  "y": 100 },  { "x": 200,  "y": 150 }  ];
+
+    console.log("lineData", lineData);
+    
+    var lineFunction = d3.svg.line()
+                          .x(function(d) { return d.x; })
+                          .y(function(d) { return d.y; })
+                          .interpolate("linear");
+
+    svg.append("line")
+        .attr("d", lineFunction(lineData))
+        .attr("stroke", "blue")
+        // .attr("stroke-width", 2)
+        .attr("fill", "blue");
+
+    svg.append('line')
+             .attr("x1", 20)
+            .attr("x2", 100)
+        .attr("y1", 40)
+        .attr("y2", 140)
+        .style("stroke", "#ccc");
+
+
+		</script>
+	</body>
+</html>

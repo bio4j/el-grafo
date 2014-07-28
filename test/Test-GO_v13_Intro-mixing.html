@@ -55,7 +55,7 @@
                       }
              });
      }
-     ParseUrl(myUrl1);
+
 
 ////////////////////////////////////
 
@@ -143,7 +143,6 @@ function draw0() {
             };
         });
       
-    console.log(newjson0);
 
 
 /*    var newJsonBundle = newjson0.map(function(x, i) {
@@ -261,8 +260,39 @@ function draw0() {
 
 
  d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
-  
-  
+ 
+  var force = d3.layout.force()
+    .linkDistance(25)
+    .linkStrength(1)
+    .charge(-150)
+    .size([introModulesWidthAux2, introModulesHeightAux2]);
+    var nodesAux = graph.nodes.slice(),
+      links = [],
+      bilinks = [];
+
+  graph.links.forEach(function(link) {
+    var s = nodesAux[link.source],
+        t = nodesAux[link.target],
+        i = {};                   // intermediate node
+    nodesAux.push(i);
+    links.push({source: s, target: i}, {source: i, target: t});
+    bilinks.push([s, i, t]);
+  });
+
+  force
+      .nodes(nodesAux)
+      .links(links)
+      .start();
+
+
+
+
+
+ d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
+
+
+ // console.log("nodesAux", d3.selectAll(nodesAux[2]));
+
   var nodes = graph.nodes
 
 
@@ -455,6 +485,7 @@ function draw0() {
         foci7 = Foci(introModulesWidthAux2 / (n+1) + 525, introModulesHeightAux2 / 2, 'foci-7'),
         foci8 = Foci(introModulesWidthAux2 / (n+1) + 600, introModulesHeightAux2 / 2 + 60, 'foci-8');
 
+/*
     var links0 = Links(nodes0, foci0),
         links1 = Links(nodes1, foci1),
         links2 = Links(nodes2, foci2),
@@ -463,16 +494,33 @@ function draw0() {
         links5 = Links(nodes5, foci5),
         links6 = Links(nodes6, foci6),
         links7 = Links(nodes7, foci7),
-        links8 = Links(nodes8, foci8);
+        links8 = Links(nodes8, foci8);*/
 
+    var links0 = Links(nodes0, nodesAux[0], foci0),
+        links1 = Links(nodes1, nodesAux[1], foci1),
+        links2 = Links(nodes2, nodesAux[2], foci2),
+        links3 = Links(nodes3, nodesAux[3], foci3),
+        links4 = Links(nodes4, nodesAux[4], foci4),
+        links5 = Links(nodes5, nodesAux[5], foci5),
+        links6 = Links(nodes6, nodesAux[6], foci6),
+        links7 = Links(nodes7, nodesAux[7], foci7),
+        links8 = Links(nodes8, nodesAux[8], foci8);
 
+    console.log("foci0", foci0);
+    console.log("nodesAux[1]", nodesAux[1]);
 
     var all = nodes0.concat(nodes1).concat(nodes2).concat(nodes3).concat(nodes4).concat(nodes5).concat(nodes6).concat(nodes7).concat(nodes8).concat([             foci0, foci1, foci2, foci3, foci4, foci5, foci6, foci7, foci8]);
 
+    console.log("all", all)
+/*
     force = Force(all, links0.concat(links1).concat(links2).concat(links3).concat(links4).concat(links5).concat(links6).concat(links7).concat(links8))
+*/
+    var all2 = nodes0.concat(nodes1).concat(nodes2).concat(nodes3).concat(nodes4).concat(nodes5).concat(nodes6).concat(nodes7).concat(nodes8).concat([ nodesAux[0], nodesAux[1], nodesAux[2], nodesAux[3], nodesAux[4], nodesAux[5], nodesAux[6], nodesAux[7], nodesAux[8]]);
+    console.log("all2", all2);
 
 
-
+/*    force = Force(all, links0.concat(links1).concat(links2).concat(links3).concat(links4).concat(links5).concat(links6).concat(links7).concat(links8))
+*/
 
     force.on('tick', function() {
         // svgModulesAux2.selectAll('circle')
@@ -598,7 +646,7 @@ function draw0() {
         .style("fill", function(d) {
             return color(d.id)
         });
-        // .call(force.drag);
+        .call(force.drag);
 
     var allMap = all.map(function(d) { return [ d.x, d.y ]});
     console.log("all.map", allMap);
@@ -661,7 +709,7 @@ function draw0() {
     force.start();
     
 })
-
+});
 
 </script>
 

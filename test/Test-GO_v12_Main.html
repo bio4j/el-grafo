@@ -27,7 +27,12 @@
 <script src="scripts/alg/prim.js"></script>
 
 <body onLoad="draw();">
-<h2> el-grafo MAIN page </h2>
+
+
+<div id="origenTexto">
+  <h2> el-grafo MAIN page </h2>
+</div>
+
 
 <div id="mainModules">
   <svg id="svgMainModules">
@@ -57,14 +62,14 @@
   <p><span id="value">100</span>%</p>
 </div> -->
 
-<!--     <div class="contextMenu" id="cntxtMenu">
+    <div class="contextMenu" id="cntxtMenu">
         <ul>
             <li id="neighbour"> Select its NEIGHBOUR </li>
             <li id="antecessors"> Select its ANTECESSORS </li>
             <li id="predecessors"> Select its PREDECESSORS </li>
             <li id="strongComponents"> Select STRONG COMPONENT community </li>
         </ul>
-    </div> -->
+    </div>
   
 <script>
 
@@ -1147,7 +1152,7 @@ RouteMap = svgRouteMap.select("g")
 /*        d3.selectAll("selectedEdge")
           .style("fill", "none");*/
 
-        var d = d3.select(this);
+/*        var d = d3.select(this);
         // console.log(function(u, value) {return graph.inEdges(d)});
 
         var findingEdgesId = graph.inEdges(u);
@@ -1155,7 +1160,8 @@ RouteMap = svgRouteMap.select("g")
           .attr("class", "selectedEdge");
           // .style("stroke-width", "4px")
 
-        console.log(findingEdgesId);
+        console.log(findingEdgesId);*/
+
 
         });
 
@@ -1496,25 +1502,59 @@ RouteMap = svgRouteMap.select("g")
                           allPathData = allPath.selectAll("path").attr("d");
                           console.log(allPathData);
 
-            var SubontolyPath = "M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+/*            var SubontolyPath = "M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25";
+
+            console.log("SubontolyPath", SubontolyPath);*/
+
+            var patronNums = /[^\d^.]/;
+             var patronSymbols = /\d+\.?/;
 
 
-            // Divide la cadena en piezas separadas por el patrón anterior y
-            // almacena las piezas en un arreglo llamado PathList
-            var PathList = SubontolyPath.split(patron);
-            var i, longitud;
-            for (i = 0, longitud = PathList.length; i < longitud; i++){
-   /*           if(i%2 == 0)
-                      console.log(+PathList[i]+(+offset));
+////////////////////////
+/*
+M101,115.2109375L110.86249999999998,110.82978515624998C120.725,106.4486328125,140.45,97.68632812499999,158.11666666666667,93.19283854166666C175.78333333333333,88.69934895833333,191.39166666666665,88.47467447916665,199.19583333333333,88.36233723958333L207,88.25 
 */
-              if(i%2 == 0 && i <= n)
-                      console.log(+PathList[i]+(+offset*2));
+
+            //Case ONE-MANY
+            var PathListNums3 = allPathData.split(patronNums);
+            var offset = 3;
+            var n = 7;
+            // 2 steps: n=5
+            // 3 steps: n=7
+            // 4 steps; n=9
+
+            var SubontolyPath2 = allPathData.replace(/\./g,'');
+            var PathListSymbols = SubontolyPath2.split(patronSymbols);
+            var i, longitud;
+            for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
+                if ((i%2 == 0) && (i>(PathListSymbols.length-n))) {
+                    PathListNums3[i] -= -3;
+                }
+                else {
+                    PathListNums3[i] =  PathListNums3[i]; 
+                }
+            }
+
+
+            var SubontolyPathOneMany = "";
+            for (i = 1, longitud = PathListSymbols.length; i < longitud; i++){
+                SubontolyPathOneMany = SubontolyPathOneMany+PathListSymbols[i-1]+PathListNums3[i];
+            }
+
+            console.log("SubontolyPathOneMany", SubontolyPathOneMany)          
+
+
+/////////////////////////////////////////////
+
+
+
+
                               
-  }
+  
                           //Case MANY-ONE
                           //On this case, ADD the "offset" value to the y component (the second element of each point defined by x,y). Each value is separated either by a "," or by a letter. That should affect to the first "n" parameters (n being a controlable parameter). On the following case, the parameters were:
 
-                          var offset = 3;
+                        /*  var offset = 3;
                           var n = 2;
 
 
@@ -1548,7 +1588,7 @@ RouteMap = svgRouteMap.select("g")
                                         .attr("class", "onemanyOuter")
                                         .style("stroke", colorMod)
                                         .style("fill", "none")
-                                        .style("fill", "none");
+                                        .style("fill", "none");*/
 
         
 /*                                  svgGraph.append("path")
@@ -1729,11 +1769,11 @@ svgGraph.append("text")
 
         bindings:
         {
-            'neighbour': function(u) {
+/*            'neighbour': function(u) {
                 
                 //GRAPH Features Possibilities
                 idNeighborsVertex = graph.neighbors(u)
-                // console.log(idNeighborsVertex) 
+                console.log("idNeighborsVertex", idNeighborsVertex) 
 
                 idSuccessorsVertex = graph.successors(u)
                 console.log(idNeighborsVertex) 
@@ -1776,6 +1816,11 @@ svgGraph.append("text")
                             })
                 
 
+            },*/
+
+            'neighbour': function(t) {
+                alert(d3.select(this));
+                myArray = idSuccessorsVertex;
             },
             'antecessors': function(t) {
                 alert('Trigger was '+t.__data__.name+'\nAction was Email');

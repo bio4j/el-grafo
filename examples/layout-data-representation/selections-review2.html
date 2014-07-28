@@ -139,7 +139,7 @@ d3.json("data/GO.json", function(jsonGO) {
 			   		 (i*10);
 			   });
 */
-			var circles2 = svg.selectAll("circle")
+/*			var circles2 = svg.selectAll("circle")
 							.data(newEdges)
 							.enter()
 							.append("circle")	
@@ -198,8 +198,23 @@ svg.selectAll("pathLegend")
 
 	ofu = d3.selectAll(".lalala");
 
-	svg.append(ofu);
+	svg.append(ofu);*/
 
+
+    var lineData = [ { "x": 300,   "y": 200},  { "x": 400,  "y": 100 } ];
+
+    console.log("lineData", lineData);
+    
+    var lineFunction = d3.svg.line()
+                          .x(function(d) { return d.x; })
+                          .y(function(d) { return d.y; })
+                          .interpolate("linear");
+
+    svg.append("line")
+        .attr("d", lineFunction(lineData))
+        .attr("stroke", "blue")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
 
   	});
 		</script>
