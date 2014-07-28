@@ -99,21 +99,21 @@ var mainModulesHeight = 250;
 
 //SVG canvas for GRAPH representation
 var mainGraphWidth = 650;
-var mainGraphHeight = 350;
-var distance1 = 20;     
-var distance2 = 0;     
+var mainGraphHeight = 360;
+var distanceXlegend = 30;     
+var distanceYlegend = 0;     
 
   svgGraph = d3.select("#svgMainGraph")
               .attr("width", mainGraphWidth)
               .attr("height", mainGraphHeight);
   svgGraph.append("g")
-              .attr("id", "grafo")
-            .attr("transform", "translate(" + distance1 +"," + distance1 + ")"); 
+            .attr("id", "grafo");
+
 
   svgGraphLegend = svgGraph.append("g")
               .attr("id", "legend")
               .attr("class", "legend")
-              .attr("transform", "translate(" + distance2 +"," + distance2 + ")"); 
+              .attr("transform", "translate(" + distanceXlegend +"," + distanceYlegend + ")"); 
 
 
 //SVG canvas for ROUTEMAP loading
@@ -468,38 +468,21 @@ d3.json(url, function(json) {
               // .transition(500)
               .run(graph, svgGraph.select("g"));
 
+  //Centering the graphs depending on their size
   wGraph = renderinglayout.graph().width;
   hGraph = renderinglayout.graph().height;
 
+  console.log("wGraph", wGraph);
+  console.log("hGraph", hGraph);
+
+  // var distance1 = 100;     
+  var distanceX = (mainGraphWidth/2)-(wGraph/2);  
+  var distanceY = (mainGraphHeight/2)-(hGraph/2)-20;  
+
+  svgGraph.select("#grafo")
+          .attr("transform", "translate(" + distanceX +"," + distanceY + ")"); 
 
 
-
-/*  var transform = d3.transform()
-      .translate(function(d) { return [wGraph, wGraph+30] });
-
-  svgGraph.select("g")
-        .attr("transform", transform);
-
-
-/*      transition(d3.select("svg"))
-        .attr("width", layout.graph().width + 60)
-        .attr("height", layout.graph().height + 60)
-
-
-/*  //Configuring the renderer-modified:
-  var renderinglayout = renderer.layout(layout)
-              // .edgeTension(.9)   //1=default
-              .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
-              
-              .run(graph, d3.select("svg g"));*/
-  
-  //
-
-
-/*renderinglayout.eachEdge(function(e, value) {
-    console.log(JSON.stringify(value))
-
-});*/
 
 
    renderinglayout.eachNode(function(u, value) {
@@ -1890,11 +1873,11 @@ svgGraphLegend.append("text")
             },*/
 
             'neighbour': function(t) {
-                alert(d3.select(this));
+                alert($("#enzyme"));
                 myArray = idSuccessorsVertex;
             },
             'antecessors': function(t) {
-                alert('Trigger was '+t.__data__.name+'\nAction was Email');
+                alert(t.id +'\nAction was Email');
                 myArray = idSuccessorsVertex;
             },
             'predecessors': function(t) {

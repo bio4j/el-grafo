@@ -223,7 +223,6 @@ function draw0() {
         .attr("width", 20 )
         .attr("height", 1.5 );
 
-
    //Filtering between modules and dependencies
    textToFilter = svgModules.select("g").selectAll("text")
                             .data(newjson0)
@@ -283,7 +282,6 @@ function draw0() {
 
 
 /////////////////////////////////////////
-
 
 
  d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
@@ -350,14 +348,7 @@ function draw0() {
             }
     };
 //////////////
-/*
-    var groupPath = function(d) {
-    return "M" + 
-      d3.geom.hull(d.values.map(function(i) { return [i.x, i.y]; }))
-        .join("L")
-    + "Z";
-    };
-*/
+
     numberModules = graph.nodes.length;
     modulesTemporary = ["0", "1", "2", "3", "4", "5", "6", "7" , "8"];
 
