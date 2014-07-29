@@ -103,7 +103,11 @@ body {
   overflow: hidden;
 }
 
-
+h1 {
+  font-weight: 100;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  fill: grey;
+}
 
 /*text {
   font-weight: 300;
@@ -192,6 +196,6 @@ circle:hover {
   fill: none;
 }*/
 
-svg text {
+/*svg text {
   pointer-events: none;
-}
+}*/

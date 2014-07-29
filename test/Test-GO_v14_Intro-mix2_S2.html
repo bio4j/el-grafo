@@ -410,19 +410,21 @@ function draw0() {
 	var foci = new Array(graph.nodes.length);
 	var links = new Array(graph.nodes.length);
 	for(i = 0, longitud = graph.nodes.length; i < longitud; i++){
-		foci[i] = Foci(xUniprot + 110, yUniprot + 80, graph.nodes[0].label);
+		foci[i] = Foci(xUniprot + i*80 -250, yUniprot + 40, graph.nodes[0].label);
 		links[i]  = Links(nodesVector[i], foci[i]);
 	}
 
 
-/*        linksAux = LinksModules(foci[7], foci[8]);
+        // linksAux = LinksModules(foci[7], foci[8]);
 
         console.log("links[8]", links[8]);
-        console.log("linksAux", linksAux);*/
+        // console.log("linksAux", linksAux);
 
 		
 	var aux = new Array(graph.nodes.length);
+
     var all = nodesVector[0].concat(nodesVector[1]);
+
 	for(i = 2, longitud = graph.nodes.length; i < longitud; i++){
 		if(i+1 != longitud)
 			all = all.concat(nodesVector[i]);
@@ -435,17 +437,27 @@ function draw0() {
 		}
 	}
 
+    // for(i = 2, longitud = graph.nodes.length; i < longitud; i++){
+        
+    //     all = all.concat(nodesVector[i]);
+       
+    // }
 
-	var forceLinks = links[0];
+    console.log("foci[3]", foci[3])
+
+/*    var all = nodes[0].concat(nodes[1]).concat(nodes[2]).concat(nodes[3]).concat(nodes[4]).concat(nodes[5]).concat(nodes[6]).concat(nodes[7]).concat(nodes[8]).concat([             foci[0], foci[1], foci[2], foci[3], foci[4], foci[5], foci[6], foci[7], foci[8] ]);*/
+
+
+	var forceAux = links[0];
 	for(i = 1, longitud = graph.nodes.length; i < longitud; i++)
-		forceLinks = forceLinks.concat(links[i]);
+		forceAux = forceAux.concat(links[i]);
 		
-    force = Force(all, forceLinks);
+    force = Force(all, forceAux);
 
     // forceAux = Force(foci[7].concat(foci[8]), linksAux);
 
-/*    force = Force(all, links[0].concat(links[1]).concat(links[2]).concat(links[3]).concat(links[4]).concat(links[5]).concat(links[6]).concat(links[7]).concat(links[8]).concat(linksAux))
-    */
+/*    force = Force(all, links[0].concat(links[1]).concat(links[2]).concat(links[3]).concat(links[4]).concat(links[5]).concat(links[6]).concat(links[7]).concat(links[8]))*/
+    
     console.log("all", all);
     console.log("force", force);
     // console.log("forceAux", forceAux);
@@ -591,7 +603,16 @@ function draw0() {
 			.style("stroke", "#ccc");
     }
 
+/*    var lineFunction = d3.svg.line()
+                          .x(function(d) { return d.x; })
+                          .y(function(d) { return d.y; })
+                          .interpolate("linear");*/
 
+/*  var linkAux = svgModulesAux2.selectAll(".link")
+      .data(linkAux)
+      .enter()
+      .append("path")
+      .attr("class", "link");*/
 
     var allMap = all.map(function(d) { return [ d.x, d.y ]});
     console.log("all.map", allMap);

@@ -34,7 +34,7 @@
 
     <style>
       /* show or hide the foci for debugging */
-      .foci-0, .foci-1, .foci-2, .foci-3, .foci-4, .foci-5, .foci-6, .foci-7, .foci-8{
+      .foci-0, .foci-1, .foci-2, .foci-3, .foci-4, .foci-5, .foci-6, .foci-7{
         display: none;
       }
 
@@ -249,7 +249,6 @@ function draw0() {
         .attr("y", 55+140 )
         .attr("font-size", "11px");
 
-//////////////////////
 
  //Function for each module url:
     var urlFunction = function(d) {
@@ -278,8 +277,6 @@ function draw0() {
 
           });
 
-//////////////////////
-
 })
 }
 
@@ -287,7 +284,7 @@ function draw0() {
 /////////////////////////////////////////
 
 
- d3.json("data/rev_schema_forceLayout.json", function(error, graph) {
+ d3.json("data/rev_schema_forceLayout_CLEAN.json", function(error, graph) {
   
   
   var nodes = graph.nodes
@@ -356,7 +353,7 @@ function draw0() {
     numberModules = graph.nodes.length;
 
     /////////////////////////////// TO IMPLEMENT
-    modulesTemporary = ["0", "1", "2", "3", "4", "5", "6", "7" , "8"];
+    modulesTemporary = ["0", "1", "2", "3", "4", "5", "6", "7"];
 
     var hull = svgModulesAux2
         .selectAll("path")
@@ -576,9 +573,11 @@ function draw0() {
                 .data([d3.geom.hull(all.map(function(d) { return [ d.x, d.y ]; }))])
                 .attr("d", function(d) { return "M" + d.join("L") + "Z"; });*/
 
-            var allNodes = []
+            // var allNodes = []
+    /////////////////////////////// TO IMPLEMENT
+
             // var multiplePaths = d3.geom.hull(function(d,i) {return allNodes[i]})
-            var multiplePaths = d3.geom.hull([nodesVector[5], nodesVector[7], nodesVector[8]]);
+            var multiplePaths = d3.geom.hull([nodesVector[4], nodesVector[6], nodesVector[7]]);
             // var multiplePaths = d3.geom.hull(nodes);
             // console.log(multiplePaths);
 
@@ -810,14 +809,14 @@ function draw0() {
 
 
     //Filtering all edges:
-    d3.selectAll(".edge-0, .edge-1, .edge-2, .edge-3, .edge-4, .edge-5, .edge-6, .edge-7, .edge-8")
+    d3.selectAll(".edge-0, .edge-1, .edge-2, .edge-3, .edge-4, .edge-5, .edge-6, .edge-7")
         .transition(500)
         .attr("r", .7);
 
 /*    names = [graph.nodes[0].label, graph.nodes[1].label, graph.nodes[2].label, graph.nodes[3].label, graph.nodes[4].label, graph.nodes[5].label, graph.nodes[6].label, graph.nodes[7].label,  graph.nodes[8].label ];*/
     
     // focis = [foci0, foci1, foci2, foci3, foci4, foci5, foci6, foci7, foci8 ];
-    focis = [foci[0], foci[1], foci[2], foci[3], foci[4], foci[5], foci[6], foci[7], foci[8] ];
+    focis = [foci[0], foci[1], foci[2], foci[3], foci[4], foci[5], foci[6], foci[7]];
 
     console.log("focis", focis);
 
@@ -838,38 +837,12 @@ function draw0() {
         .attr("font-family", "sans-serif")
         .attr("font-size", "10px")
         .attr("fill", function(d, i) { return color(i)} );*/
-
-
-//////////////////////
+ 
 
  //Function for each module url:
     var urlFunction = function(d) {
       return ("data/rev_" + d + ".json")
     };
-
-
-/*    //Onclick on each Module, highlight it, define the url path and run the dagre-d3 lib
-    svgModules.select("g").selectAll("circle")
-        .on("click", function(d) {
-            svgModules.select("g").selectAll("circle")
-              .style("stroke-width", 0);
-
-            d3.select(this)
-              .style("stroke", d3.select(this).attr("fill"))
-              .style("stroke-width", 10)
-              .style("stroke-opacity", .3);
-            console.log(d.id);
-            url = urlFunction(d.id);
-            console.log(url);
-            colorMod = d3.select(this).attr("fill");
-            console.log(colorMod);
-      color = colorMod.replace("#",""); 
-      location.href="Test-GO_v15_Main.html?url="+url+"&color="+color;
-            return draw();
-
-          });*/
-
-//////////////////////
 
 
     labels = svgModulesAux2
@@ -907,8 +880,6 @@ function draw0() {
             return draw();
 
           });
-
-
 
     force.start();
     

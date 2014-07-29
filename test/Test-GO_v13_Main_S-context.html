@@ -65,14 +65,16 @@
     <div class="contextMenu" id="cntxtMenu">
         <ul>
             <li id="neighbour"> Select its NEIGHBOUR </li>
+            <li id="antecessors"> Select its ANTECESSORS </li>
             <li id="predecessors"> Select its PREDECESSORS </li>
-            <li id="successors"> Select its SUCCESSORS </li>
             <li id="strongComponents"> Select STRONG COMPONENT community </li>
         </ul>
     </div>
   
 <script>
 
+var cosa;
+var id;
 
 //Parameters from url
 var paramstr = window.location.search.substr(1);
@@ -100,9 +102,8 @@ var mainModulesHeight = 250;
 
 //SVG canvas for GRAPH representation
 var mainGraphWidth = 650;
-var mainGraphHeight = 360;
-var distanceXlegend = 30;     
-var distanceYlegend = 0;     
+var mainGraphHeight = 350;
+var distance2 = 0;     
 
   svgGraph = d3.select("#svgMainGraph")
               .attr("width", mainGraphWidth)
@@ -114,7 +115,7 @@ var distanceYlegend = 0;
   svgGraphLegend = svgGraph.append("g")
               .attr("id", "legend")
               .attr("class", "legend")
-              .attr("transform", "translate(" + distanceXlegend +"," + distanceYlegend + ")"); 
+              .attr("transform", "translate(" + distance2 +"," + distance2 + ")"); 
 
 
 //SVG canvas for ROUTEMAP loading
@@ -469,7 +470,6 @@ d3.json(url, function(json) {
               // .transition(500)
               .run(graph, svgGraph.select("g"));
 
-  //Centering the graphs depending on their size
   wGraph = renderinglayout.graph().width;
   hGraph = renderinglayout.graph().height;
 
@@ -478,12 +478,44 @@ d3.json(url, function(json) {
 
   // var distance1 = 100;     
   var distanceX = (mainGraphWidth/2)-(wGraph/2);  
-  var distanceY = (mainGraphHeight/2)-(hGraph/2)-20;  
+  var distanceY = (mainGraphHeight/2)-(hGraph/2);  
 
   svgGraph.select("#grafo")
           .attr("transform", "translate(" + distanceX +"," + distanceY + ")"); 
+          // .attr("transform", "translate(" + distanceX +",0)"); 
 
 
+/*var mainGraphWidth = 650;
+
+var mainGraphHeight = 350;*/
+
+
+/*  var transform = d3.transform()
+      .translate(function(d) { return [wGraph, wGraph+30] });
+
+  svgGraph.select("g")
+        .attr("transform", transform);
+
+
+/*      transition(d3.select("svg"))
+        .attr("width", layout.graph().width + 60)
+        .attr("height", layout.graph().height + 60)
+
+
+/*  //Configuring the renderer-modified:
+  var renderinglayout = renderer.layout(layout)
+              // .edgeTension(.9)   //1=default
+              .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
+              
+              .run(graph, d3.select("svg g"));*/
+  
+  //
+
+
+/*renderinglayout.eachEdge(function(e, value) {
+    console.log(JSON.stringify(value))
+
+});*/
 
 
    renderinglayout.eachNode(function(u, value) {
@@ -1005,6 +1037,13 @@ RouteMap = svgRouteMap.select("g")
           });*/
           
 
+	d3.selectAll(".node rect")
+       .on("mousedown", function(u, value) {
+			cosa = u;
+			id = d3.select(this);
+	   });
+	   
+	   
   // function Options() {
   // Implemented: now on click 
   d3.selectAll(".node rect")
@@ -1028,6 +1067,7 @@ RouteMap = svgRouteMap.select("g")
             .style("stroke-width", 4);
 
 
+			
           //GRAPH Features Possibilities
           idNeighborsVertex = graph.neighbors(u)
           // console.log(idNeighborsVertex) 
@@ -1037,8 +1077,6 @@ RouteMap = svgRouteMap.select("g")
 
           idPredecessorsVertex = graph.predecessors(u)
           // console.log(idNeighborsVertex) 
-    
-
 
 
 
@@ -1797,17 +1835,8 @@ svgGraphLegend.append("text")
 
 ////////////////////////////////////
 
-//Parameters for context menu
-var cosa;
-var id;
 
 
-  d3.selectAll(".node rect")
-       .on("mousedown", function(u, value) {
-      cosa = u;
-      id = d3.select(this);
-     });
-     
 
 // +info here http://www.trendskitchens.co.nz/jquery/contextmenu/
 // CONTEXT MENU!!
@@ -1837,7 +1866,15 @@ var id;
                 
                 //GRAPH Features Possibilities
                 idNeighborsVertex = graph.neighbors(cosa)
-                // console.log("idNeighborsVertex", idNeighborsVertex) 
+                console.log("idNeighborsVertex", idNeighborsVertex) 
+
+                idSuccessorsVertex = graph.successors(cosa)
+                console.log(idNeighborsVertex) 
+
+                idPredecessorsVertex = graph.predecessors(cosa)
+                // console.log(idNeighborsVertex) 
+
+                myArray=idNeighborsVertex;
 
                 return d3.selectAll(".node.enter")
                             .filter(function(d) { 
@@ -1845,6 +1882,8 @@ var id;
                                 selectingThisId = selectingThis.attr("id")
 
                                 myArray = idNeighborsVertex
+                                // myArray = idSuccessorsVertex
+                                // myArray = idPredecessorsVertex
 
                                 //Array Based method with `indexOf` to see whether the value matches one of the values in the array
                                 if (myArray.indexOf(selectingThisId) >= 0)  {
@@ -1870,18 +1909,31 @@ var id;
                 
 
             },
+/*
+            'neighbour': function(t) {
+                alert(cosa);
+                myArray = idSuccessorsVertex;
+            },*/
+            'antecessors': function(u) {
+    //GRAPH Features Possibilities
+                idNeighborsVertex = graph.neighbors(cosa)
+                console.log("idNeighborsVertex", idNeighborsVertex) 
 
-            'predecessors': function(d) {
-                
-                //GRAPH Features Possibilities
+                idSuccessorsVertex = graph.successors(cosa)
+                console.log(idNeighborsVertex) 
+
                 idPredecessorsVertex = graph.predecessors(cosa)
                 // console.log(idNeighborsVertex) 
+
+                myArray=idNeighborsVertex;
 
                 return d3.selectAll(".node.enter")
                             .filter(function(d) { 
                                 selectingThis = d3.select(this)
                                 selectingThisId = selectingThis.attr("id")
 
+                                 // myArray = idNeighborsVertex
+                                // myArray = idSuccessorsVertex
                                  myArray = idPredecessorsVertex
 
                                 //Array Based method with `indexOf` to see whether the value matches one of the values in the array
@@ -1905,41 +1957,12 @@ var id;
                                                   .style("opacity", .1);      
                                  };             
                             })
+							
             },
-            'successors': function(t) {
-               
-                //GRAPH Features Possibilities
-                idSuccessorsVertex = graph.successors(cosa)
-                console.log(idNeighborsVertex) 
+            'predecessors': function(t) {
+                alert('Trigger was '+t.__data__.name+'\nAction was Save');
+                myArray = idPredecessorsVertex;
 
-                return d3.selectAll(".node.enter")
-                            .filter(function(d) { 
-                                selectingThis = d3.select(this)
-                                selectingThisId = selectingThis.attr("id")
-
-                                myArray = idSuccessorsVertex
-
-                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                                if (myArray.indexOf(selectingThisId) >= 0)  {
-                                    
-                                    // console.log(selectingThisId)  
-                                    selectingThis.selectAll("rect")
-                                                  .transition(400)
-                                                  // .style("fill", "orange")
-                                                  .style("opacity", .8);         
-
-                                }
-                                
-                                // else { console.log("buuu") }              // WORKS!! :D
-                                else { selectingThis.selectAll("rect")
-                                                  .transition(400)
-                                                  .style("opacity", .1);      
-                                        selectingThis.selectAll("text")
-                                                  .transition(400)
-                                                  // .attr("text-anchor", "middle")
-                                                  .style("opacity", .1);      
-                                 };             
-                            })
             },
             'strongComponents': function(t) {
                 $('g.node').remove();
