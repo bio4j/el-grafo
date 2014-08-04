@@ -10,7 +10,7 @@
 <script src="scripts/lib/graphlib.js"></script>
 <script src="scripts/lib/dagre-d3.js"></script>
 
-<script src='http://code.jquery.com/jquery-1.8.3.js'></script>
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
 <script src="http://www.trendskitchens.co.nz/jquery/contextmenu/jquery.contextmenu.r2.js"></script>
 <script src="scripts/lib/colorbrewer.js"></script>
 
@@ -82,8 +82,9 @@ for ( var i = 0; i < paramarr.length; i++) {
     var tmparr = paramarr[i].split("=");
     params[tmparr[0]] = tmparr[1];
 }
-url = params['url'];
-colorMod = "#"+params['color'];
+url = params["url"];
+colorMod = "#"+params["color"];
+console.log("colorMod from URL", colorMod)
 
 //SVG canvas for modules loading
 var mainModulesWidth = 800;
@@ -108,7 +109,6 @@ var distanceYlegend = 0;
               .attr("height", mainGraphHeight);
   svgGraph.append("g")
             .attr("id", "grafo");
-
 
   svgGraphLegend = svgGraph.append("g")
               .attr("id", "legend")
@@ -185,7 +185,7 @@ function draw() {
       console.log(ModulesArray);
       console.log(json0[3].label);*/
 
-    console.log(json0);
+    console.log("json0", json0);
 
     var newjson0 = json0.map(function(x) {
       function colorModule(d, i) { return color(i); }
@@ -194,11 +194,13 @@ function draw() {
             Nvertex: x.vertexTypes.length,
             Nedges: x.edgeTypes.length,
             Dependencies: x.dependencies.length,
-            Color: colorModule(x)
+            // Color: colorModule(x)
+            Color: bio4jColors[i]
+
             };
         });
       
-    console.log(newjson0);
+    console.log("newjson0", newjson0);
 
 ////////////////////////////////////////////////////////////
 
@@ -259,6 +261,7 @@ function draw() {
  
 //////////////
 
+console.log("colorMod", color);
 
    //Function for each module url:
     var urlFunction = function(d) {
@@ -281,7 +284,12 @@ function draw() {
             console.log(url);
             colorMod = d3.select(this).attr("fill");
             console.log(colorMod);
+            if (dependencies.length>0) {
             return draw();
+            }
+            else {return 
+              console.log("dependencies!!!");
+            }
 
           });
 
@@ -293,7 +301,22 @@ function draw() {
 
 // 1-MODEL/DATA/FROM/SERVICE
 // Loading GO data from local file after and transforming json initial structure.
+
 d3.json(url, function(json) {
+      
+      url1 = urlFunction(json.dependencies[0]);
+      url2 = urlFunction(json.dependencies[1]);
+
+// console.log("colorMod", colorMod);
+// var colorMod = "red";
+// console.log("colorMod", colorMod);
+
+
+d3.json(url1, function(json1) {
+  d3.json(url2, function(json2) {
+
+      console.log("url1", url1);
+      console.log("url2", url2);
 
 
     // -------> 2_AdaptJSON-GraphLib
@@ -301,43 +324,89 @@ d3.json(url, function(json) {
     // 2-ADAPT/JSON/DATA/GRAPHLIB
     // Transforming json vertex structure with a .map function:
 
-    var module = json.label;
-    var properties = json.propertyTypes;
+    console.log("json1", json1);
+    console.log("json2", json2);
 
-    console.log("Original json structure of vertexTypes from GO file:")
-    console.log(json.vertexTypes)
 
-    var newVertex = json.vertexTypes.map(function(x) {
+    var module1 = json1.label;
+    var module2 = json2.label;
+
+    console.log("module1", module1);
+    console.log("module2", module2);
+
+    var properties1 = json1.propertyTypes;
+    var properties2 = json2.propertyTypes;
+
+    console.log("Original vertexTypes structure1", json1.vertexTypes)
+    console.log("Original vertexTypes structure2", json2.vertexTypes)
+
+
+    var newVertex1 = json1.vertexTypes.map(function(x) {
           return {
             id: x.label,        
-            value: { module: module, label: x.label, propertyTypes: x.properties }            
+            value: { module: module1, label: x.label, propertyTypes: x.properties }            
             };
         });
-      
-    console.log("Transformed structure of vertexTypes for Graphlib:")
-    console.log(newVertex);
+ 
+     var newVertex2 = json2.vertexTypes.map(function(x) {
+          return {
+            id: x.label,        
+            value: { module: module2, label: x.label, propertyTypes: x.properties }            
+            };
+        });
+
+    console.log("Transformed vertexTypes structure1", newVertex1)
+    console.log("Transformed vertexTypes structure2", newVertex2)
+
+
+    var newVertex = newVertex1.concat(newVertex2);
+
+    console.log("newVertex-concat", newVertex);
+
+
 
     //////
 
     // Transforming json edges structure with a .map function:
     console.log("Original json structure of edgeTypes from GO file:")
-    console.log(json.edgeTypes)
+    console.log("edges1", json1.edgeTypes);
+    console.log("edges2", json2.edgeTypes);
+    console.log("json", json.edgeTypes);
 
-        var newEdges = json.edgeTypes.map(function(x) {
+    var newEdges1 = json1.edgeTypes.map(function(x) {
           return {
             u: x.source.type,     
             v: x.target.type,
-            value: { module: module, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
+            value: { module: module1, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
           };
         });
+ 
+     var newEdges2 = json2.edgeTypes.map(function(x) {
+          return {
+            u: x.source.type,     
+            v: x.target.type,
+            value: { module: module2, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
+          };
+        });
+
+        var newEdgesDep = json.edgeTypes.map(function(x) {
+          return {
+            u: x.source.type,     
+            v: x.target.type,
+            value: { module: "rrrr", label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
+          };
+        });
+
+    newEdges = newEdges1.concat(newEdges2).concat(newEdgesDep);
     
     console.log("Transformed structure of edgeTypes for Graphlib:")
-    console.log(newEdges);
+    console.log("newEdges", newEdges);
 
 
     //  2_AdaptJSON-GraphLib  < -------
 
   ////////
+
 
 
   // Using the GRAPHLIB GRAPH as input for DAGRE-D3:
@@ -355,6 +424,8 @@ d3.json(url, function(json) {
     svgNodes.attr("id", function(u) { return  u });
     return svgNodes;
   });
+
+
 
 
   //alter the drawEdges function:
@@ -383,22 +454,22 @@ d3.json(url, function(json) {
 
 /* var DrawEdgePaths = function(g, root) {
                 var svgEdgePaths = root
-                    .selectAll('g.edgePath')
-                    .classed('enter', false)
+                    .selectAll("g.edgePath")
+                    .classed("enter", false)
                     .data(g.edges(), function(e) {
                         return e;
                     });
 
                 svgEdgePaths
                     .enter()
-                    .append('g')
-                    .attr('class', 'edgePath enter')
-                    .append('path')
-                    .style('opacity', 0)
-                    .attr('marker-end', 'url(#arrowhead)');
+                    .append("g")
+                    .attr("class", "edgePath enter")
+                    .append("path")
+                    .style("opacity", 0)
+                    .attr("marker-end", "url(#arrowhead)");
 
                 this._transition(svgEdgePaths.exit())
-                    .style('opacity', 0)
+                    .style("opacity", 0)
                     .remove();
 
                 return svgEdgePaths;
@@ -423,7 +494,7 @@ d3.json(url, function(json) {
                     var p1 = points.length === 0 ? source : points[points.length - 1];
 
                     points.unshift(intersectRect(source, p0));
-                    // TODO: use bpodgursky's shortening algorithm here
+                    // TODO: use bpodgursky"s shortening algorithm here
                     points.push(intersectRect(target, p1));
 
                     return d3.svg.line()
@@ -438,12 +509,12 @@ d3.json(url, function(json) {
                     (points);
                 }
 
-                svgEdgePaths.filter('.enter').selectAll('path')
-                    .attr('d', calcPoints);
+                svgEdgePaths.filter(".enter").selectAll("path")
+                    .attr("d", calcPoints);
 
-                this._transition(svgEdgePaths.selectAll('path'))
-                    .attr('d', calcPoints)
-                    .style('opacity', 1);
+                this._transition(svgEdgePaths.selectAll("path"))
+                    .attr("d", calcPoints)
+                    .style("opacity", 1);
             }*/
 
 /////////////////////////
@@ -489,6 +560,8 @@ d3.json(url, function(json) {
   renderinglayout.eachEdge(function(e, u, v, value) {
      console.log("EdgeTypes " + e + ": " + JSON.stringify(value));
   });
+
+
 
 
 
@@ -541,6 +614,8 @@ d3.json(url, function(json) {
 ////////////////////////////////////////////////////////////
 
 
+
+
     // A. SOME DIAGRAPH FEATURES:
     console.log("Number of VERTEX on the Graph: " + graph.order());
     console.log("Number of EDGES on the Graph: " + graph.size());
@@ -558,7 +633,7 @@ d3.json(url, function(json) {
 
 
     // SOURCES, SINKS -> GLOBAL (general:node)
-    console.log("Graph sources: " + graph.sources()); // There's no source on the graph due the self-linking GoTerm node
+    console.log("Graph sources: " + graph.sources()); // There"s no source on the graph due the self-linking GoTerm node
     console.log("Graph sinks: " + graph.sinks());
 
 
@@ -622,6 +697,17 @@ d3.json(url, function(json) {
 d3.selectAll(".node rect")
     .style("fill", colorMod);
 
+//TEMPORARY COLORS BY HANDDDD
+d3.selectAll("[module=go]").selectAll("rect")
+    .style("fill", "red");
+
+d3.selectAll("[module=uniprot]").selectAll("rect")
+    .style("fill", "blue");
+
+d3.selectAll("[module=rrrr]").selectAll("path")
+    .style("stroke", "red")
+    .style("stroke-width", 2.0);
+
 
 svgGraph.selectAll("#moduleTitle")
         .remove();
@@ -630,7 +716,7 @@ text = svgGraph.append("text")
           .attr("id", "moduleTitle")
           .attr("x", mainGraphWidth/2)
           .attr("y", mainGraphHeight - 30)
-          .text("Graph representation: '" + module + "' module")
+          .text("Graph representation: " + module1 + "-" +module2 + " dependency")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
           .attr("font-weight", "bold")
@@ -653,7 +739,6 @@ text2 = svgGraph.append("text")
           .style("text-anchor", "middle");
 
 
-
 ////////////////////////////////////////////////////////////
 
 
@@ -663,7 +748,7 @@ text2 = svgGraph.append("text")
     // nodes on click! Alert windows just to test everything is working or not:
     d3.selectAll(".node rect")
          .on("click", function(u, value) {
-             console.log( "\n" + "Vertex '" + u + "'\n" + "My neighbors nodes are '" + graph.neighbors(u) + "'" + "\n" + "Module: '" + graph.node(u).module + "' & PropertyTypes: '" + graph.node(u).propertyTypes + "'")
+             console.log( "\n" + "Vertex "" + u + ""\n" + "My neighbors nodes are "" + graph.neighbors(u) + """ + "\n" + "Module: "" + graph.node(u).module + "" & PropertyTypes: "" + graph.node(u).propertyTypes + """)
           });*/
 
 
@@ -822,7 +907,7 @@ text2 = svgGraph.append("text")
               })*/
 
 
-/*if (['banana', 'lemon', 'mango', 'pineapple'].indexOf(fruit) >= 0) {
+/*if (["banana", "lemon", "mango", "pineapple"].indexOf(fruit) >= 0) {
   .......
 }*/
 
@@ -866,7 +951,7 @@ text2 = svgGraph.append("text")
 /*    d3.selectAll(".node rect")
         .append("title")
         .text(function(u) {
-              return "Click to see '" + u + "'' Neighbor vertex";       //WORKS :)
+              return "Click to see "" + u + """ Neighbor vertex";       //WORKS :)
         });*/
 
 
@@ -895,7 +980,7 @@ text2 = svgGraph.append("text")
               .attr("font-weight", "normal")
               .attr("fill", "#ED553B")
               .text(function(u) {                
-                    return "Click to see '" + ParentNodeID + "'' Neighbor vertex";     
+                    return "Click to see "" + ParentNodeID + """ Neighbor vertex";     
               });
         })
 
@@ -910,7 +995,7 @@ text2 = svgGraph.append("text")
     d3.selectAll(".node rect")
          .on("mouseover", function(d) {
 
-          //Get this bar's x/y values, then augment for the tooltip
+          //Get this bar"s x/y values, then augment for the tooltip
           var xPosition = parseFloat(d3.select(this).attr("x"));
           var yPosition = parseFloat(d3.select(this).attr("y"));
 
@@ -920,7 +1005,7 @@ text2 = svgGraph.append("text")
             .style("top", yPosition + "px")           
             .select("#value")
             .text(function(u) {
-                return "Click to see '" + u + "'' Neighbor vertex";     
+                return "Click to see "" + u + """ Neighbor vertex";     
              });
          
           //Show the tooltip
@@ -1255,19 +1340,19 @@ d3.selectAll(".node rect")
 ////////////////////////////
 
   //Modifying the edge arrowheads:
-/*      .append('svg:defs')
-        .append('svg:marker')
-          .attr('id', 'arrowhead')
-          .attr('viewBox', '0 0 10 10')
-          .attr('refX', 8)
-          .attr('refY', 5)
-          .attr('markerUnits', 'strokewidth')
-          .attr('markerWidth', 8)
-          .attr('markerHeight', 5)
-          .attr('orient', 'auto')
-          .attr('style', 'fill: #333')
-          .append('svg:path')
-            .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+/*      .append("svg:defs")
+        .append("svg:marker")
+          .attr("id", "arrowhead")
+          .attr("viewBox", "0 0 10 10")
+          .attr("refX", 8)
+          .attr("refY", 5)
+          .attr("markerUnits", "strokewidth")
+          .attr("markerWidth", 8)
+          .attr("markerHeight", 5)
+          .attr("orient", "auto")
+          .attr("style", "fill: #333")
+          .append("svg:path")
+            .attr("d", "M 0 0 L 10 5 L 0 10 z");
   }
 }*/
   
@@ -1280,11 +1365,11 @@ d3.selectAll(".node rect")
     .append("circle")
     // .style("fill", colorMod.darker)
     .style("fill", d3.rgb(colorMod).darker(3))
-    .attr('viewBox', '-20 -20 20 20')
-    .attr('refX', 12)
-    .attr('refY', 0)
-    .attr('markerWidth', 12)
-    .attr('markerHeight', 12)
+    .attr("viewBox", "-20 -20 20 20")
+    .attr("refX", 12)
+    .attr("refY", 0)
+    .attr("markerWidth", 12)
+    .attr("markerHeight", 12)
     .attr("cx", 3)
     .attr("cy", 3)
     .attr("r", 6);*/
@@ -1293,17 +1378,17 @@ d3.selectAll(".node rect")
     .append("circle")
     // .style("fill", colorMod.darker)
     .style("fill", d3.rgb(colorMod).darker(2))
-    .attr('viewBox', '30 30 30 30')
-    .attr('refX', 0)
-    .attr('refY', 6)
-    .attr('markerWidth', 30)
-    .attr('markerHeight', 30)
+    .attr("viewBox", "30 30 30 30")
+    .attr("refX", 0)
+    .attr("refY", 6)
+    .attr("markerWidth", 30)
+    .attr("markerHeight", 30)
     .attr("cx", 0)
     .attr("cy", 6)
     .attr("r", 12);
 
 
-    // .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+    // .attr("d", "M 0 0 L 10 5 L 0 10 z");
 
 
   //Some generic parameters for arity paths
@@ -1356,7 +1441,7 @@ d3.selectAll(".node rect")
                                 .style("stroke", colorMod)
                                 .style("fill", "none")
                                 .style("fill", "none"),
-        /*                        .attr('marker-end', 'url(#arrowhead)')*/
+        /*                        .attr("marker-end", "url(#arrowhead)")*/
 
                         svgGraph.select("g.edgePaths").append("path")
                                 .attr("d", allPathData)
@@ -1457,13 +1542,13 @@ d3.selectAll(".node rect")
                       }); */
 
 /*                    .select("url#arrowhead")
-                    .remove();*/                //doesn't work yet
+                    .remove();*/                //doesn"t work yet
                    
 
 /*      var pathEl = manyMany.node();
 
       var pathLength = pathEl.getTotalLength();
-      console.log('path length: ', pathLength);
+      console.log("path length: ", pathLength);
 
       var pathPoint = pathEl.getPointAtLength(pathLength*0.8);
 */
@@ -1488,7 +1573,7 @@ d3.selectAll(".node rect")
             //Case MANY-ONE
             var PathListNums4Down = allPathData.split(patronNums);
 
-            var SubontolyPath4 = allPathData.replace(/\./g,'');
+            var SubontolyPath4 = allPathData.replace(/\./g,"");
             var PathListSymbols = SubontolyPath4.split(patronSymbols);
             var i, longitud;
             for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
@@ -1515,7 +1600,7 @@ d3.selectAll(".node rect")
             
             console.log("PathListNums4Up", PathListNums4Up);
 
-            var SubontolyPath4 = allPathData.replace(/\./g,'');
+            var SubontolyPath4 = allPathData.replace(/\./g,"");
             var PathListSymbols = SubontolyPath4.split(patronSymbols);
             console.log("PathListSymbols", PathListSymbols);
 
@@ -1579,7 +1664,7 @@ d3.selectAll(".node rect")
             //Case ONE-MANY
             var PathListNums3Down = allPathData.split(patronNums);
 
-            var SubontolyPath2 = allPathData.replace(/\./g,'');
+            var SubontolyPath2 = allPathData.replace(/\./g,"");
             var PathListSymbols = SubontolyPath2.split(patronSymbols);
             var i, longitud;
             for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
@@ -1606,7 +1691,7 @@ d3.selectAll(".node rect")
             
             console.log("PathListNums3Up", PathListNums3Up);
 
-            var SubontolyPath3 = allPathData.replace(/\./g,'');
+            var SubontolyPath3 = allPathData.replace(/\./g,"");
             var PathListSymbols = SubontolyPath3.split(patronSymbols);
             console.log("PathListSymbols", PathListSymbols);
 
@@ -1848,27 +1933,27 @@ var id;
 // CONTEXT MENU!!
 
    //right click menu items
-    $("g.nodes").contextMenu('cntxtMenu',
+    $("g.nodes").contextMenu("cntxtMenu",
     {
         itemStyle: {
-            fontFamily : 'sans-serif',
-            fontSize: '12px',
+            fontFamily : "sans-serif",
+            fontSize: "12px",
        
-/*            backgroundColor : '#666',
-            color: 'white',*/
-            border: 'none',
-            padding: '1px'
+/*            backgroundColor : "#666",
+            color: "white",*/
+            border: "none",
+            padding: "1px"
         },
 
          itemHoverStyle: {
-            // color: '#fff',
-            backgroundColor: 'lightgrey',
-            border: 'none'
+            // color: "#fff",
+            backgroundColor: "lightgrey",
+            border: "none"
         },
 
         bindings:
         {
-            'neighbour': function(u) {
+            "neighbour": function(u) {
 
                 //GRAPH Features Possibilities
                 idNeighborsVertex = graph.neighbors(cosa)
@@ -1922,7 +2007,7 @@ var id;
 
             },
 
-            'predecessors': function(d) {
+            "predecessors": function(d) {
                 
                 //GRAPH Features Possibilities
                 idPredecessorsVertex = graph.predecessors(cosa)
@@ -1973,7 +2058,7 @@ var id;
                                  };             
                             })
             },
-            'successors': function(t) {
+            "successors": function(t) {
                
                 //GRAPH Features Possibilities
                 idSuccessorsVertex = graph.successors(cosa)
@@ -2025,8 +2110,8 @@ var id;
                             })
             },
             //TO DO!!
-/*            'strongComponents': function(t) {
-                $('g.node').remove();
+/*            "strongComponents": function(t) {
+                $("g.node").remove();
             }*/
         }
     });
@@ -2078,7 +2163,7 @@ var id;
       //On click, update with new data      
         .on("click", function() { 
 
-          // doesn't work well, all the time shows the first ite "GoTerm"
+          // doesn"t work well, all the time shows the first ite "GoTerm"
             d3.select("body")
                 .data(newVertex)
                 // .enter()
@@ -2095,7 +2180,7 @@ var id;
       //On click, update with new data      
         .on("click", function(d) { 
 
-          // doesn't work well, all the time shows the first ite "GoTerm"
+          // doesn"t work well, all the time shows the first ite "GoTerm"
             d3.select("this").select("text")
                             .text(function(d) { 
                               return d.value.label })
@@ -2158,9 +2243,14 @@ var id;
             var newNumber2 = Math.floor(Math.random() * maxRange);  //New random integer
             dataset.push([newNumber1, newNumber2]);         //Add new number to array
           }*/
-      });   
+
+
+   }); 
   });
-  }
+ });
+});
+
+}
 
 
 </script>

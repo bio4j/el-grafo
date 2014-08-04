@@ -124,7 +124,7 @@
         ],
         "source": {
             "type": "GoTerm",
-            "arity": "many"
+        "arity": "many"
         },
         "target": {
             "type": "SubOntologies",

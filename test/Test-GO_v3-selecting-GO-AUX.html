@@ -8,6 +8,9 @@
 <script src="scripts/lib/graphlib.js"></script>
 <script src="scripts/lib/dagre-d3.js"></script>
 
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://www.trendskitchens.co.nz/jquery/contextmenu/jquery.contextmenu.r2.js"></script>
+
 <script src="scripts/alg/topsort.js"></script>
 <script src="scripts/alg/tarjan.js"></script>
 <script src="scripts/alg/components.js"></script>
@@ -36,6 +39,16 @@
   <p><strong>Important Label Heading</strong></p>
   <p><span id="value">100</span>%</p>
 </div> -->
+
+    <div class="contextMenu" id="cntxtMenu">
+        <ul>
+            <li id="neighbour"> Select its NEIGHBOUR </li>
+            <li id="predecessors"> Select its PREDECESSORS </li>
+            <li id="strongly-connected"> strongly-connected </li>
+            <li id="successors"> Select its SUCCESSORS </li>
+            <!-- <li id="strongComponents"> Select STRONG COMPONENT community </li> -->
+        </ul>
+    </div>
 
 <script>
 
@@ -579,6 +592,343 @@ text = d3.select("body")
 
           });*/
 
+
+////////////////////////////////////
+
+//Parameters for context menu
+var cosa;
+var id;
+
+
+  d3.selectAll(".node rect")
+       .on("mousedown", function(u, value) {
+      cosa = u;
+      id = d3.select(this);
+
+      // UPDATE to normal status
+      d3.selectAll(".node rect")
+         .attr("transform", "scale(1)")
+         .style("fill", "teal")
+         .style("opacity", .4)
+         .style("stroke", "#999")
+         .style("stroke-width", 1);
+      d3.selectAll(".node text") 
+          .style("font-weight", "normal")
+          .style("font-size", "14px")
+          .style("opacity", 1);
+
+      // HIGHLIGHT the vertex clicked
+      d3.select(this)
+          .style("opacity", .8)     
+          .style("stroke", "#ED553B")
+          .style("stroke-width", 4);
+
+
+      d3.select(this)
+            .transition(400)
+            .attr("transform", "scale(1.1)")
+            .style("opacity", .8);
+
+      // console.log(d3.select(this)[0][0].parentNode);
+      // console.log(d3.select(this.parentNode));
+      
+      d3.select(this.parentNode).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1);
+
+        // console.log(function(u, value) {return graph.inEdges(d)});
+
+/*        var findingEdgesId = graph.inEdges(u);
+        d3.select("#"+ findingEdgesId)
+          .attr("class", "selectedEdge");
+          // .style("stroke-width", "4px")
+
+        console.log(findingEdgesId);*/
+
+     });
+     
+
+// +info here http://www.trendskitchens.co.nz/jquery/contextmenu/
+// CONTEXT MENU!!
+
+   //right click menu items
+    $("g.nodes").contextMenu("cntxtMenu",
+    {
+        itemStyle: {
+            fontFamily : "sans-serif",
+            fontSize: "12px",
+       
+/*            backgroundColor : "#666",
+            color: "white",*/
+            border: "none",
+            padding: "1px"
+        },
+
+         itemHoverStyle: {
+            // color: "#fff",
+            backgroundColor: "lightgrey",
+            border: "none"
+        },
+
+        bindings:
+        {
+            "neighbour": function(u) {
+
+                //GRAPH Features Possibilities
+                idNeighborsVertex = graph.neighbors(cosa)
+                console.log("idNeighborsVertex", idNeighborsVertex) 
+
+                return d3.selectAll(".node.enter")
+                            .filter(function(d) { 
+                                selectingThis = d3.select(this)
+                                selectingThisId = selectingThis.attr("id")
+
+                                myArray = idNeighborsVertex
+
+                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                                if (myArray.indexOf(selectingThisId) >= 0)  {
+                                                                            
+                                     // console.log(selectingThisId)  
+                                    selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  // .style("fill", "orange")
+                                                  .style("opacity", .8);         
+                                
+                                d3.select("#"+cosa).selectAll("rect")
+                                          .transition(400)
+                                          // .style("fill", "yellow")
+                                          .style("opacity", .8);
+
+                                }
+                                
+                                else {       
+                                        selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .1);      
+                                        selectingThis.selectAll("text")
+                                                  .transition(400)
+                                                  // .attr("text-anchor", "middle")
+                                                  .style("opacity", .1); 
+
+                                d3.select("#"+cosa).selectAll("rect")
+                                          .transition(400)
+                                          // .style("fill", "green")
+                                          .style("opacity", .8); 
+
+                                d3.select("#"+cosa).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1); 
+                                 };             
+                            })
+                  
+
+            },
+
+            "predecessors": function(d) {
+                
+                //GRAPH Features Possibilities
+                idPredecessorsVertex = graph.predecessors(cosa)
+                console.log("idPredecessorsVertex", idPredecessorsVertex) 
+
+                return d3.selectAll(".node.enter")
+                            .filter(function(d) { 
+                                selectingThis = d3.select(this)
+                                selectingThisId = selectingThis.attr("id")
+
+                                 myArray = idPredecessorsVertex
+
+                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                                if (myArray.indexOf(selectingThisId) >= 0)  {
+                                                                            
+                                     // console.log(selectingThisId)  
+                                    selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  // .style("fill", "orange")
+                                                  .style("opacity", .8);         
+                                
+                                d3.select("#"+cosa).selectAll("rect")
+                                          .transition(400)
+                                          // .style("fill", "yellow")
+                                          .style("opacity", .8);
+
+                                }
+                                
+                                else {       
+                                        selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .1);      
+                                        selectingThis.selectAll("text")
+                                                  .transition(400)
+                                                  // .attr("text-anchor", "middle")
+                                                  .style("opacity", .1); 
+
+                                d3.select("#"+cosa).selectAll("rect")
+                                          .transition(400)
+                                          // .style("fill", "green")
+                                          .style("opacity", .8); 
+
+                                d3.select("#"+cosa).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1); 
+                                 };             
+                            })
+            },
+
+            "strongly-connected": function(d) {
+            
+            idStronglyConnected0 = tarjan(graph);
+            console.log("idStronglyConnected0", idStronglyConnected0);
+            console.log("idStronglyConnected0.length", idStronglyConnected0.length);
+            
+            // idStronglyConnected = idStronglyConnected0[1];
+            // console.log("idStronglyConnected", idStronglyConnected);
+
+            for (i = 0, longitud = idStronglyConnected0.length; i < longitud; i++){
+            idStronglyConnected = tarjan(graph)[[i]]
+             console.log("idStronglyConnectedOK", idStronglyConnected);
+
+            }
+
+            return d3.selectAll(".node.enter")
+                            .filter(function(d) { 
+                                selectingThis = d3.select(this)
+                                selectingThisId = selectingThis.attr("id")
+                                // console.log("selectingThisId", selectingThisId);
+
+                                mySelection = d3.select("#"+cosa);
+                                // console.log("mySelection", mySelection);
+                                // console.log("cosa", cosa);
+
+                                myArray = idStronglyConnected;
+
+                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                                if (myArray.indexOf(cosa) >= 0)  {
+                                  if (myArray.indexOf(selectingThisId) >= 0)  {
+
+                                    console.log("cumplo condicion!", cosa);  
+                                    selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  // .style("fill", "orange")
+                                                  .style("opacity", .8);         
+                                
+                                    d3.select("#"+cosa).selectAll("rect")
+                                              .transition(400)
+                                              // .style("fill", "yellow")
+                                              .style("opacity", .8);
+
+                                  }
+                                  else {  
+                                    // console.log("no cumplo condicion", selectingThisId); 
+                                    selectingThis.selectAll("rect")
+                                              .transition(400)
+                                              .style("opacity", .1);      
+                                    selectingThis.selectAll("text")
+                                              .transition(400)
+                                              // .attr("text-anchor", "middle")
+                                              .style("opacity", .1); 
+
+                                    d3.select("#"+cosa).selectAll("rect")
+                                              .transition(400)
+                                              // .style("fill", "green")
+                                              .style("opacity", .8); 
+
+                                    d3.select("#"+cosa).selectAll("text")
+                                    .transition(400)
+                                    // .style("font-size", "16px")
+                                    .style("font-weight", "regular")
+                                    .style("opacity", 1); 
+                                     };   
+                                }
+                              
+                              else {  
+                                // console.log("no cumplo condicion", selectingThisId); 
+                                selectingThis.selectAll("rect")
+                                          .transition(400)
+                                          .style("opacity", .1);      
+                                selectingThis.selectAll("text")
+                                          .transition(400)
+                                          // .attr("text-anchor", "middle")
+                                          .style("opacity", .1); 
+
+                                d3.select("#"+cosa).selectAll("rect")
+                                          .transition(400)
+                                          // .style("fill", "green")
+                                          .style("opacity", .8); 
+
+                                d3.select("#"+cosa).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1); 
+                                 };   
+
+                            })
+                
+            },
+            
+            "successors": function(d) {
+               
+                //GRAPH Features Possibilities
+                idSuccessorsVertex = graph.successors(cosa)
+                console.log(idSuccessorsVertex) 
+
+                return d3.selectAll(".node.enter")
+                            .filter(function(d) { 
+                                selectingThis = d3.select(this)
+                                selectingThisId = selectingThis.attr("id")
+
+                                myArray = idSuccessorsVertex
+
+                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                                if (myArray.indexOf(selectingThisId) >= 0)  {
+                                                                            
+                                     // console.log(selectingThisId)  
+                                    selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  // .style("fill", "orange")
+                                                  .style("opacity", .8);         
+                                
+                                d3.select("#"+cosa).selectAll("rect")
+                                          .transition(400)
+                                          // .style("fill", "yellow")
+                                          .style("opacity", .8);
+
+                                }
+                                
+                                else {       
+                                        selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .1);      
+                                        selectingThis.selectAll("text")
+                                                  .transition(400)
+                                                  // .attr("text-anchor", "middle")
+                                                  .style("opacity", .1); 
+
+                                d3.select("#"+cosa).selectAll("rect")
+                                          .transition(400)
+                                          // .style("fill", "green")
+                                          .style("opacity", .8); 
+
+                                d3.select("#"+cosa).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1); 
+                                 };             
+                            })
+            },
+            //TO DO!!
+/*            "strongComponents": function(t) {
+                $("g.node").remove();
+            }*/
+        }
+    });
 
 
 ////////////////////////////////////////////

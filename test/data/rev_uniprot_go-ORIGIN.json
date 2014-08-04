@@ -1,28 +1,26 @@
 {
-    "label": "uniprot_enzymedb",
+    "label": "uniprot_go",
     "properties": [
 
     ],
     "dependencies": [
-        "uniprot",
-        "enzymedb"
+        "go",
+        "uniprot"
     ],
     "vertexTypes": [
 
     ],
     "edgeTypes": [{
-        "label": "EnzymaticActivity",
+        "label": "GoAnnotation",
         "properties": [
 
         ],
         "source": {
-            "module": "uniprot",
             "type": "Protein",
             "arity": "many"
         },
         "target": {
-            "module": "enzymedb",
-            "type": "Enzyme",
+            "type": "GoTerm",
             "arity": "many"
         }
     }]

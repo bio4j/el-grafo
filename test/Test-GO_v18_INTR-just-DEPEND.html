@@ -7,7 +7,7 @@
 <script src="scripts/lib/d3.js" charset="utf-8"></script>
 <script src="scripts/lib/dagre-d3.js"></script>
 
-<script src='http://code.jquery.com/jquery-1.8.3.js'></script>
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
 
 <body onLoad="draw0();">
 <h1> el-grafo INTRO page </h1>
@@ -65,7 +65,7 @@
 <script>
 
 //Linking texts from another url on server
-    var myUrl1 = 'Test-GO_v15_Main.html';
+    var myUrl1 = "Test-GO_v18_just-DEPEND.html";
      function ParseUrl(myUrl){
              $.ajax({
                       url: myUrl,
@@ -388,13 +388,13 @@ function draw0() {
             //var NumNodes0 = graph.nodes[0].vertexTypesLength;
             //var NumEdges0 = graph.nodes[0].edgeTypesLength;
 
-            nodesv[i] = Nodes(NumNodes[i], i, 'node-'+i),
-            nodese[i] = Nodes(NumEdges[i], i, 'edge-'+i),
+            nodesv[i] = Nodes(NumNodes[i], i, "node-"+i),
+            nodese[i] = Nodes(NumEdges[i], i, "edge-"+i),
             nodesVector[i] = nodesv[i].concat(nodese[i]);
             
             //Equivalent to:
-            // var nodes0v = Nodes(NumNodes0, 0, 'node-0');
-            // var nodes0e = Nodes(NumEdges0, 0, 'edge-0');
+            // var nodes0v = Nodes(NumNodes0, 0, "node-0");
+            // var nodes0e = Nodes(NumEdges0, 0, "edge-0");
             // var nodes0 = nodes0v.concat(nodes0e);
         }
 
@@ -450,12 +450,12 @@ function draw0() {
 
 /////////////
 
-    force.on('tick', function() {
-        // svgModulesAux2.selectAll('circle')
-            types.attr('cx', function(d) {
+    force.on("tick", function() {
+        // svgModulesAux2.selectAll("circle")
+            types.attr("cx", function(d) {
                 return d.x = Math.max(r, Math.min(introModulesWidthAux2 - r, d.x));
             })
-            .attr('cy', function(d) {
+            .attr("cy", function(d) {
                 return d.y = Math.max(r, Math.min(introModulesHeightAux2 - r, d.y)); 
             });
 
@@ -503,7 +503,7 @@ function draw0() {
     svgtypes = svgModulesAux2
         .append("g")
         .attr("id", "modulesTypes")
-        .selectAll('types')
+        .selectAll("types")
         .data(all)
         .enter()
 
@@ -511,7 +511,7 @@ function draw0() {
 
     var r = 1.6; 
 
-    types = svgtypes.append('circle')
+    types = svgtypes.append("circle")
         // .filter(function(d, i) { return i < 2;})
         .attr({
             cx: function(d) {
@@ -521,7 +521,7 @@ function draw0() {
                 return d.y
             },
             r: r,
-            'class': function(d) {
+            "class": function(d) {
                 return d.name
             }
         })
@@ -536,7 +536,7 @@ function draw0() {
 
     //LINKS as LINES by function
    for(i = 0, longitud = graph.links.length; i < longitud; i++){
-        svgModulesAux2.append('line')
+        svgModulesAux2.append("line")
             .attr("x1", foci[graph.links[i].target].x)
             .attr("x2", foci[graph.links[i].source].x)
             .attr("y1", foci[graph.links[i].target].y)
@@ -550,7 +550,7 @@ function draw0() {
 
     //double links as LINES by function
    for(i = 0, longitud = graph.links.length; i < longitud; i++){
-        svgModulesAux2.append('line')
+        svgModulesAux2.append("line")
             .attr("x1", foci[graph.links[i].target].x)
             .attr("x2", foci[graph.links[i].source].x)
             .attr("y1", foci[graph.links[i].target].y)
@@ -635,14 +635,18 @@ function draw0() {
               .style("stroke-opacity", .3);
             console.log(d.name);
             url = urlFunction(d.name);
+
+
+
             console.log(url);
             colorMod = d3.select(this).attr("fill");
             console.log(colorMod);
       color = colorMod.replace("#",""); 
-      location.href="Test-GO_v15_Main.html?url="+url+"&color="+color;
+      location.href="Test-GO_v18_just-DEPEND.html?url="+url+"&color="+color;
             return draw();
 
           });
+
 
 
 
@@ -704,7 +708,7 @@ function draw0() {
         .attr("font-family", "sans-serif")
         .attr("font-weight", "bold")
         .attr("font-size", "11px")
-        .attr("fill","grey")
+        .attr("fill", "#606060")
 
         .on("click", function(d) {
             d3.select(this)
@@ -712,12 +716,12 @@ function draw0() {
               .style("stroke-width", 1)
               .style("stroke-opacity", .3);
             console.log(d.name);
-            url = urlFunction(d.name);
+            url = urlFunction(d.label);
             console.log(url);
             colorMod = d3.select(this).attr("fill");
             console.log(colorMod);
       color = colorMod.replace("#",""); 
-      location.href="Test-GO_v15_Main.html?url="+url+"&color="+color;
+      location.href="Test-GO_v18_just-DEPEND.html?url="+url+"&color="+color;
             return draw();
 
           });

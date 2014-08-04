@@ -16,10 +16,12 @@
 
         ],
         "source": {
+            "module": "uniprot",
             "type": "Protein",
             "arity": "many"
         },
         "target": {
+            "module": "go",
             "type": "GoTerm",
             "arity": "many"
         }
