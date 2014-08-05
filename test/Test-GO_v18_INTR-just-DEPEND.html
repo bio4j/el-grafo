@@ -65,7 +65,7 @@
 <script>
 
 //Linking texts from another url on server
-    var myUrl1 = "Test-GO_v18_just-DEPEND.html";
+    var myUrl1 = "Test-GO_v22_Main-DEP diff.html";
      function ParseUrl(myUrl){
              $.ajax({
                       url: myUrl,
@@ -642,7 +642,7 @@ function draw0() {
             colorMod = d3.select(this).attr("fill");
             console.log(colorMod);
       color = colorMod.replace("#",""); 
-      location.href="Test-GO_v18_just-DEPEND.html?url="+url+"&color="+color;
+      location.href="Test-GO_v22_Main-DEP diff.html?url="+url+"&color="+color;
             return draw();
 
           });
@@ -719,9 +719,13 @@ function draw0() {
             url = urlFunction(d.label);
             console.log(url);
             colorMod = d3.select(this).attr("fill");
+
+            // colorMod1 = 
+            // colorMod2
+
             console.log(colorMod);
       color = colorMod.replace("#",""); 
-      location.href="Test-GO_v18_just-DEPEND.html?url="+url+"&color="+color;
+      location.href="Test-GO_v22_Main-DEP diff.html?url="+url+"&color="+color;
             return draw();
 
           });

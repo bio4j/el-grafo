@@ -1051,7 +1051,8 @@ d3.selectAll(".node rect")
                     .transition()
                     .attr("cx", 50)
                     .attr("cy", 50)
-                    .attr("r", 5);
+                    .attr("r", 5)
+                    .style("opacity", .8);
 
         svgGraph.append("rect")
                     .attr("x", selected[0][0].getCTM().e)
@@ -1066,7 +1067,7 @@ d3.selectAll(".node rect")
                     .style("fill", colorMod)
                     .transition()
                     .duration(500)
-                    .style("opacity", 1)
+                    .style("opacity", .8)
 
                     .attr("x", 580)
                     .attr("y", 300)
@@ -1361,7 +1362,7 @@ d3.selectAll(".node rect")
   d3.select("#arrowhead")
     .append("circle")
     // .style("fill", colorMod.darker)
-    .style("fill", d3.rgb(colorMod).darker(2))
+    .style("fill", d3.rgb(colorMod).darker(1))
     .attr("viewBox", "30 30 30 30")
     .attr("refX", 0)
     .attr("refY", 6)
@@ -1428,8 +1429,8 @@ d3.selectAll(".node rect")
                                 .attr("id", "pathOuter"+allPathDataId)
                                 .style("stroke", colorMod)
                                 .style("fill", "none")
-                                .style("fill", "none"),
-        /*                        .attr("marker-end", "url(#arrowhead)")*/
+                                .style("fill", "none")
+                                .attr("marker-end", "url(#arrowhead)"),
 
                         svgGraph.select("g.edgePaths").select("#"+allPathDataId).append("path")
                                 .attr("d", allPathData)
@@ -1440,10 +1441,22 @@ d3.selectAll(".node rect")
                                 .attr("id", "pathOuter2"+allPathDataId)
                                 .style("stroke", colorMod)
                                 .style("fill", "none")
-                                .style("fill", "none");
-        /*                        .attr("marker-end", "url(#arrowhead)");
-*/
-                    
+                                .style("fill", "none")
+                                .attr("marker-end", "url(#arrowhead)"),
+
+                        //Removing marker-end of self-linking nodes as has no sense on them
+                        svgGraph.selectAll("g.edgePath.enter")
+                                .filter(function(d) {
+                                  console.log("doing something with self-linking nodes")
+                                  console.log("u", d3.select(this).attr("u"))
+                                  console.log("v", d3.select(this).attr("v"))
+
+                                  if ((d3.select(this).attr("u")) == (d3.select(this).attr("v"))) {
+                                    return d3.select(this)
+                                            .selectAll("path")
+                                            .attr("marker-end", "none");
+                                  }
+                               });
 /*
                         svgGraph.append("path")
                         // .data(example)
@@ -1617,7 +1630,7 @@ d3.selectAll(".node rect")
 
 
 
-                          return svgGraph.select("g.edgePaths").select("#"+allPathDataId).append("path")
+                        return svgGraph.select("g.edgePaths").select("#"+allPathDataId).append("path")
                                         .attr("d", SubontolyPathManyOneDown)
                                         // .attr("transform", "translate(0,3)")
                                         .style("stroke-width", arityStrokeWidth)
@@ -1625,7 +1638,8 @@ d3.selectAll(".node rect")
                                         .attr("id", "pathOuter"+allPathDataId)
                                         .style("stroke", colorMod)
                                         .style("fill", "none")
-                                        .style("fill", "none"),
+                                        .style("fill", "none")
+                                        .attr("marker-end", "url(#arrowhead)"),
 
                         svgGraph.select("g.edgePaths").select("#"+allPathDataId).append("path")
                                         .attr("d", SubontolyPathManyOneUp)
@@ -1635,9 +1649,25 @@ d3.selectAll(".node rect")
                                         .attr("id", "pathOuter2"+allPathDataId)
                                         .style("stroke", colorMod)
                                         .style("fill", "none")
-                                        .style("fill", "none");
-                                })
-                                }
+                                        .style("fill", "none")
+                                        .attr("marker-end", "url(#arrowhead)"),
+
+                        //Removing marker-end of self-linking nodes as has no sense on them
+                        svgGraph.selectAll("g.edgePath.enter")
+                                .filter(function(d) {
+                                  console.log("doing something with self-linking nodes")
+                                  console.log("u", d3.select(this).attr("u"))
+                                  console.log("v", d3.select(this).attr("v"))
+
+                                  if ((d3.select(this).attr("u")) == (d3.select(this).attr("v"))) {
+                                    return d3.select(this)
+                                            .selectAll("path")
+                                            .attr("marker-end", "none");
+                                  }
+                               });
+
+                          })
+                          }
     
 
   if (arityInfo == "one-many") {
@@ -1721,7 +1751,8 @@ d3.selectAll(".node rect")
                                         .attr("id", "pathOuter"+allPathDataId)
                                         .style("stroke", colorMod)
                                         .style("fill", "none")
-                                        .style("fill", "none"),
+                                        .style("fill", "none")
+                                        .attr("marker-end", "url(#arrowhead)"),
 
                           svgGraph.select("g.edgePaths").select("#"+allPathDataId).append("path")
                                         .attr("d", SubontolyPathOneManyUp)
@@ -1731,8 +1762,22 @@ d3.selectAll(".node rect")
                                         .attr("id", "pathOuter2"+allPathDataId)
                                         .style("stroke", colorMod)
                                         .style("fill", "none")
-                                        .style("fill", "none");
+                                        .style("fill", "none")
+                                        .attr("marker-end", "url(#arrowhead)"),
+                        
+                          //Removing marker-end of self-linking nodes as has no sense on them
+                          svgGraph.selectAll("g.edgePath.enter")
+                                  .filter(function(d) {
+                                    console.log("doing something with self-linking nodes")
+                                    console.log("u", d3.select(this).attr("u"))
+                                    console.log("v", d3.select(this).attr("v"))
 
+                                    if ((d3.select(this).attr("u")) == (d3.select(this).attr("v"))) {
+                                      return d3.select(this)
+                                              .selectAll("path")
+                                              .attr("marker-end", "none");
+                                  }
+                               });
         
 /*                                  svgGraph.append("path")
                                   // .data(example)
@@ -1970,7 +2015,7 @@ var id;
                 idNeighborsVertex = graph.neighbors(mySelectionCMenu)
                 console.log("idNeighborsVertex", idNeighborsVertex) 
 
-                return d3.selectAll(".node.enter")
+               return d3.selectAll(".node.enter")
                             .filter(function(d) { 
                                 selectingThis = d3.select(this)
                                 selectingThisId = selectingThis.attr("id")
@@ -1983,12 +2028,313 @@ var id;
                                     console.log("selectingThisId", selectingThisId)  
                                     selectingThis.selectAll("rect")
                                                   .transition(400)
-                                                  // .style("fill", "orange")
                                                   .style("opacity", .8);         
                                 
                                 d3.select("#"+mySelectionCMenu).selectAll("rect")
                                           .transition(400)
-                                          // .style("fill", "yellow")
+                                          .style("opacity", .8);
+                               
+                                //SelectingThis edges filtering
+                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
+                                console.log("mySelectionCMenu", mySelectionCMenu)
+                                console.log("incidentEdgesmySelectionCMenu", incidentEdgesmySelectionCMenu)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .style("opacity", 1); 
+                                              }
+                                            })                                                                 
+                                }
+
+                                else {       
+                                        selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .1);      
+                                        selectingThis.selectAll("text")
+                                                  .transition(400)
+                                                  .style("opacity", .1); 
+
+                                //SelectingThis edges filtering
+                                dismissedNodes = selectingThis.attr("id");
+                                incidentEdges = graph.incidentEdges(dismissedNodes)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdges.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .transition(400)
+                                                          .style("opacity", .2); 
+                                              }
+                                            })   
+
+                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .transition(400)
+                                                          .style("opacity", 1); 
+                                              }
+                                            })  
+
+                                d3.select("#"+mySelectionCMenu).selectAll("rect")
+                                          .transition(400)
+                                          .style("opacity", .8); 
+
+                                d3.select("#"+mySelectionCMenu).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1); 
+                                 };             
+                            })
+            },
+
+            "predecessors": function(d) {
+                
+                //GRAPH Features Possibilities
+                idPredecessorsVertex = graph.predecessors(mySelectionCMenu)
+                console.log("idPredecessorsVertex", idPredecessorsVertex) 
+
+                return d3.selectAll(".node.enter")
+                            .filter(function(d) { 
+                                selectingThis = d3.select(this)
+                                selectingThisId = selectingThis.attr("id")
+
+                                myArray = idPredecessorsVertex
+
+                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                                if (myArray.indexOf(selectingThisId) >= 0)  {
+                                                                            
+                                    console.log("selectingThisId", selectingThisId)  
+                                    selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .8);         
+                                
+                                d3.select("#"+mySelectionCMenu).selectAll("rect")
+                                          .transition(400)
+                                          .style("opacity", .8);
+                               
+                                //SelectingThis edges filtering
+                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
+                                console.log("mySelectionCMenu", mySelectionCMenu)
+                                console.log("incidentEdgesmySelectionCMenu", incidentEdgesmySelectionCMenu)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .style("opacity", 1); 
+                                              }
+                                            })                                                                 
+                                }
+
+                                else {       
+                                        selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .1);      
+                                        selectingThis.selectAll("text")
+                                                  .transition(400)
+                                                  // .attr("text-anchor", "middle")
+                                                  .style("opacity", .1); 
+
+                                //SelectingThis edges filtering
+                                dismissedNodes = selectingThis.attr("id");
+                                incidentEdges = graph.incidentEdges(dismissedNodes)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdges.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .transition(400)
+                                                          .style("opacity", .2); 
+                                              }
+                                            })   
+
+                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .transition(400)
+                                                          .style("opacity", 1); 
+                                              }
+                                            })  
+
+                                d3.select("#"+mySelectionCMenu).selectAll("rect")
+                                          .transition(400)
+                                          .style("opacity", .8); 
+
+                                d3.select("#"+mySelectionCMenu).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1); 
+                                 };             
+                            })
+            },
+
+    "strongly-connected": function(d) {
+            
+            idStronglyConnected0 = tarjan(graph);
+            console.log("idStronglyConnected0", idStronglyConnected0);
+            console.log("idStronglyConnected0.length", idStronglyConnected0.length);
+
+            for (i = 0, longitud = idStronglyConnected0.length; i < longitud; i++){
+            idStronglyConnected = tarjan(graph)[[i]]
+             console.log("idStronglyConnectedOK", idStronglyConnected);
+            }
+
+            return d3.selectAll(".node.enter")
+                            .filter(function(d) { 
+                                selectingThis = d3.select(this)
+                                selectingThisId = selectingThis.attr("id")
+
+                                mySelection = d3.select("#"+mySelectionCMenu);
+
+                                myArray = idStronglyConnected;
+
+                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                                if (myArray.indexOf(mySelectionCMenu) >= 0)  {
+                                  if (myArray.indexOf(selectingThisId) >= 0)  {
+
+                                    selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .8);         
+                                
+                                    d3.select("#"+mySelectionCMenu).selectAll("rect")
+                                              .transition(400)
+                                              .style("opacity", .8);
+
+                                //SelectingThis edges filtering
+                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
+                                console.log("mySelectionCMenu", mySelectionCMenu)
+                                console.log("incidentEdgesmySelectionCMenu", incidentEdgesmySelectionCMenu)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .style("opacity", 1); 
+                                              }
+                                            })   
+                                  }
+
+                                  else {  
+                                    selectingThis.selectAll("rect")
+                                              .transition(400)
+                                              .style("opacity", .1);      
+                                    selectingThis.selectAll("text")
+                                              .transition(400)
+                                              // .attr("text-anchor", "middle")
+                                              .style("opacity", .1); 
+
+                                    d3.select("#"+mySelectionCMenu).selectAll("rect")
+                                              .transition(400)
+                                              .style("opacity", .8); 
+
+                                    d3.select("#"+mySelectionCMenu).selectAll("text")
+                                    .transition(400)
+                                    // .style("font-size", "16px")
+                                    .style("font-weight", "regular")
+                                    .style("opacity", 1); 
+                                     };   
+                                }
+                              
+                              else {  
+                                selectingThis.selectAll("rect")
+                                          .transition(400)
+                                          .style("opacity", .1);      
+                                selectingThis.selectAll("text")
+                                          .transition(400)
+                                          // .attr("text-anchor", "middle")
+                                          .style("opacity", .1); 
+
+                                //SelectingThis edges filtering
+                                dismissedNodes = selectingThis.attr("id");
+                                incidentEdges = graph.incidentEdges(dismissedNodes)
+
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
+
+                                              if (incidentEdges.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .transition(400)
+                                                          .style("opacity", .2); 
+                                              }
+                                            })   
+      
+                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
+
+                                d3.selectAll("#"+incidentEdgesmySelectionCMenu).selectAll("path")
+                                          .transition(400)
+                                          .style("opacity", 1); 
+                                
+                                /////
+
+                                d3.select("#"+mySelectionCMenu).selectAll("rect")
+                                          .transition(400)
+                                          .style("opacity", .8); 
+
+                                d3.select("#"+mySelectionCMenu).selectAll("text")
+                                .transition(400)
+                                // .style("font-size", "16px")
+                                .style("font-weight", "regular")
+                                .style("opacity", 1); 
+                                 };   
+                            })
+            },
+
+            "successors": function(d) {
+               
+                //GRAPH Features Possibilities
+                idSuccessorsVertex = graph.successors(mySelectionCMenu)
+                console.log(idSuccessorsVertex) 
+
+                return d3.selectAll(".node.enter")
+                            .filter(function(d) { 
+                                selectingThis = d3.select(this)
+                                selectingThisId = selectingThis.attr("id")
+
+                                myArray = idSuccessorsVertex
+
+                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
+                                if (myArray.indexOf(selectingThisId) >= 0)  {
+                                                                            
+                                    console.log("selectingThisId", selectingThisId)  
+                                    selectingThis.selectAll("rect")
+                                                  .transition(400)
+                                                  .style("opacity", .8);         
+                                
+                                d3.select("#"+mySelectionCMenu).selectAll("rect")
+                                          .transition(400)
                                           .style("opacity", .8);
                                
                                 //SelectingThis edges filtering
@@ -2018,395 +2364,38 @@ var id;
                                                   // .attr("text-anchor", "middle")
                                                   .style("opacity", .1); 
 
-
                                 //SelectingThis edges filtering
                                 dismissedNodes = selectingThis.attr("id");
                                 incidentEdges = graph.incidentEdges(dismissedNodes)
-
-                                d3.selectAll("#"+incidentEdges).selectAll("path")
-                                          .transition(400)
-                                          // .style("fill", "green")
-                                          .style("opacity", .2);                                                   
-
-                                console.log("blabla", incidentEdges);
-                                d3.selectAll("#pathOuter"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);     
-
-                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
-
-                                d3.selectAll("#"+incidentEdgesmySelectionCMenu).selectAll("path")
-                                          .transition(400)
-                                          .style("opacity", 1); 
-                                
-                                d3.selectAll("#pathOuter"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);  
-
-
-                                /////
-
-
-                                d3.select("#"+mySelectionCMenu).selectAll("rect")
-                                          .transition(400)
-                                          // .style("fill", "green")
-                                          .style("opacity", .8); 
-
-                                d3.select("#"+mySelectionCMenu).selectAll("text")
-                                .transition(400)
-                                // .style("font-size", "16px")
-                                .style("font-weight", "regular")
-                                .style("opacity", 1); 
-                                 };             
-                            })
-                  
-
-            },
-
-            "predecessors": function(d) {
-                
-                //GRAPH Features Possibilities
-                idPredecessorsVertex = graph.predecessors(mySelectionCMenu)
-                console.log("idPredecessorsVertex", idPredecessorsVertex) 
-
-                return d3.selectAll(".node.enter")
-                            .filter(function(d) { 
-                                selectingThis = d3.select(this)
-                                selectingThisId = selectingThis.attr("id")
-
-                                 myArray = idPredecessorsVertex
-
-                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                                if (myArray.indexOf(selectingThisId) >= 0)  {
-                                                                            
-                                     // console.log(selectingThisId)  
-                                    selectingThis.selectAll("rect")
-                                                  .transition(400)
-                                                  // .style("fill", "orange")
-                                                  .style("opacity", .8);         
-                                
-                                d3.select("#"+mySelectionCMenu).selectAll("rect")
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .8);
-
-                                
-                                //SelectingThis edges filtering
-                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
-                                console.log("mySelectionCMenu", mySelectionCMenu)
-                                console.log("incidentEdgesmySelectionCMenu", incidentEdgesmySelectionCMenu)
 
                                 d3.selectAll(".edgePath.enter")
                                             .filter(function(d) {
                                               selectingThis = d3.select(this)
                                               selectingThisId = selectingThis.attr("id")
 
-                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              if (incidentEdges.indexOf(selectingThisId) >= 0)  {
                                               selectingThis.selectAll("path")
-                                                          // .style("fill", "purple")
-                                                          .style("opacity", 1); 
-                                              }
-                                            })       
-
-                                }
-                                
-                                else {       
-                                        selectingThis.selectAll("rect")
-                                                  .transition(400)
-                                                  .style("opacity", .1);      
-                                        selectingThis.selectAll("text")
-                                                  .transition(400)
-                                                  // .attr("text-anchor", "middle")
-                                                    .style("opacity", .1); 
-                                
-                                //SelectingThis edges filtering
-                                dismissedNodes = selectingThis.attr("id");
-                                incidentEdges = graph.incidentEdges(dismissedNodes)
-
-                                d3.selectAll("#"+incidentEdges).selectAll("path")
-                                          .transition(400)
-                                          // .style("fill", "green")
-                                          .style("opacity", .2);                                                   
-
-                                console.log("blabla", incidentEdges);
-                                d3.selectAll("#pathOuter"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);     
-
-                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
-
-                                d3.selectAll("#"+incidentEdgesmySelectionCMenu).selectAll("path")
-                                          .transition(400)
-                                          .style("opacity", 1); 
-                                
-                                d3.selectAll("#pathOuter"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);  
-
-
-                                /////
-
-                                d3.select("#"+mySelectionCMenu).selectAll("rect")
-                                          .transition(400)
-                                          // .style("fill", "green")
-                                          .style("opacity", .8); 
-
-                                d3.select("#"+mySelectionCMenu).selectAll("text")
-                                .transition(400)
-                                // .style("font-size", "16px")
-                                .style("font-weight", "regular")
-                                .style("opacity", 1); 
-                                 };             
-                            })
-            },
-
-            "strongly-connected": function(d) {
-            
-            idStronglyConnected0 = tarjan(graph);
-            console.log("idStronglyConnected0", idStronglyConnected0);
-            console.log("idStronglyConnected0.length", idStronglyConnected0.length);
-            
-            // idStronglyConnected = idStronglyConnected0[1];
-            // console.log("idStronglyConnected", idStronglyConnected);
-
-            for (i = 0, longitud = idStronglyConnected0.length; i < longitud; i++){
-            idStronglyConnected = tarjan(graph)[[i]]
-             console.log("idStronglyConnectedOK", idStronglyConnected);
-
-            }
-
-            return d3.selectAll(".node.enter")
-                            .filter(function(d) { 
-                                selectingThis = d3.select(this)
-                                selectingThisId = selectingThis.attr("id")
-                                // console.log("selectingThisId", selectingThisId);
-
-                                mySelection = d3.select("#"+mySelectionCMenu);
-                                // console.log("mySelection", mySelection);
-                                // console.log("mySelectionCMenu", mySelectionCMenu);
-
-                                myArray = idStronglyConnected;
-
-                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                                if (myArray.indexOf(mySelectionCMenu) >= 0)  {
-                                  if (myArray.indexOf(selectingThisId) >= 0)  {
-
-                                    console.log("cumplo condicion!", mySelectionCMenu);  
-                                    selectingThis.selectAll("rect")
-                                                  .transition(400)
-                                                  // .style("fill", "orange")
-                                                  .style("opacity", .8);         
-                                
-                                    d3.select("#"+mySelectionCMenu).selectAll("rect")
-                                              .transition(400)
-                                              // .style("fill", "yellow")
-                                              .style("opacity", .8);
-
-                                //SelectingThis edges filtering
-                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
-                                console.log("mySelectionCMenu", mySelectionCMenu)
-                                console.log("incidentEdgesmySelectionCMenu", incidentEdgesmySelectionCMenu)
-
-                                d3.selectAll(".edgePath.enter")
-                                            .filter(function(d) {
-                                              selectingThis = d3.select(this)
-                                              selectingThisId = selectingThis.attr("id")
-
-                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
-                                              selectingThis.selectAll("path")
-                                                          // .style("fill", "purple")
-                                                          .style("opacity", 1); 
+                                                          .transition(400)
+                                                          .style("opacity", .2); 
                                               }
                                             })   
 
-                                  }
-
-                                  else {  
-                                    // console.log("no cumplo condicion", selectingThisId); 
-                                    selectingThis.selectAll("rect")
-                                              .transition(400)
-                                              .style("opacity", .1);      
-                                    selectingThis.selectAll("text")
-                                              .transition(400)
-                                              // .attr("text-anchor", "middle")
-                                              .style("opacity", .1); 
-
-                                    d3.select("#"+mySelectionCMenu).selectAll("rect")
-                                              .transition(400)
-                                              // .style("fill", "green")
-                                              .style("opacity", .8); 
-
-                                    d3.select("#"+mySelectionCMenu).selectAll("text")
-                                    .transition(400)
-                                    // .style("font-size", "16px")
-                                    .style("font-weight", "regular")
-                                    .style("opacity", 1); 
-                                     };   
-                                }
-                              
-                              else {  
-                                // console.log("no cumplo condicion", selectingThisId); 
-                                selectingThis.selectAll("rect")
-                                          .transition(400)
-                                          .style("opacity", .1);      
-                                selectingThis.selectAll("text")
-                                          .transition(400)
-                                          // .attr("text-anchor", "middle")
-                                          .style("opacity", .1); 
-
-                                
-                                //SelectingThis edges filtering
-                                dismissedNodes = selectingThis.attr("id");
-                                incidentEdges = graph.incidentEdges(dismissedNodes)
-
-                                d3.selectAll("#"+incidentEdges).selectAll("path")
-                                          .transition(400)
-                                          // .style("fill", "green")
-                                          .style("opacity", .2);                                                   
-
-                                console.log("blabla", incidentEdges);
-                                d3.selectAll("#pathOuter"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);     
-
                                 incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
 
-                                d3.selectAll("#"+incidentEdgesmySelectionCMenu).selectAll("path")
-                                          .transition(400)
-                                          .style("opacity", 1); 
-                                
-                                d3.selectAll("#pathOuter"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);  
+                                d3.selectAll(".edgePath.enter")
+                                            .filter(function(d) {
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
 
-
-                                /////
+                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              selectingThis.selectAll("path")
+                                                          .transition(400)
+                                                          .style("opacity", 1); 
+                                              }
+                                            })  
 
                                 d3.select("#"+mySelectionCMenu).selectAll("rect")
                                           .transition(400)
-                                          // .style("fill", "green")
-                                          .style("opacity", .8); 
-
-                                d3.select("#"+mySelectionCMenu).selectAll("text")
-                                .transition(400)
-                                // .style("font-size", "16px")
-                                .style("font-weight", "regular")
-                                .style("opacity", 1); 
-                                 };   
-
-                            })
-                
-            },
-            
-            "successors": function(d) {
-               
-                //GRAPH Features Possibilities
-                idSuccessorsVertex = graph.successors(mySelectionCMenu)
-                console.log(idSuccessorsVertex) 
-
-                return d3.selectAll(".node.enter")
-                            .filter(function(d) { 
-                                selectingThis = d3.select(this)
-                                selectingThisId = selectingThis.attr("id")
-
-                                myArray = idSuccessorsVertex
-
-                                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                                if (myArray.indexOf(selectingThisId) >= 0)  {
-                                                                            
-                                     // console.log(selectingThisId)  
-                                    selectingThis.selectAll("rect")
-                                                  .transition(400)
-                                                  // .style("fill", "orange")
-                                                  .style("opacity", .8);         
-                                
-                                d3.select("#"+mySelectionCMenu).selectAll("rect")
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .8);
-
-                                }
-                                
-                                else {       
-                                        selectingThis.selectAll("rect")
-                                                  .transition(400)
-                                                  .style("opacity", .1);      
-                                        selectingThis.selectAll("text")
-                                                  .transition(400)
-                                                  // .attr("text-anchor", "middle")
-                                                  .style("opacity", .1); 
-
-                                
-                                //SelectingThis edges filtering
-                                dismissedNodes = selectingThis.attr("id");
-                                incidentEdges = graph.incidentEdges(dismissedNodes)
-
-                                d3.selectAll("#"+incidentEdges).selectAll("path")
-                                          .transition(400)
-                                          // .style("fill", "green")
-                                          .style("opacity", .2);                                                   
-
-                                console.log("blabla", incidentEdges);
-                                d3.selectAll("#pathOuter"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdges)
-                                          .transition(400)
-                                          // .style("fill", "yellow")
-                                          .style("opacity", .1);     
-
-                                incidentEdgesmySelectionCMenu = graph.incidentEdges(mySelectionCMenu)
-
-                                d3.selectAll("#"+incidentEdgesmySelectionCMenu).selectAll("path")
-                                          .transition(400)
-                                          .style("opacity", 1); 
-                                
-                                d3.selectAll("#pathOuter"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);                                                   
-                                d3.selectAll("#pathOuter2"+incidentEdgesmySelectionCMenu)
-                                          .transition(400)
-                                          // .style("fill", "red")
-                                          .style("opacity", 1);  
-
-
-                                /////
-
-                                d3.select("#"+mySelectionCMenu).selectAll("rect")
-                                          .transition(400)
-                                          // .style("fill", "green")
                                           .style("opacity", .8); 
 
                                 d3.select("#"+mySelectionCMenu).selectAll("text")
@@ -2417,9 +2406,9 @@ var id;
                                  };             
                             })
             },
-
         }
     });
+
 
 /*ORIGINAL code
   # Public function to update highlighted nodes
