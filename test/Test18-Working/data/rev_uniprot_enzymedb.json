@@ -1,0 +1,29 @@
+{
+    "label": "uniprot_enzymedb",
+    "properties": [
+
+    ],
+    "dependencies": [
+        "uniprot",
+        "enzymedb"
+    ],
+    "vertexTypes": [
+
+    ],
+    "edgeTypes": [{
+        "label": "EnzymaticActivity",
+        "properties": [
+
+        ],
+        "source": {
+            "module": "uniprot",
+            "type": "Protein",
+            "arity": "many"
+        },
+        "target": {
+            "module": "enzymedb",
+            "type": "Enzyme",
+            "arity": "many"
+        }
+    }]
+}

@@ -1,0 +1,81 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>el-grafo</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="scripts/lib/d3.js" charset="utf-8"></script>
+<script src="scripts/lib/dagre-d3.js"></script>
+
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://www.trendskitchens.co.nz/jquery/contextmenu/jquery.contextmenu.r2.js"></script>
+
+<script src="scripts/alg/topsort.js"></script>
+<script src="scripts/alg/tarjan.js"></script>
+<script src="scripts/alg/components.js"></script>
+<script src="scripts/alg/dijkstra.js"></script>
+<script src="scripts/alg/dijkstraAll.js"></script>
+<script src="scripts/alg/findCycles.js"></script>
+<script src="scripts/alg/floydWarshall.js"></script>
+<script src="scripts/alg/isAcyclic.js"></script>
+<script src="scripts/alg/postorder.js"></script>
+<script src="scripts/alg/preorder.js"></script>
+<script src="scripts/alg/prim.js"></script>
+
+<!-- <button>Reset</button> -->
+
+<body onLoad="draw0();">
+
+<div id="introTEXTO">
+    <h1> el-grafo </h1>
+
+    <p> 
+    el-grafo is the first development of an interactive web-based tool that allows users to intuitively explore the Bio4j domain model, getting details about how vertex and edges are shaping the network as well as precise typing information.
+    Its purpose is to help users on their understanding of the Bio4j structure in order to manage and query it on an easier and more efficient way.
+    </p>
+</div>
+
+<div id="modulesINTRO">
+  <svg id="svgModulesINTRO">
+  </svg>
+</div>
+
+<!--  -->
+
+<div id="mainModules">
+  <svg id="svgMainModules">
+  </svg>
+    <!--<h4> main Modules </h4> -->
+</div>
+
+<div id="mainGraph">
+  <svg id="svgMainGraph">
+  </svg>
+    <!-- <h4> main Graph </h4> -->
+</div>
+
+<div id="mainRoute">
+  <svg id="svgMainRoute">
+  </svg>
+</div>
+
+
+<div class="contextMenu" id="cntxtMenu">
+    <ul>
+
+        <li id="predecessors"> > Select its PREDECESSORS </li>
+        <li id="successors"> > Select its SUCCESSORS </li>
+        <li id="neighbour"> > Select its NEIGHBOUR </li>
+        <li id="strongly-connected"> > Select its STRONGLY CONNECTED COMMUNITY </li>
+
+    </ul>
+</div>
+
+ <script src="scripts/el-grafo_INTRO_2.js"></script>
+ <script src="scripts/el-grafo_MOD_3.js"></script>
+
+
+
+
+
+

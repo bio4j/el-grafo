@@ -15,7 +15,7 @@
 <script src="http://www.trendskitchens.co.nz/jquery/contextmenu/jquery.contextmenu.r2.js"></script>
 <script src="scripts/lib/colorbrewer.js"></script>
 
-<script src="scripts/alg/topsort.js"></script>
+<!-- <script src="scripts/alg/topsort.js"></script>
 <script src="scripts/alg/tarjan.js"></script>
 <script src="scripts/alg/components.js"></script>
 <script src="scripts/alg/dijkstra.js"></script>
@@ -25,7 +25,7 @@
 <script src="scripts/alg/isAcyclic.js"></script>
 <script src="scripts/alg/postorder.js"></script>
 <script src="scripts/alg/preorder.js"></script>
-<script src="scripts/alg/prim.js"></script>
+<script src="scripts/alg/prim.js"></script> -->
 
 <!-- <script src="scripts/BindingData.js"></script>
  -->
@@ -84,14 +84,6 @@
   </div>
 
 <script>
-
-
-function tryyyy() {
-  console.log("lalala")
-}
-
-tryyyy();
-// tryyyy(something);
 
 
 //Parameters from url
@@ -532,12 +524,12 @@ function bindingData1() {
 
     d3.selectAll("[dependency=nodeDependency]")  
       .selectAll("rect")
-      .style("fill", "green");
+      .style("fill", "orange");
       // .style("stroke-width", 10)
       // .style("stroke", "yellow");
 
 
-nodeDependencyOuterElement();
+    nodeDependencyOuterElement();
 
     function nodeDependencyOuterElement(){
 
@@ -585,7 +577,7 @@ console.log(graph.nodes().length);
 
   if (graph.nodes().length==2) {
 
-        console.log(graph.nodes().length + " I should expand!!");
+        // console.log(graph.nodes().length + " I should expand!!");
     // graph.addNode("A", {label: "a label"});
 
         d3.select(this)
@@ -624,6 +616,7 @@ console.log(graph.nodes().length);
             
             console.log("graph.nodes before", graph.nodes());
 
+          
            for (i = 0, longitud = newVertexPart.length; i < longitud; i++){
             console.log(newVertexPart[i].id + "-" + selected2Id);
                   if ((newVertexPart[i].id) == selected2Id)  {
@@ -671,6 +664,9 @@ console.log(graph.nodes().length);
 
             graph.addEdge(newEdgesPart[i].id, newEdgesPart[i].u, newEdgesPart[i].v, {u: newEdgesPart[i].u, v: newEdgesPart[i].v, inArity:"", outArity:"", label: newEdgesPart[i].id, module:"", propertyTypes:""});
             
+
+
+
             }
 
 
@@ -682,6 +678,10 @@ console.log(graph.nodes().length);
           
           /////////////////////
 
+          postLayout();
+
+          function postLayout() {
+            
             //Configuring the layout:
             var layout = dagreD3.layout()
                           //.nodeSep(50)  //50=default
@@ -691,20 +691,20 @@ console.log(graph.nodes().length);
 
             // Custom transition function
             function transition(selection) {
-              return selection.transition().duration(1000);
+              return selection.transition().duration(1500);
+              // return selection.transition().delay(300).duration(3000);
             }
 
             renderinglayout = renderer.transition(transition).run(graph, svgGraph.select("g"));
 
-          // };
+            bindingData2();
+            arity(); 
+
+
+          };
 
 
 
-
-
-          // bindingData();
-
-          bindingData2();
 
           function bindingData2() {
 
@@ -712,6 +712,7 @@ console.log(graph.nodes().length);
               //Maybe I need data-attribute instead: http://stackoverflow.com/questions/13188125/d3-add-multiple-classes-with-function
 
               d3.selectAll(".edgePath.enter")
+              // .transition().delay(200)
                   .data(newEdges)
                   .attr("u", function(d) {
                       return d.u
@@ -736,6 +737,7 @@ console.log(graph.nodes().length);
                   });
 
               d3.selectAll(".node.enter")
+                            // .transition().delay(200)
                   .data(newVertex)
                   .attr("module", function(d) {
                       return d.value.module
@@ -750,7 +752,9 @@ console.log(graph.nodes().length);
                       return d.value.dependency
                   })
                 .selectAll("rect").attr("class", "mainNodeRect");
+          
           };
+
 
           d3.selectAll(".edgePath path")
               .style("stroke", colorMod);
@@ -758,11 +762,13 @@ console.log(graph.nodes().length);
           d3.selectAll(".mainNodeRect")
           // d3.selectAll(".node srect")
               .style("fill", colorMod);
-          arity(); 
+
+
 
               d3.selectAll("[dependency=nodeDependency]")  
                 .selectAll(".mainNodeRect")
-                .style("fill", "green");
+                .style("fill", "orange");
+
 
           zooming2();
 
@@ -779,7 +785,6 @@ console.log(graph.nodes().length);
             var distanceY = (mainGraphHeight/2)-(hGraph/2)-20;  
 
             svgGraph.select("#grafo")
-                    // .attr("transform", "translate(0,+"+(mainGraphHeight/2)+ ")")
                     .transition()
                     .duration(1000)
                     .attr("transform", "translate(" + distanceX +"," + distanceY + ")"); 
@@ -830,8 +835,6 @@ console.log(graph.nodes().length);
             console.log("Transformed structure of vertexTypes for Graphlib:")
             console.log("newVertexPart", newVertexPart);
 
-          // newVertex = newVertexDep.concat(newVertexPart);
-          // console.log("newVertex", newVertex);
 
 
 
@@ -847,6 +850,7 @@ console.log(graph.nodes().length);
                       graph.delNode(newVertexPart[i].id);
                   }
             }
+
 
             console.log("graph.nodes after", graph.nodes());
 
@@ -875,39 +879,144 @@ console.log(graph.nodes().length);
             
             console.log("Transformed structure of edgeTypes for Graphlib:")
             console.log(newEdgesPart);
-              
-
-          // newEdges = newEdgesDep.concat(newEdgesPart);
-          // console.log("newEdges", newEdges);
+            
+            console.log("graph.edges()", graph.edges());
 
           //////        
+          
+          for (i = 0, longitud = newEdgesPart.length; i < longitud; i++) {
+
+              if (graph.hasEdge(newEdgesPart[i].id)) {
+                  
+                  graph.delEdge(newEdgesPart[i].id);
+              }
+
+          postLayout();
 
 
-           for (i = 0, longitud = newEdgesPart.length; i < longitud; i++){
-            console.log(newEdgesPart[i].id + "-" + newEdgesDep[0].id);
+          };
 
-                  if (newEdgesPart[i].id == newEdgesDep[0].id)  {
-                    console.log("keep me!");
-                  }
-                  else {
-                      graph.delEdge(newEdgesPart[i].id);
-                  }
+          console.log("graph.edges after", graph.edges());
+
+       
+
+        /////////////////////
+        function postLayout(){
+            
+            //Configuring the layout:
+            var layout = dagreD3.layout()
+                          //.nodeSep(50)  //50=default
+                          //.edgeSep(10)
+                          //.rankSep(20);   //Separation between levels, childs
+                          .rankDir("LR"); //TB:top-to-bottom / BT:bottom-to-top / LR:left-to-right / RL:right-to-left 
+
+            // Custom transition function
+            function transition(selection) {
+              return selection.transition().duration(1500);
             }
 
-            console.log("graph.edges after", graph.edges());
+            renderinglayout = renderer.transition(transition).run(graph, svgGraph.select("g"));
 
 
-
-
-
-});
-
-
-  }
-   
-   console.log(graph.nodes().length);
+          bindingData();
+          arity(); 
         
+        };
 
+
+
+       
+
+          bindingData();
+
+          function bindingData() {
+
+              //Binding Nodes&Edges DATA to the graph by iterating over the generated svg adding ATTRIBUTES:
+              //Maybe I need data-attribute instead: http://stackoverflow.com/questions/13188125/d3-add-multiple-classes-with-function
+
+              console.log("am I binding data??");
+              console.log("newEdgesDep", newEdgesDep);
+
+              d3.selectAll(".edgePath.enter")
+                  .data(newEdgesDep)
+                  .attr("u", function(d) {
+                      return d.u
+                  })
+                  .attr("v", function(d) {
+                      return d.v
+                  })
+                  .attr("inArity", function(d) {
+                      return d.value.inArity
+                  })
+                  .attr("outArity", function(d) {
+                      return d.value.outArity
+                  })
+                  .attr("label", function(d) {
+                      return d.value.label
+                  })
+                  .attr("module", function(d) {
+                      return d.value.module
+                  })
+                  .attr("propertyTypes", function(d) {
+                      return d.value.propertyTypes
+                  });
+
+              d3.selectAll(".node.enter")
+                  .data(newVertexDep)
+                  .attr("module", function(d) {
+                      return d.value.module
+                  })
+                  .attr("label", function(d) {
+                      return d.value.label
+                  })
+                  .attr("propertyTypes", function(d) {
+                      return d.value.propertyTypes
+                  })
+                  .attr("dependency", function(d) {
+                      return d.value.dependency
+                  })
+                .selectAll("rect").attr("class", "mainNodeRect");
+          };
+
+          d3.selectAll(".edgePath path")
+              .style("stroke", colorMod);
+
+          d3.selectAll(".mainNodeRect")
+          // d3.selectAll(".node srect")
+              .style("fill", colorMod);
+
+          d3.selectAll("[dependency=nodeDependency]")  
+                .selectAll(".mainNodeRect")
+                .style("fill", "orange");
+
+          zooming2();
+
+          function zooming2() {
+
+            //Centering the graphs depending on their size
+            wGraph = renderinglayout.graph().width;
+            hGraph = renderinglayout.graph().height;
+
+            console.log("wGraph", wGraph);
+            console.log("hGraph", hGraph);
+            
+            var distanceX = (mainGraphWidth/2)-(wGraph/2);  
+            var distanceY = (mainGraphHeight/2)-(hGraph/2)-20;  
+
+            svgGraph.select("#grafo")
+                    .transition()
+                    .duration(1000)
+                    .attr("transform", "translate(" + distanceX +"," + distanceY + ")"); 
+
+          };
+          
+          // d3.select("body").transition().delay(1200).
+
+          // arity(); 
+
+          nodeDependencyOuterElement();
+ });
+}
 }
 
 ////////////////////////////////////////////////////////////
@@ -1753,11 +1862,16 @@ function arity() {
   d3.selectAll("#pathLegend1").remove();
   d3.selectAll("#pathLegend2").remove();
 
-  var arities = d3.selectAll(".edgePath").each( function(d,i) {
+  var arities = d3.selectAll(".edgePath")
+  // .transition().delay(1000)
+
+  .each( function(d,i) {
     OUTarityInfo = d3.select(this).attr("outArity");
     INarityInfo = d3.select(this).attr("inArity");
     arityInfo = OUTarityInfo + "-" + INarityInfo;
+    
     console.log("arityInfo", arityInfo);
+    
     arityStrokeWidth = .3;
     offset = 3;
     n = 9;
@@ -1771,14 +1885,16 @@ function arity() {
       // console.log(manyMany);
 
 
-
-    return manyMany.style("stroke", colorMod)
+    // return manyMany.style("stroke", colorMod)
+    return manyMany
+              // .transition().delay(300)
+    .style("stroke", colorMod)
                       .each( function(d, i) {
                             allPath = d3.select(this);     
                             allPathData = allPath.selectAll("path").attr("d");
                             
                             allPathDataId = allPath.attr("id");
-                            // console.log("allPathDataId", allPathDataId);
+                            console.log("allPathDataId", allPathDataId);
        
                           return svgGraph.select("g.edgePaths").select("#"+allPathDataId).append("path")
                                 .attr("d", allPathData)
@@ -1794,7 +1910,6 @@ function arity() {
 
                         svgGraph.select("g.edgePaths").select("#"+allPathDataId).append("path")
                                 .attr("d", allPathData)
-                                // .transition(4500)
                                 .attr("transform", "translate(0," + (-offset) + ")")
                                 .style("stroke-width", arityStrokeWidth)
                                 .attr("class", "manymanyOuter")

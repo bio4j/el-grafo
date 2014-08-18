@@ -1,0 +1,120 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>el-grafo</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="scripts/lib/d3.js" charset="utf-8"></script>
+<script src="scripts/lib/dagre-d3.js"></script>
+
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script src="http://www.trendskitchens.co.nz/jquery/contextmenu/jquery.contextmenu.r2.js"></script>
+
+<script src="scripts/alg/topsort.js"></script>
+<script src="scripts/alg/tarjan.js"></script>
+<script src="scripts/alg/components.js"></script>
+<script src="scripts/alg/dijkstra.js"></script>
+<script src="scripts/alg/dijkstraAll.js"></script>
+<script src="scripts/alg/findCycles.js"></script>
+<script src="scripts/alg/floydWarshall.js"></script>
+<script src="scripts/alg/isAcyclic.js"></script>
+<script src="scripts/alg/postorder.js"></script>
+<script src="scripts/alg/preorder.js"></script>
+<script src="scripts/alg/prim.js"></script>
+
+<!-- <button>Reset</button> -->
+
+<body onLoad="draw0();">
+
+<div id="introTITLE">
+    <h1> el-grafo </h1>
+    <h2> d3-based Bio4j data model visualization </h2>
+</div>
+
+<div id="projectDescription" class ="introTEXT">
+    <p> 
+    <b>GSoC 2014 el-grafo</b> project is the first development of an interactive web-based tool that allows users to intuitively explore the abstract domain model of the <b>Bio4j</b> open source bioinformatics data platform, which integrates the data available in the most representative open data sources around protein information: in <a href="http://www.gnu.org/licenses/agpl.html">UniProtKB </a>(SwissProt + Trembl) , <a href="http://www.gnu.org/licenses/agpl.html">Gene Ontology</a> (GO), <a href="http://www.gnu.org/licenses/agpl.html">UniRef</a> (50, 90, 100), <a href="http://www.gnu.org/licenses/agpl.html">RefSeq</a>, <a href="http://www.gnu.org/licenses/agpl.html">NCBI taxonomy</a> and <a href="http://www.gnu.org/licenses/agpl.html">Expasy Enzyme</a>.
+    <br> 
+        <br> 
+
+    <b>el-grafo </b> details the connection between all vertex and edge components which shape the logic structure of its network module by module, as well as provides specific typing information for retrieving useful data.
+    <br> 
+    <br> 
+    Its purpose is to help users gain a better understanding of the Bio4j domain model structure lowering their entry barrier to the database platform in order to utilise and query it more efficiently.
+    <br> 
+    <br> 
+    Technologically speaking, <a href="http://www.d3js.org/">d3.js</a> and <a href="https://github.com/cpettitt/dagre">dagre</a> <a href="https://github.com/cpettitt/dagre-d3">/dagre-d3</a> open-source JavaScript libraries compose the main core of the project.
+    </p>
+</div>
+
+<div id="infoLicense" class ="introTEXT"> 
+<p> 
+    <i>
+    More info about <a href="http://bio4j.com">Bio4j project</a>
+    <br> 
+    License: el-grafo is an open source platform released under <a href="http://www.gnu.org/licenses/agpl.html">AGPLv3</a>
+    </i>
+</p>
+</div>
+
+<div id="Bio4jDescription" class ="introTEXT">
+    <p> 
+    The Bio4j database is modular, allowing users to import only the data that they are interested in.
+    Click on each <b>Module</b> (colored areas) or <b>Dependency</b> (lines connecting them) of the scheme above to load and explore its specific graph representation.
+    </p>
+</div>
+
+<div id="instructionsTEXT">
+    <p> 
+    The scheme above represents each <b>Bio4j MODULE</b>integrated on the database with a color area. Its size is dependent of the number of types (vertex and edges) that shape it. 
+
+    Some modules require others modules to be present in the database before they can be imported. The so called <b> Bio4j DEPENDENCIES </b> stablish connections between vertex of different modules and are represented above by lines connecting them.
+    <br> 
+    <br> 
+    On the graph representation loaded at right, click on each vertex to see its <b>specific information</b> (id and properties), and right-click on it for several <b>filtering options</b> via the context menu.
+    </p>
+</div>
+
+
+<div id="modulesINTRO">
+  <svg id="svgModulesINTRO">
+  </svg>
+</div>
+
+
+<div id="mainModules">
+  <svg id="svgMainModules">
+  </svg>
+</div>
+
+<div id="mainGraph">
+  <svg id="svgMainGraph">
+  </svg>
+</div>
+
+<div id="mainRoute">
+  <svg id="svgMainRoute">
+  </svg>
+</div>
+
+
+<div class="contextMenu" id="cntxtMenu">
+    <ul>
+
+        <li id="predecessors"> > Select its PREDECESSORS </li>
+        <li id="successors"> > Select its SUCCESSORS </li>
+        <li id="neighbour"> > Select its NEIGHBOUR </li>
+        <li id="strongly-connected"> > Select its STRONGLY CONNECTED COMMUNITY </li>
+
+    </ul>
+</div>
+
+ <script src="scripts/el-grafo_INTRO_3.js"></script>
+ <script src="scripts/el-grafo_MOD_5.js"></script>
+ <script src="scripts/el-grafo_DEP_1.js"></script>
+
+
+
+
+
+
