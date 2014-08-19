@@ -1,0 +1,82 @@
+{
+    "label" : "ncbiTaxonomy",
+    "properties" : [
+        {
+            "label" : "id",
+            "type" : "java.lang.String"
+        },
+        {
+            "label" : "name",
+            "type" : "java.lang.String"
+        },
+        {
+            "label" : "comment",
+            "type" : "java.lang.String"
+        },
+        {
+            "label" : "scientificName",
+            "type" : "java.lang.String"
+        }
+    ],
+    "dependencies" : [
+        
+    ],
+    "vertexTypes" : [
+        {
+            "label" : "NcbiTaxon",
+            "properties" : [
+                "id"
+            ]
+        },
+        {
+            "label" : "Rank",
+            "properties" : [
+                "name"
+            ]
+        }
+    ],
+    "edgeTypes" : [
+        {
+            "label" : "Parent",
+            "properties" : [
+                
+            ],
+            "source" : {
+                "type" : "NcbiTaxon",
+                "arity" : "many"
+            },
+            "target" : {
+                "type" : "NcbiTaxon",
+                "arity" : "one"
+            }
+        },
+        {
+            "label" : "AssignedRank",
+            "properties" : [
+                
+            ],
+            "source" : {
+                "type" : "NcbiTaxon",
+                "arity" : "many"
+            },
+            "target" : {
+                "type" : "Rank",
+                "arity" : "one"
+            }
+        },
+        {
+            "label" : "Subrank",
+            "properties" : [
+                
+            ],
+            "source" : {
+                "type" : "Rank",
+                "arity" : "many"
+            },
+            "target" : {
+                "type" : "Rank",
+                "arity" : "one"
+            }
+        }
+    ]
+}

@@ -7,6 +7,7 @@ TO DO/BUGS BEING WORKED
 - Solve svg overlapping problems that don't allow to make clickable some elements due the canvas layout
 - Solve zoom behaviour issues. Either a reset buttom or auto-center feature.
 - Solve Enzyme module clickable button: is not working
+- Dependencies Graph representation title appearing twice.
 
 - Dependencies color vertex not corresponding to the color code, they all brown temporary.
 - Dependencies not appearing on the modules that have them.
