@@ -37,11 +37,11 @@ All scripts could be loaded from the HTML pages, but as the  the API may change 
 
 ## ABOUT THE MODEL DATA
 
-A HTTP-service request for exploring the Bio4j domain model has been used to returns updated [graphSON](https://github.com/thinkaurelius/faunus/wiki/GraphSON-Format)/JSON objects of the different modules integrated. More infomation about this feature [here](https://github.com/bio4j/model-service)
+A HTTP-service request for exploring the Bio4j domain model has been used to return updated [graphSON](https://github.com/thinkaurelius/faunus/wiki/GraphSON-Format)/JSON objects of the different modules integrated. More infomation about this feature [here](https://github.com/bio4j/model-service)
 
-Once retrieved, all service data where adapted until they suit the graphlib/dagre expected incomes. Once the graph structure and layout is setted, we have used as input for dagre-d3 in order to perform its visualization using d3 on its base. For the purposes of this project, it was necessary to link all info generated on the layout with the represented outcome graph.
+Once retrieved, the service data was adapted until it suited the graphlib/dagre expected income. Once the graph structure and layout were setted, we  used this as an input for dagre-d3 in order to perform its visualization using d3 on its base. For the purposes of this project, it was necessary to link all info generated on the layout with the represented outcome graph.
 
-It is important to remark that the data represented on el-grafo visualization tool is related with the Bio4j abstract model, not with the actual data stored on the database, alhtough this could be interested to be somehow represented on the tool in the future, on further develops.
+It is important to note that the data represented on el-grafo visualization tool is related with the Bio4j abstract model, not with the actual data stored on the database, although this is an interesting feature that could be integrated somehow in further development of this tool.
 
 
 
@@ -65,27 +65,33 @@ the main core of the project.
 
 ## DESCRIPTION
 
-As explained before, this approach to the Bio4j Database representation consists on a Html page that works initially as introduction page to the project and its purpose and context.
+As previously explained, this approach to the Bio4j Database representation consists on a Html page that works initially as an introduction page to the project: its purpose and context.
 
-Features:
-	- General textual info about the project.
-	- Modules and Dependencies schematic representation, as colored areas and lines connecting them. Sizes relative to the number of types (vertexes and edges) on each module. 
-	- Selection onClick of the Modules and Dependencies that could be LOADED and explored independently.
+![alt tag](https://raw.githubusercontent.com/bio4j/el-grafo/master/test/docs/Screenshot%20from%202014-08-19%2002:09:12.png)
 
 
 Features:
-    - Graph representation of how all vertex and edge components are connected between them shaping each module of the network.
-    - Graphical representation of ARITY possibilities of the edges: many/many, many/one, one/many, one/one.
-    - Graph filtering actions via Contextual Menu, that allow users to perform specific graph actions (filtering by successors, predecessors, neighbors, etc). Some graphlib Digraph functions used: inEdges, outEdges, filterNodes...
-    - Specific information of each vertex/edge of the graphs (id and properties).
-    - Dependencies collapsing/expanding features to see which particular vertexes are connected between modules, but also to keep on exploring the rest of elements forwards and backwards.
+
+- General information about the project.
+- Modules and Dependencies schematic representation, as colored areas and lines connecting them. Sizes relative to the number of types (vertexes and edges) on each module. 
+- Selection onClick of the Modules and Dependencies that could be LOADED and explored independently.
+
+![alt tag](https://raw.githubusercontent.com/bio4j/el-grafo/master/test/docs/Screenshot%20from%202014-08-19%2002:09:34.png)
+
+Once a specific Module or Dependency is loaded, the web interface turns into the main Graph representation site.
+
+Features:
+
+- Graph representation of how all vertex and edge components are connected and how they shape each module of the network.
+- Graphical representation of ARITY possibilities of the edges: many/many, many/one, one/many, one/one.
+- Graph filtering actions via Contextual Menu, that allow users to perform specific graph actions (filtering by successors, predecessors, neighbors, etc). Some graphlib Digraph functions used: inEdges, outEdges, filterNodes...
+- Specific information of each vertex/edge of the graphs (id and properties).
+- Dependency collapsing/expanding features which show particular vertexes connected between modules, as well as to continue exploring other elements of their modules. 
 
 
 
 ## WHAT'S NEXT
-The findings above are a starting point for the el-grafo project as first approach to its complex data structure.
+The findings above are a starting point for the el-grafo project as a first approach to its complex data structure. Further development of this tool and its guide is necessary for complete use of the program. In my findings the links between modules and dependencies can be examined more closely in order to elaborate on their uses and functions of the Bio4j model.
 
-Further development of this guide is necessary for the tool to function for complete use of the program. In my findings the links between modules and dependencies can be examined more closely in order to elaborate the on the uses and functions of the Bio4j model to provide a complete guide for its users.
-
-I plan to take this project further to implement its current functionalities, research and test some new ones regarding the network representation and users interaction, and in general achieve a more elaborate and useful tool. 
+I plan to take this project further improving its current functionalities by conducting additional research and testing of the network representation and users' interaction in order to make el-grafo a more useful and efficient tool. 
 
