@@ -51,10 +51,11 @@ module.exports =  {
   Renderer: require('./lib/Renderer'),
   json: require('graphlib').converter.json,
   layout: require('dagre').layout,
-  version: require('./lib/version')
+  version: require('./lib/version'),
+  debug: require('dagre').debug
 };
 
-},{"./lib/Renderer":3,"./lib/version":4,"dagre":11,"graphlib":28}],3:[function(require,module,exports){
+},{"./lib/Renderer":3,"./lib/version":4,"dagre":11,"graphlib":29}],3:[function(require,module,exports){
 var layout = require('dagre').layout;
 
 var d3;
@@ -72,6 +73,8 @@ function Renderer() {
   this.positionNodes(defaultPositionNodes);
   this.positionEdgeLabels(defaultPositionEdgeLabels);
   this.positionEdgePaths(defaultPositionEdgePaths);
+  this.zoomSetup(defaultZoomSetup);
+  this.zoom(defaultZoom);
   this.transition(defaultTransition);
   this.postLayout(defaultPostLayout);
   this.postRender(defaultPostRender);
@@ -128,6 +131,22 @@ Renderer.prototype.transition = function(transition) {
   return this;
 };
 
+Renderer.prototype.zoomSetup = function(zoomSetup) {
+  if (!arguments.length) { return this._zoomSetup; }
+  this._zoomSetup = bind(zoomSetup, this);
+  return this;
+};
+
+Renderer.prototype.zoom = function(zoom) {
+  if (!arguments.length) { return this._zoom; }
+  if (zoom) {
+    this._zoom = bind(zoom, this);
+  } else {
+    delete this._zoom;
+  }
+  return this;
+};
+
 Renderer.prototype.postLayout = function(postLayout) {
   if (!arguments.length) { return this._postLayout; }
   this._postLayout = bind(postLayout, this);
@@ -157,6 +176,9 @@ Renderer.prototype.run = function(graph, svg) {
   // process.
   graph = copyAndInitGraph(graph);
 
+  // Create zoom elements
+  svg = this._zoomSetup(graph, svg);
+
   // Create layers
   svg
     .selectAll('g.edgePaths, g.edgeLabels, g.nodes')
@@ -164,7 +186,6 @@ Renderer.prototype.run = function(graph, svg) {
     .enter()
       .append('g')
       .attr('class', function(d) { return d; });
-
 
   // Create node and edge roots, attach labels, and capture dimension
   // information for use with layout.
@@ -197,23 +218,25 @@ function copyAndInitGraph(graph) {
 
   // Init labels if they were not present in the source graph
   copy.nodes().forEach(function(u) {
-    var value = copy.node(u);
-    if (value === undefined) {
-      value = {};
-      copy.node(u, value);
-    }
+    var value = copyObject(copy.node(u));
+    copy.node(u, value);
     if (!('label' in value)) { value.label = ''; }
   });
 
   copy.edges().forEach(function(e) {
-    var value = copy.edge(e);
-    if (value === undefined) {
-      value = {};
-      copy.edge(e, value);
-    }
+    var value = copyObject(copy.edge(e));
+    copy.edge(e, value);
     if (!('label' in value)) { value.label = ''; }
   });
 
+  return copy;
+}
+
+function copyObject(obj) {
+  var copy = {};
+  for (var k in obj) {
+    copy[k] = obj[k];
+  }
   return copy;
 }
 
@@ -249,7 +272,7 @@ function defaultDrawNodes(g, root) {
         .style('opacity', 0)
         .attr('class', 'node enter');
 
-  svgNodes.each(function(u) { addLabel(g.node(u), d3.select(this), 10, 10); });
+  svgNodes.each(function(u) { addLabel(g.node(u), d3.select(this), true, 10, 10); });
 
   this._transition(svgNodes.exit())
       .style('opacity', 0)
@@ -272,7 +295,7 @@ function defaultDrawEdgeLabels(g, root) {
         .style('opacity', 0)
         .attr('class', 'edgeLabel enter');
 
-  svgEdgeLabels.each(function(e) { addLabel(g.edge(e), d3.select(this), 0, 0); });
+  svgEdgeLabels.each(function(e) { addLabel(g.edge(e), d3.select(this), false, 0, 0); });
 
   this._transition(svgEdgeLabels.exit())
       .style('opacity', 0)
@@ -302,7 +325,7 @@ var defaultDrawEdgePaths = function(g, root) {
   return svgEdgePaths;
 };
 
-function defaultPositionNodes(g, svgNodes, svgNodesEnter) {
+function defaultPositionNodes(g, svgNodes) {
   function transform(u) {
     var value = g.node(u);
     return 'translate(' + value.x + ',' + value.y + ')';
@@ -369,6 +392,43 @@ function defaultTransition(selection) {
   return selection;
 }
 
+// Setup dom for zooming
+function defaultZoomSetup(graph, svg) {
+  var root = svg.property('ownerSVGElement');
+  // If the svg node is the root, we get null, so set to svg.
+  if (!root) {
+    root = svg;
+  } else {
+    root = d3.select(root);
+  }
+
+  if (root.select('rect.overlay').empty()) {
+    // Create an overlay for capturing mouse events that don't touch foreground
+    root.append('rect')
+      .attr('class', 'overlay')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .style('fill', 'none');
+
+    // Capture the zoom behaviour from the svg
+    svg = svg.append('g')
+      .attr('class', 'zoom');
+
+    if (this._zoom) {
+      root.call(this._zoom(graph, svg));
+    }
+  }
+
+  return svg;
+}
+
+// By default allow pan and zoom
+function defaultZoom(graph, svg) {
+  return d3.behavior.zoom().on('zoom', function() {
+    svg.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
+  });
+}
+
 function defaultPostLayout() {
   // Do nothing
 }
@@ -382,7 +442,7 @@ function defaultPostRender(graph, root) {
           .attr('viewBox', '0 0 10 10')
           .attr('refX', 8)
           .attr('refY', 5)
-          .attr('markerUnits', 'strokewidth')
+          .attr('markerUnits', 'strokeWidth')
           .attr('markerWidth', 8)
           .attr('markerHeight', 5)
           .attr('orient', 'auto')
@@ -392,11 +452,18 @@ function defaultPostRender(graph, root) {
   }
 }
 
-function addLabel(node, root, marginX, marginY) {
+function addLabel(node, root, addingNode, marginX, marginY) {
   // Add the rect first so that it appears behind the label
   var label = node.label;
   var rect = root.append('rect');
-  var labelSvg = root.append('g');
+  if (node.width) {
+      rect.attr('width', node.width);
+  }
+  if (node.height) {
+      rect.attr('height', node.height);
+  }
+  
+  var labelSvg = root.append('g').style('stroke', '#00');
 
   if (label[0] === '<') {
     addForeignObjectLabel(label, labelSvg);
@@ -409,18 +476,46 @@ function addLabel(node, root, marginX, marginY) {
                  node.labelCut);
   }
 
-  var bbox = root.node().getBBox();
-
+  var label_bbox = labelSvg.node().getBBox();
   labelSvg.attr('transform',
-             'translate(' + (-bbox.width / 2) + ',' + (-bbox.height / 2) + ')');
+                'translate(' + (-label_bbox.width / 2) + ',' + (- label_bbox.height / 2) + ')');
 
+  var bbox = root.node().getBBox();
+  
   rect
-    .attr('rx', 5)
-    .attr('ry', 5)
+    .attr('rx', node.rx ? node.rx : 5)
+    .attr('ry', node.ry ? node.ry : 5)
     .attr('x', -(bbox.width / 2 + marginX))
     .attr('y', -(bbox.height / 2 + marginY))
     .attr('width', bbox.width + 2 * marginX)
-    .attr('height', bbox.height + 2 * marginY);
+    .attr('height', bbox.height + 2 * marginY)
+    .attr('fill', '#fff');
+  
+  if (addingNode) {
+    if (node.fill) {
+      rect.style('fill', node.fill);
+    }
+
+    if (node.stroke) {
+      rect.style('stroke', node.stroke);
+    }
+
+    if (node['stroke-width']) {
+      rect.style('stroke-width', node['stroke-width'] + 'px');
+    }
+
+    if (node['stroke-dasharray']) {
+      rect.style('stroke-dasharray', node['stroke-dasharray']);
+    }
+
+    if (node.href) {
+     root
+        .attr('class', root.attr('class') + ' clickable')
+        .on('click', function() {
+             window.open(node.href);
+         });
+    }
+  }
 }
 
 function addForeignObjectLabel(label, root) {
@@ -445,17 +540,17 @@ function addForeignObjectLabel(label, root) {
 }
 
 function addTextLabel(label, root, labelCols, labelCut) {
-  if (labelCut === undefined) labelCut = "false";
-  labelCut = (labelCut.toString().toLowerCase() === "true");
+  if (labelCut === undefined) labelCut = 'false';
+  labelCut = (labelCut.toString().toLowerCase() === 'true');
 
   var node = root
     .append('text')
     .attr('text-anchor', 'left');
 
-  label = label.replace(/\\n/g, "\n");
+  label = label.replace(/\\n/g, '\n');
 
   var arr = labelCols ? wordwrap(label, labelCols, labelCut) : label;
-  arr = arr.split("\n");
+  arr = arr.split('\n');
   for (var i = 0; i < arr.length; i++) {
     node
       .append('tspan')
@@ -476,7 +571,7 @@ function wordwrap (str, width, cut, brk) {
 
      var regex = '.{1,' +width+ '}(\\s|$)' + (cut ? '|.{' +width+ '}|.+$' : '|\\S+?(\\s|$)');
 
-     return str.match( RegExp(regex, 'g') ).join( brk );
+     return str.match( new RegExp(regex, 'g') ).join( brk );
 }
 
 function findMidPoint(points) {
@@ -540,7 +635,7 @@ function bind(func, thisArg) {
 }
 
 },{"d3":10,"dagre":11}],4:[function(require,module,exports){
-module.exports = '0.1.5';
+module.exports = '0.2.4';
 
 },{}],5:[function(require,module,exports){
 exports.Set = require('./lib/Set');
@@ -929,8 +1024,62 @@ exports.Digraph = require("graphlib").Digraph;
 exports.Graph = require("graphlib").Graph;
 exports.layout = require("./lib/layout");
 exports.version = require("./lib/version");
+exports.debug = require("./lib/debug");
 
-},{"./lib/layout":12,"./lib/version":27,"graphlib":28}],12:[function(require,module,exports){
+},{"./lib/debug":12,"./lib/layout":13,"./lib/version":28,"graphlib":29}],12:[function(require,module,exports){
+'use strict';
+
+var util = require('./util');
+
+/**
+ * Renders a graph in a stringified DOT format that indicates the ordering of
+ * nodes by layer. Circles represent normal nodes. Diamons represent dummy
+ * nodes. While we try to put nodes in clusters, it appears that graphviz
+ * does not respect this because we're later using subgraphs for ordering nodes
+ * in each layer.
+ */
+exports.dotOrdering = function(g) {
+  var ordering = util.ordering(g.filterNodes(util.filterNonSubgraphs(g)));
+  var result = 'digraph {';
+
+  function dfs(u) {
+    var children = g.children(u);
+    if (children.length) {
+      result += 'subgraph cluster_' + u + ' {';
+      result += 'label="' + u + '";';
+      children.forEach(function(v) {
+        dfs(v);
+      });
+      result += '}';
+    } else {
+      result += u;
+      if (g.node(u).dummy) {
+        result += ' [shape=diamond]';
+      }
+      result += ';';
+    }
+  }
+
+  g.children(null).forEach(dfs);
+
+  ordering.forEach(function(layer) {
+    result += 'subgraph { rank=same; edge [style="invis"];';
+    result += layer.join('->');
+    result += '}';
+  });
+
+  g.eachEdge(function(e, u, v) {
+    result += u + '->' + v + ';';
+  });
+
+  result += '}';
+
+  return result;
+};
+
+},{"./util":27}],13:[function(require,module,exports){
+'use strict';
+
 var util = require('./util'),
     rank = require('./rank'),
     order = require('./order'),
@@ -1199,7 +1348,9 @@ module.exports = function() {
 };
 
 
-},{"./order":13,"./position":18,"./rank":19,"./util":26,"graphlib":28}],13:[function(require,module,exports){
+},{"./order":14,"./position":19,"./rank":20,"./util":27,"graphlib":29}],14:[function(require,module,exports){
+'use strict';
+
 var util = require('./util'),
     crossCount = require('./order/crossCount'),
     initLayerGraphs = require('./order/initLayerGraphs'),
@@ -1302,19 +1453,21 @@ function sweep(g, layerGraphs, iter) {
 
 function sweepDown(g, layerGraphs) {
   var cg;
-  for (i = 1; i < layerGraphs.length; ++i) {
+  for (var i = 1; i < layerGraphs.length; ++i) {
     cg = sortLayer(layerGraphs[i], cg, predecessorWeights(g, layerGraphs[i].nodes()));
   }
 }
 
 function sweepUp(g, layerGraphs) {
   var cg;
-  for (i = layerGraphs.length - 2; i >= 0; --i) {
+  for (var i = layerGraphs.length - 2; i >= 0; --i) {
     sortLayer(layerGraphs[i], cg, successorWeights(g, layerGraphs[i].nodes()));
   }
 }
 
-},{"./order/crossCount":14,"./order/initLayerGraphs":15,"./order/initOrder":16,"./order/sortLayer":17,"./util":26}],14:[function(require,module,exports){
+},{"./order/crossCount":15,"./order/initLayerGraphs":16,"./order/initOrder":17,"./order/sortLayer":18,"./util":27}],15:[function(require,module,exports){
+'use strict';
+
 var util = require('../util');
 
 module.exports = crossCount;
@@ -1371,7 +1524,9 @@ function twoLayerCrossCount(g, layer1, layer2) {
   return cc;
 }
 
-},{"../util":26}],15:[function(require,module,exports){
+},{"../util":27}],16:[function(require,module,exports){
+'use strict';
+
 var nodesFromList = require('graphlib').filter.nodesFromList,
     /* jshint -W079 */
     Set = require('cp-data').Set;
@@ -1422,7 +1577,9 @@ function initLayerGraphs(g) {
   return layerGraphs;
 }
 
-},{"cp-data":5,"graphlib":28}],16:[function(require,module,exports){
+},{"cp-data":5,"graphlib":29}],17:[function(require,module,exports){
+'use strict';
+
 var crossCount = require('./crossCount'),
     util = require('../util');
 
@@ -1460,52 +1617,26 @@ function initOrder(g, random) {
   g.graph().orderCC = Number.MAX_VALUE;
 }
 
-},{"../util":26,"./crossCount":14}],17:[function(require,module,exports){
-var util = require('../util');
-/*
+},{"../util":27,"./crossCount":15}],18:[function(require,module,exports){
+'use strict';
+
+var util = require('../util'),
     Digraph = require('graphlib').Digraph,
     topsort = require('graphlib').alg.topsort,
     nodesFromList = require('graphlib').filter.nodesFromList;
-*/
 
 module.exports = sortLayer;
 
-/*
 function sortLayer(g, cg, weights) {
+  weights = adjustWeights(g, weights);
   var result = sortLayerSubgraph(g, null, cg, weights);
+
   result.list.forEach(function(u, i) {
     g.node(u).order = i;
   });
   return result.constraintGraph;
 }
-*/
 
-function sortLayer(g, cg, weights) {
-  var ordering = [];
-  var bs = {};
-  g.eachNode(function(u, value) {
-    ordering[value.order] = u;
-    var ws = weights[u];
-    if (ws.length) {
-      bs[u] = util.sum(ws) / ws.length;
-    }
-  });
-
-  var toSort = g.nodes().filter(function(u) { return bs[u] !== undefined; });
-  toSort.sort(function(x, y) {
-    return bs[x] - bs[y] || g.node(x).order - g.node(y).order;
-  });
-
-  for (var i = 0, j = 0, jl = toSort.length; j < jl; ++i) {
-    if (bs[ordering[i]] !== undefined) {
-      g.node(toSort[j++]).order = i;
-    }
-  }
-}
-
-// TOOD: re-enable constrained sorting once we have a strategy for handling
-// undefined barycenters.
-/*
 function sortLayerSubgraph(g, sg, cg, weights) {
   cg = cg ? cg.filterNodes(nodesFromList(g.children(sg))) : new Digraph();
 
@@ -1519,7 +1650,9 @@ function sortLayerSubgraph(g, sg, cg, weights) {
       var ws = weights[u];
       nodeData[u] = {
         degree: ws.length,
-        barycenter: ws.length > 0 ? util.sum(ws) / ws.length : 0,
+        barycenter: util.sum(ws) / ws.length,
+        order: g.node(u).order,
+        orderCount: 1,
         list: [u]
       };
     }
@@ -1529,7 +1662,8 @@ function sortLayerSubgraph(g, sg, cg, weights) {
 
   var keys = Object.keys(nodeData);
   keys.sort(function(x, y) {
-    return nodeData[x].barycenter - nodeData[y].barycenter;
+    return nodeData[x].barycenter - nodeData[y].barycenter ||
+           nodeData[x].order - nodeData[y].order;
   });
 
   var result =  keys.map(function(u) { return nodeData[u]; })
@@ -1537,7 +1671,6 @@ function sortLayerSubgraph(g, sg, cg, weights) {
   return result;
 }
 
-/*
 function mergeNodeData(g, lhs, rhs) {
   var cg = mergeDigraphs(lhs.constraintGraph, rhs.constraintGraph);
 
@@ -1554,6 +1687,9 @@ function mergeNodeData(g, lhs, rhs) {
     degree: lhs.degree + rhs.degree,
     barycenter: (lhs.barycenter * lhs.degree + rhs.barycenter * rhs.degree) /
                 (lhs.degree + rhs.degree),
+    order: (lhs.order * lhs.orderCount + rhs.order * rhs.orderCount) /
+           (lhs.orderCount + rhs.orderCount),
+    orderCount: lhs.orderCount + rhs.orderCount,
     list: lhs.list.concat(rhs.list),
     firstSG: lhs.firstSG !== undefined ? lhs.firstSG : rhs.firstSG,
     lastSG: rhs.lastSG !== undefined ? rhs.lastSG : lhs.lastSG,
@@ -1623,9 +1759,48 @@ function findViolatedConstraint(cg, nodeData) {
     }
   }
 }
-*/
 
-},{"../util":26}],18:[function(require,module,exports){
+// Adjust weights so that they fall in the range of 0..|N|-1. If a node has no
+// weight assigned then set its adjusted weight to its current position. This
+// allows us to better retain the origiinal position of nodes without neighbors.
+function adjustWeights(g, weights) {
+  var minW = Number.MAX_VALUE,
+      maxW = 0,
+      adjusted = {};
+  g.eachNode(function(u) {
+    if (g.children(u).length) return;
+
+    var ws = weights[u];
+    if (ws.length) {
+      minW = Math.min(minW, util.min(ws));
+      maxW = Math.max(maxW, util.max(ws));
+    }
+  });
+
+  var rangeW = (maxW - minW);
+  g.eachNode(function(u) {
+    if (g.children(u).length) return;
+
+    var ws = weights[u];
+    if (!ws.length) {
+      adjusted[u] = [g.node(u).order];
+    } else {
+      adjusted[u] = ws.map(function(w) {
+        if (rangeW) {
+          return (w - minW) * (g.order() - 1) / rangeW;
+        } else {
+          return g.order() - 1 / 2;
+        }
+      });
+    }
+  });
+
+  return adjusted;
+}
+
+},{"../util":27,"graphlib":29}],19:[function(require,module,exports){
+'use strict';
+
 var util = require('./util');
 
 /*
@@ -2065,7 +2240,9 @@ module.exports = function() {
   }
 };
 
-},{"./util":26}],19:[function(require,module,exports){
+},{"./util":27}],20:[function(require,module,exports){
+'use strict';
+
 var util = require('./util'),
     acyclic = require('./rank/acyclic'),
     initRank = require('./rank/initRank'),
@@ -2203,7 +2380,9 @@ function normalize(g) {
   g.eachNode(function(u, node) { node.rank -= m; });
 }
 
-},{"./rank/acyclic":20,"./rank/constraints":21,"./rank/feasibleTree":22,"./rank/initRank":23,"./rank/simplex":25,"./util":26,"graphlib":28}],20:[function(require,module,exports){
+},{"./rank/acyclic":21,"./rank/constraints":22,"./rank/feasibleTree":23,"./rank/initRank":24,"./rank/simplex":26,"./util":27,"graphlib":29}],21:[function(require,module,exports){
+'use strict';
+
 var util = require('../util');
 
 module.exports = acyclic;
@@ -2266,7 +2445,9 @@ function undo(g) {
   });
 }
 
-},{"../util":26}],21:[function(require,module,exports){
+},{"../util":27}],22:[function(require,module,exports){
+'use strict';
+
 exports.apply = function(g) {
   function dfs(sg) {
     var rankSets = {};
@@ -2435,7 +2616,9 @@ exports.relax = function(g) {
   });
 };
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
+'use strict';
+
 /* jshint -W079 */
 var Set = require('cp-data').Set,
 /* jshint +W079 */
@@ -2560,7 +2743,9 @@ function slack(g, u, v) {
   return rankDiff - maxMinLen;
 }
 
-},{"../util":26,"cp-data":5,"graphlib":28}],23:[function(require,module,exports){
+},{"../util":27,"cp-data":5,"graphlib":29}],24:[function(require,module,exports){
+'use strict';
+
 var util = require('../util'),
     topsort = require('graphlib').alg.topsort;
 
@@ -2592,7 +2777,9 @@ function initRank(g) {
   });
 }
 
-},{"../util":26,"graphlib":28}],24:[function(require,module,exports){
+},{"../util":27,"graphlib":29}],25:[function(require,module,exports){
+'use strict';
+
 module.exports = {
   slack: slack
 };
@@ -2610,7 +2797,9 @@ function slack(graph, u, v, minLen) {
   return Math.abs(graph.node(u).rank - graph.node(v).rank) - minLen;
 }
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+'use strict';
+
 var util = require('../util'),
     rankUtil = require('./rankUtil');
 
@@ -2920,7 +3109,9 @@ function minimumLength(graph, u, v) {
   }
 }
 
-},{"../util":26,"./rankUtil":24}],26:[function(require,module,exports){
+},{"../util":27,"./rankUtil":25}],27:[function(require,module,exports){
+'use strict';
+
 /*
  * Returns the smallest value in the array.
  */
@@ -2964,7 +3155,7 @@ exports.values = function(obj) {
 };
 
 exports.shuffle = function(array) {
-  for (i = array.length - 1; i > 0; --i) {
+  for (var i = array.length - 1; i > 0; --i) {
     var j = Math.floor(Math.random() * (i + 1));
     var aj = array[j];
     array[j] = array[i];
@@ -3039,10 +3230,10 @@ log.level = 0;
 
 exports.log = log;
 
-},{}],27:[function(require,module,exports){
-module.exports = '0.4.5';
-
 },{}],28:[function(require,module,exports){
+module.exports = '0.4.6';
+
+},{}],29:[function(require,module,exports){
 exports.Graph = require("./lib/Graph");
 exports.Digraph = require("./lib/Digraph");
 exports.CGraph = require("./lib/CGraph");
@@ -3075,7 +3266,7 @@ exports.filter = {
 
 exports.version = require("./lib/version");
 
-},{"./lib/CDigraph":30,"./lib/CGraph":31,"./lib/Digraph":32,"./lib/Graph":33,"./lib/alg/components":34,"./lib/alg/dijkstra":35,"./lib/alg/dijkstraAll":36,"./lib/alg/findCycles":37,"./lib/alg/floydWarshall":38,"./lib/alg/isAcyclic":39,"./lib/alg/postorder":40,"./lib/alg/preorder":41,"./lib/alg/prim":42,"./lib/alg/tarjan":43,"./lib/alg/topsort":44,"./lib/converter/json.js":46,"./lib/filter":47,"./lib/graph-converters":48,"./lib/version":50}],29:[function(require,module,exports){
+},{"./lib/CDigraph":31,"./lib/CGraph":32,"./lib/Digraph":33,"./lib/Graph":34,"./lib/alg/components":35,"./lib/alg/dijkstra":36,"./lib/alg/dijkstraAll":37,"./lib/alg/findCycles":38,"./lib/alg/floydWarshall":39,"./lib/alg/isAcyclic":40,"./lib/alg/postorder":41,"./lib/alg/preorder":42,"./lib/alg/prim":43,"./lib/alg/tarjan":44,"./lib/alg/topsort":45,"./lib/converter/json.js":47,"./lib/filter":48,"./lib/graph-converters":49,"./lib/version":51}],30:[function(require,module,exports){
 /* jshint -W079 */
 var Set = require("cp-data").Set;
 /* jshint +W079 */
@@ -3272,7 +3463,7 @@ function delEdgeFromMap(map, v, e) {
 }
 
 
-},{"cp-data":5}],30:[function(require,module,exports){
+},{"cp-data":5}],31:[function(require,module,exports){
 var Digraph = require("./Digraph"),
     compoundify = require("./compoundify");
 
@@ -3309,7 +3500,7 @@ CDigraph.prototype.toString = function() {
   return "CDigraph " + JSON.stringify(this, null, 2);
 };
 
-},{"./Digraph":32,"./compoundify":45}],31:[function(require,module,exports){
+},{"./Digraph":33,"./compoundify":46}],32:[function(require,module,exports){
 var Graph = require("./Graph"),
     compoundify = require("./compoundify");
 
@@ -3346,7 +3537,7 @@ CGraph.prototype.toString = function() {
   return "CGraph " + JSON.stringify(this, null, 2);
 };
 
-},{"./Graph":33,"./compoundify":45}],32:[function(require,module,exports){
+},{"./Graph":34,"./compoundify":46}],33:[function(require,module,exports){
 /*
  * This file is organized with in the following order:
  *
@@ -3614,7 +3805,7 @@ Digraph.prototype._filterNodes = function(pred) {
 };
 
 
-},{"./BaseGraph":29,"./util":49,"cp-data":5}],33:[function(require,module,exports){
+},{"./BaseGraph":30,"./util":50,"cp-data":5}],34:[function(require,module,exports){
 /*
  * This file is organized with in the following order:
  *
@@ -3749,7 +3940,7 @@ Graph.prototype.delEdge = function(e) {
 };
 
 
-},{"./BaseGraph":29,"./util":49,"cp-data":5}],34:[function(require,module,exports){
+},{"./BaseGraph":30,"./util":50,"cp-data":5}],35:[function(require,module,exports){
 /* jshint -W079 */
 var Set = require("cp-data").Set;
 /* jshint +W079 */
@@ -3792,7 +3983,7 @@ function components(g) {
   return results;
 }
 
-},{"cp-data":5}],35:[function(require,module,exports){
+},{"cp-data":5}],36:[function(require,module,exports){
 var PriorityQueue = require("cp-data").PriorityQueue;
 
 module.exports = dijkstra;
@@ -3872,7 +4063,7 @@ function dijkstra(g, source, weightFunc, incidentFunc) {
   return results;
 }
 
-},{"cp-data":5}],36:[function(require,module,exports){
+},{"cp-data":5}],37:[function(require,module,exports){
 var dijkstra = require("./dijkstra");
 
 module.exports = dijkstraAll;
@@ -3909,7 +4100,7 @@ function dijkstraAll(g, weightFunc, incidentFunc) {
   return results;
 }
 
-},{"./dijkstra":35}],37:[function(require,module,exports){
+},{"./dijkstra":36}],38:[function(require,module,exports){
 var tarjan = require("./tarjan");
 
 module.exports = findCycles;
@@ -3931,7 +4122,7 @@ function findCycles(g) {
   return tarjan(g).filter(function(cmpt) { return cmpt.length > 1; });
 }
 
-},{"./tarjan":43}],38:[function(require,module,exports){
+},{"./tarjan":44}],39:[function(require,module,exports){
 module.exports = floydWarshall;
 
 /**
@@ -4010,7 +4201,7 @@ function floydWarshall(g, weightFunc, incidentFunc) {
   return results;
 }
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var topsort = require("./topsort");
 
 module.exports = isAcyclic;
@@ -4036,7 +4227,7 @@ function isAcyclic(g) {
   return true;
 }
 
-},{"./topsort":44}],40:[function(require,module,exports){
+},{"./topsort":45}],41:[function(require,module,exports){
 /* jshint -W079 */
 var Set = require("cp-data").Set;
 /* jshint +W079 */
@@ -4063,7 +4254,7 @@ function postorder(g, root, f) {
   dfs(root);
 }
 
-},{"cp-data":5}],41:[function(require,module,exports){
+},{"cp-data":5}],42:[function(require,module,exports){
 /* jshint -W079 */
 var Set = require("cp-data").Set;
 /* jshint +W079 */
@@ -4090,7 +4281,7 @@ function preorder(g, root, f) {
   dfs(root);
 }
 
-},{"cp-data":5}],42:[function(require,module,exports){
+},{"cp-data":5}],43:[function(require,module,exports){
 var Graph = require("../Graph"),
     PriorityQueue = require("cp-data").PriorityQueue;
 
@@ -4161,7 +4352,7 @@ function prim(g, weightFunc) {
   return result;
 }
 
-},{"../Graph":33,"cp-data":5}],43:[function(require,module,exports){
+},{"../Graph":34,"cp-data":5}],44:[function(require,module,exports){
 module.exports = tarjan;
 
 /**
@@ -4229,7 +4420,7 @@ function tarjan(g) {
   return results;
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 module.exports = topsort;
 topsort.CycleException = CycleException;
 
@@ -4287,7 +4478,7 @@ CycleException.prototype.toString = function() {
   return "Graph has at least one cycle";
 };
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 // This file provides a helper function that mixes-in Dot behavior to an
 // existing graph prototype.
 
@@ -4395,7 +4586,7 @@ function compoundify(SuperConstructor) {
   return Constructor;
 }
 
-},{"cp-data":5}],46:[function(require,module,exports){
+},{"cp-data":5}],47:[function(require,module,exports){
 var Graph = require("../Graph"),
     Digraph = require("../Digraph"),
     CGraph = require("../CGraph"),
@@ -4485,7 +4676,7 @@ function typeOf(obj) {
   return Object.prototype.toString.call(obj).slice(8, -1);
 }
 
-},{"../CDigraph":30,"../CGraph":31,"../Digraph":32,"../Graph":33}],47:[function(require,module,exports){
+},{"../CDigraph":31,"../CGraph":32,"../Digraph":33,"../Graph":34}],48:[function(require,module,exports){
 /* jshint -W079 */
 var Set = require("cp-data").Set;
 /* jshint +W079 */
@@ -4501,7 +4692,7 @@ exports.nodesFromList = function(nodes) {
   };
 };
 
-},{"cp-data":5}],48:[function(require,module,exports){
+},{"cp-data":5}],49:[function(require,module,exports){
 var Graph = require("./Graph"),
     Digraph = require("./Digraph");
 
@@ -4540,7 +4731,7 @@ Digraph.prototype.asUndirected = function() {
   return g;
 };
 
-},{"./Digraph":32,"./Graph":33}],49:[function(require,module,exports){
+},{"./Digraph":33,"./Graph":34}],50:[function(require,module,exports){
 // Returns an array of all values for properties of **o**.
 exports.values = function(o) {
   var ks = Object.keys(o),
@@ -4553,7 +4744,7 @@ exports.values = function(o) {
   return result;
 };
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = '0.7.4';
 
 },{}]},{},[1])
