@@ -1,31 +1,7 @@
 
-//Parameters from url
-var paramstr = window.location.search.substr(1);
-var paramarr = paramstr.split ("&");
-var params = {};
-
-for ( var i = 0; i < paramarr.length; i++) {
-    var tmparr = paramarr[i].split("=");
-    params[tmparr[0]] = tmparr[1];
-}
-url = params["url"];
-colorMod = "#"+params["color"];
-
-
-//SVG canvas for modules loading
-var mainModulesWidth = 800;
-var mainModulesHeight = 250;
-
-  svgModules = d3.select("#svgMainModules")
-              .attr("width", mainModulesWidth)
-              .attr("height", mainModulesHeight);
-  svgModules.append("g")
-              .attr("transform", "translate(40,40)");
-
-
 //SVG canvas for GRAPH representation
-var mainGraphWidth = 650;
-var mainGraphHeight = 360;
+var mainGraphWidth = 600;
+var mainGraphHeight = 550;
 var distanceXlegend = 30;     
 var distanceYlegend = 0;     
 
@@ -35,192 +11,57 @@ var distanceYlegend = 0;
   svgGraph.append("g")
             .attr("id", "grafo");
 
-  svgGraphLegend = svgGraph.append("g")
-              .attr("id", "legend")
-              .attr("class", "legend")
-              .attr("transform", "translate(" + distanceXlegend +"," + distanceYlegend + ")"); 
-
-
+ 
 //SVG canvas for ROUTEMAP loading
 var mainRouteWidth = 300;
-var mainRouteHeight = 100;
+var mainRouteHeight = 500;
 
   svgRouteMap = d3.select("#svgMainRoute")
-              // .append("g")
               .attr("width", mainRouteWidth)
               .attr("height", mainRouteHeight);
-              // .attr("transform", "translate(20,0)");
 
 
-//SVG canvas for LOCAL VIEW loading
-/*var mainLocalViewWidth = 250;
-var mainLocalViewHeight = 100;
+ svgArityLegend = svgRouteMap.append("g")
+              .attr("id", "legend")
+              .attr("class", "legend")
+              .attr("transform", "translate(0,70)");
 
-  svgLocalView = d3.select("#svgMainLocalView")
-            .attr("width", mainLocalViewWidth)
-            .attr("height", mainLocalViewHeight);
-  svgLocalview.append("g")
-            // .attr("transform", "translate(20,20)");
-*/
  ////////////////
-
-  titles = ["Bio4j MODULES", "Bio4j DEPENDENCIES"]
-  d3.select("#svgMainModules")
-        .selectAll("text")
-        .data(titles)
-        .enter()
-        .append("text") 
-        .attr("x", 20)
-        .attr("y", function(d, i) { return 30 + i*150; } )
-        .attr("text-anchor", "left")
-        .text( function(d) { return d; })
-        .attr("font-family", "sans-serif")
-        .attr("font-size", "13px");
 
 
 var zoom = d3.behavior.zoom();
+/*    .x(x)
+    .y(y)
+    .scaleExtent([1, 10])
+    .on("zoom", zooming);*/
 
 function draw(isUpdate) {
 
   //Complete Domain Model schema:
   url0 = "data/rev_schema_new_ALL.json";
 
-  //Color scheme:
-  // var color = d3.scale.category10();
-  // var color = d3.scale.quantile().range(d3.range(9));
-/*  var color = d3.scale.quantize()
-      // .range(colorbrewer.PiYG[9]);
-      .range(colorbrewer.Dark2);*/
-
-  //TO DEFINE THE COLOR PALETTE:
-  var bio4jColors = ["#0E6580  ","#68DCFF","#1BCAFF","#587680","#16A2CC","#68DCFF","#0E6580 ","#1BCAFF","#587680"];
-
-  var color = d3.scale.category10()
-      // .range(colorbrewer.PiYG[9]);
-      .range(bio4jColors);
-
   d3.json(url0, function(json0) {
-/*
-     var length = json0.length;
-     console.log(length);
 
-     ModulesArray = [];        //Initialize empty array 
-      for (var i = 0; i < json0.length; i++) {         
-        ModulesArray.push(i);       //Add new number to array
-            };
-
-      console.log(ModulesArray);
-      console.log(json0[3].label);*/
-
-    console.log("json0", json0);
-
+    // console.log("json0", json0);
     var newjson0 = json0.map(function(x) {
-      function colorModule(d, i) { return color(i); }
+      // function colorModule(d, i) { return color(i); }
           return {
             id: x.label,        
             Nvertex: x.vertexTypes.length,
             Nedges: x.edgeTypes.length,
-            Dependencies: x.dependencies.length,
-            Color: colorModule(x)
+            Dependencies: x.dependencies.length
+            // Color: colorModule(x)
             };
         });
       
-    console.log("newjson0", newjson0);
-
-////////////////////////////////////////////////////////////
-
-    // -------> 1_MODULES AND DEPENDENCIES buttons/loading
-
-    //MODULES AND DEPENDENCIES
-    //Filtering between modules and dependencies. For example with circles and rects
-    var shapesToFilter = svgModules.select("g").selectAll("circle")
-                          .data(newjson0)
-                          .enter();
-
-    //svg for MODULES
-    shapesToFilter.append("circle")
-        .filter(function(d) { return d.Dependencies < 1;})
-        .attr("id", function(d) { return d.id; })
-        .attr("cx", function(d, i) { return i*90} )
-        .attr("cy", 30 )
-        .attr("r", function(d) { return (1 + d.Nvertex + d.Nedges)*1.5 } )
-        .attr("fill", function(d, i) { return color(i); })
-        .style("opacity", 0.5);
-        // .attr("fill", "teal");
-    
-    //svg for DEPENDENCIES
-    shapesToFilter.append("rect")
-        .filter(function(d) { return d.Dependencies >= 1;})
-        .attr("x", function(d, i) { return 20 + i*100 })
-        .attr("y", 30+140 )
-        .attr("width", 20 )
-        .attr("height", 1.5 );
-
-
-   //Filtering between modules and dependencies
-   textToFilter = svgModules.select("g").selectAll("text")
-                            .data(newjson0)
-                            .enter();
-    //texts for MODULES
-    textToFilter.append("text")
-        .filter(function(d) { return d.Dependencies < 1;})
-        .text(function(d) {
-              return d.id;
-            })
-        .attr("x", function(d,i) { return i*90} )
-        .attr("text-anchor", "middle")
-        .attr("y", 65 )
-        .attr("font-size", "11px");
-    
-    //texts for DEPENDENCIES
-    textToFilter.append("text")
-        .filter(function(d) { return d.Dependencies >= 1;})
-        .text(function(d) {
-              return d.id;
-            })
-        .attr("x", function(d,i) { return 20 + i*100 +10; } )
-        .attr("text-anchor", "middle")
-        .attr("y", 55+140 )
-        .attr("font-size", "11px");
-
- 
-//////////////
-
-
-   //Function for each module url:
-    var urlFunction = function(d) {
-      return ("data/rev_" + d + ".json")
-    };
-
-
-    //Onclick on each Module, highlight it, define the url path and run the dagre-d3 lib
-    svgModules.select("g").selectAll("circle")
-        .on("click", function(d) {
-            svgModules.select("g").selectAll("circle")
-              .style("stroke-width", 0);
-
-            d3.select(this)
-              .style("stroke", d3.select(this).attr("fill"))
-              .style("stroke-width", 10)
-              .style("stroke-opacity", .3);
-            console.log(d.id);
-            url = urlFunction(d.id);
-            console.log(url);
-            colorMod = d3.select(this).attr("fill");
-            console.log(colorMod);
-            return draw();
-          });
-
-    //  1_MODULES AND DEPENDENCIES buttons/loading   <-------
-
+    // console.log("newjson0", newjson0);
 
 ////////////////////////////////////////////////////////////
 
 
 // 1-MODEL/DATA/FROM/SERVICE
-// Loading GO data from local file after and transforming json initial structure.
+// Loading MODEL data from local file and transforming json initial structure.
 d3.json(url, function(json) {
-
 
     // -------> 2_AdaptJSON-GraphLib
 
@@ -242,8 +83,8 @@ d3.json(url, function(json) {
     var module = json.label;
     var properties = json.propertyTypes;
 
-    console.log("Original json structure of vertexTypes from GO file:")
-    console.log(json.vertexTypes)
+    // console.log("Original json structure of vertexTypes from GO file:")
+    // console.log(json.vertexTypes)
 
     var newVertex = json.vertexTypes.map(function(x) {
           return {
@@ -252,14 +93,14 @@ d3.json(url, function(json) {
             };
         });
       
-    console.log("Transformed structure of vertexTypes for Graphlib:")
-    console.log(newVertex);
+    // console.log("Transformed structure of vertexTypes for Graphlib:")
+    // console.log(newVertex);
 
     //////
 
     // Transforming json edges structure with a .map function:
-    console.log("Original json structure of edgeTypes from GO file:")
-    console.log(json.edgeTypes)
+    // console.log("Original json structure of edgeTypes from GO file:")
+    // console.log(json.edgeTypes)
 
         var newEdges = json.edgeTypes.map(function(x) {
           return {
@@ -270,8 +111,8 @@ d3.json(url, function(json) {
           };
         });
     
-    console.log("Transformed structure of edgeTypes for Graphlib:")
-    console.log(newEdges);
+    // console.log("Transformed structure of edgeTypes for Graphlib:")
+    // console.log(newEdges);
 
 
     //  2_AdaptJSON-GraphLib  < -------
@@ -284,7 +125,6 @@ d3.json(url, function(json) {
   var graph = dagreD3.json.decode(newVertex, newEdges);
     
 
-
   //alter the drawNodes function:
     var oldDrawNodes = renderer.drawNodes();
   renderer.drawNodes(function(graph, root) {
@@ -296,7 +136,6 @@ d3.json(url, function(json) {
     svgNodes.attr("id", function(u) { return  u });
     return svgNodes;
   });
-
 
   //alter the drawEdges function:
   var oldDrawEdge = renderer.drawEdgePaths();
@@ -331,24 +170,25 @@ d3.json(url, function(json) {
               // .zoom(false)
               .run(graph, svgGraph.select("g"));
 
-
-
-
 ////////////////////////////////////////////////////////////////// -------------------------------------
 
 zooming(); 
 
 function zooming() {
-  
-  zoom.scale(1);
-  zoom.translate([0, 0]);
 
-   //Centering the graphs depending on their size
+  // zoom.scale(1);
+  // zoom.translate([0, 0]);
+  
+  svgGraph.select("#grafo")
+          .transition()
+          .duration(1000)
+          .attr("transform", "translate(0,0) scale(1)");
+
+  //Centering the graphs depending on their size
   wGraph = renderinglayout.graph().width;
   hGraph = renderinglayout.graph().height;
-
-  console.log("wGraph", wGraph);
-  console.log("hGraph", hGraph);
+  // console.log("wGraph", wGraph);
+  // console.log("hGraph", hGraph);
 
   if ((hGraph>mainGraphHeight) || (wGraph>mainGraphWidth)) {
 
@@ -358,48 +198,43 @@ function zooming() {
      if ((hGraph/mainGraphHeight)<(wGraph/mainGraphWidth)) {
         var scaleGraph = 1/(wGraph/mainGraphWidth);
         var transformeGraph = ((mainGraphWidth-wGraph)/2)*scaleGraph;
-  
-        console.log("WEIGH, soy más ancho que alto");
-        console.log("scaleGraph", scaleGraph);
+          // console.log("More WEIGHT than height");
+        // console.log("scaleGraph", scaleGraph);
      }
      
      else {
         var scaleGraph = 1/(hGraph/mainGraphHeight);
-        var transformeGraph = -((mainGraphHeight-hGraph)/2)*scaleGraph;
-
-        console.log("HEIGHT, soy más alto que ancho");
-        console.log("scaleGraph", scaleGraph);
-        // console.log("transformeGraph", transformeGraph);
+        var transformeGraph = -((mainGraphHeight-hGraph)/2)*scaleGraph-70;
+        // console.log("More HEIGHT than weight");
+        // console.log("scaleGraph", scaleGraph);
      }
 
      svgGraph.select("#grafo")
-          .attr("transform", "translate(0,+"+(mainGraphHeight/2)+ ")")
+          .style("opacity", 0)
+          .attr("transform", "translate(-200,"+((mainGraphHeight/2)-100)+ ")"+" scale(.1)")
           .transition()
-          .duration(500)
+          .duration(1000)
+          .style("opacity", 1)
           .attr("transform", "translate("+transformeGraph+",0) scale("+scaleGraph+") ");
       }
-
-
 
   else {
     var distanceX = (mainGraphWidth/2)-(wGraph/2);  
     var distanceY = (mainGraphHeight/2)-(hGraph/2)-20;  
 
      svgGraph.select("#grafo")
-          .attr("transform", "translate(0,+"+(mainGraphHeight/2)+ ")")
+          // .attr("transform", "translate(0,"+(mainGraphHeight/2)+ ")"+" scale(.1)")
+          .attr("transform", "translate(-200,"+(mainGraphHeight/2)+ ")"+" scale(.1)")
           .transition()
-          .duration(500)
+          .duration(1000)
           .attr("transform", "translate(" + distanceX +"," + distanceY + ")");  
   }
 
 };
 
 
-
-
-
-
 ////////////////////////////////////////////////////////////////// -------------------------------------
+
 
 mainGrafoInformation();
 
@@ -416,8 +251,7 @@ function mainGrafoInformation() {
 }
 
 
-
-  bindingData();
+bindingData();
 
 function bindingData() {
 
@@ -448,7 +282,6 @@ function bindingData() {
             return d.value.propertyTypes
               });
 
-
     d3.selectAll(".node.enter")
       .data(newVertex)
       .attr("module", function(d) {
@@ -462,89 +295,7 @@ function bindingData() {
         })
       // .call(d3.behavior.drag())
       ;
-
 };
-
-    //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
-
-  
-
-////////////////////////////////////////////////////////////
-
-
-    // A. SOME DIAGRAPH FEATURES:
-    console.log("Number of VERTEX on the Graph: " + graph.order());
-    console.log("Number of EDGES on the Graph: " + graph.size());
-    
-
-    // EDGES/NODE LIST (general: all edges)
-    console.log("All graph vertex: " + graph.nodes());
-    console.log("All graph edges: " + graph.edges());
-
-
-    // SUCCESORS, PREDECESSORS & NEIGHBORS -> LOCAL (node:node)
-    // console.log(graph.successors("SubOntologies"));
-    // console.log(graph.predecessors("GoSlims"));
-    // console.log(graph.neighbors("GoTerm"));
-
-
-    // SOURCES, SINKS -> GLOBAL (general:node)
-    console.log("Graph sources: " + graph.sources()); // There"s no source on the graph due the self-linking GoTerm node
-    console.log("Graph sinks: " + graph.sinks());
-
-
-    // EXISTENCE OF EDGE (edge:true/false)
-    // console.log(graph.hasEdge("GoSlim"));
-
-    // SOURCE, TARGETS & INCIDENTS -> LOCAL  (edge:nodes)
-     // console.log(graph.source("PositivelyRegulates"));
-     // console.log(graph.target("GoSlim"));
-     // console.log(graph.incidentNodes("SubOntology")) //source+target of the edge
-
-    // console.log(graph.inEdges("GoSlims")); //all edges going in node10
-    // console.log(graph.inEdges("SubOntologies")); //all edges going in node10
-
-
-    ///////
-
-
-    // B. SOME ALGOS FEATURES:
-
-    // TARJAN: STRONGLY CONNECTED COMPONENTS
-     console.log("tarjan algo:")
-     console.log("finds all strongly connected components in the directed graph")
-
-     console.log(tarjan(graph))
-     //Array of components, each of them is itself an array with the ids. It gives lots of 1-array objetcs when there are no strongly connected components.
-
-
-     // IS ACYCLIC, FIND CLYCLES
-    // console.log("isAcyclic?")
-     // console.log(isAcyclic(graph));    //Gives TRUE if the graph has no cycles and returns false if it does. -ERROR: if there are cycles gives Exception isntead of False.
-     
-     // alg.findCycles(graph)
-     console.log("findCycles algo:")
-     console.log("all nodes that are part of a cycle")
-     console.log(findCycles(graph)); //Returns all nodes that are part of a cycle-> Arrays of these cycles if there are more.
-
-
-     // TOPSORT: TOPOLOGICAL SORTING
-     // var alg = require("graphlib").alg;
-     // var topsort = require("graphlib").alg.topsort.
-     // console.log(topsort(graph));  // If the graph has a cycle it is impossible to generate such a list and CycleException is thrown. ojo! cycles include self-linking nodes
-
-
-     // DIJKSTRA & FLOYDWARSHALL: SHORTEST PATH
-     // alg.dijkstra(g, source, [weightFunc], [incidentFunc])
-     // console.log(dijkstra(graph, "GoTerm"));      //ERROR: anonymous function (in the js alg file)
-     // alg.dijkstraAll(g, [weightFunc], [incidentFunc])
-     // console.log(dijkstraAll(g));        //ERROR: anonymous function (in the js alg file)
-     // alg.floydWarshall(g, [weightFunc], [incidentFunc])
-     // console.log(floydWarshall(graph)); //Si funciona, xo da lista infinita de mySelectionCMenus
-
-     // ALL CONNECTED COMPONENTS -----ERROR
-     // console.log(components(g));    //NO FUNCIONA: anonymous function (in the js alg file)
-
 
 
 ////////////////////////////////////////////////////////////
@@ -553,242 +304,34 @@ function bindingData() {
 d3.selectAll(".node rect")
     .style("fill", colorMod);
 
-
-svgGraph.selectAll("#moduleTitle")
+svgRouteMap.selectAll("#moduleTitle")
         .remove();
 
-text = svgGraph.append("text")
+text = svgRouteMap.append("text")
           .attr("id", "moduleTitle")
-          .attr("x", mainGraphWidth/2)
-          .attr("y", mainGraphHeight - 30)
+          .attr("x", 30)
+          .attr("y", 20)
           .text("Graph representation: " + module + " module")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
           .attr("font-weight", "bold")
           .attr("fill", colorMod)
-          .style("text-anchor", "middle")
           .style("text-transform", "uppercase");
 
-svgGraph.selectAll("#moduleInfo")
+svgRouteMap.selectAll("#moduleInfo")
         .remove();
 
-text2 = svgGraph.append("text")
+text2 = svgRouteMap.append("text")
           .attr("id", "moduleInfo")
-          .attr("x", mainGraphWidth/2)
-          .attr("y", mainGraphHeight - 15)
+          .attr("x", 30)
+          .attr("y", 40)
           .text(graph.order() + " vertex + " + graph.size() + " edges")
           .attr("font-family", "sans-serif")
           .attr("font-size", "12px")
           .attr("font-weight", "normal")
-          .attr("fill", colorMod)
-          .style("text-anchor", "middle");
-
-
+          .attr("fill", colorMod);
 
 ////////////////////////////////////////////////////////////
-
-
-
-
-/*    // TEST1
-    // nodes on click! Alert windows just to test everything is working or not:
-    d3.selectAll(".node rect")
-         .on("click", function(u, value) {
-             console.log( "\n" + "Vertex "" + u + ""\n" + "My neighbors nodes are "" + graph.neighbors(u) + """ + "\n" + "Module: "" + graph.node(u).module + "" & PropertyTypes: "" + graph.node(u).propertyTypes + """)
-          });*/
-
-
-
-/*    //Trying to select by "id"
-    d3.selectAll(".node.enter#GoTerm")
-          .selectAll("rect")
-          .style("fill", "red");  // works fine!*/
-
-/*    //Trying to select by "id"
-    d3.selectAll("#GoTerm")
-          // .select("rect")
-          .style("stroke", "red");  // works fine!*/
-
-/*    //Trying to select by "id"
-    d3.selectAll(".node.enter#SubOntologies")          
-          .selectAll("rect")
-          .style("fill", "brown");  // works fine*/
-
-/*    //Trying to select by "id"
-    var idd = d3.selectAll(".node.enter").attr("id"); // worng, just selects the attribute of the first element 
-    d3.selectAll("#"+idd)          
-          .selectAll("rect")
-          .style("fill", "brown");   */
-
-/*    //Trying to select by "id"
-    d3.selectAll(".node.enter").each( function(d, i) {
-        console.log( d3.select(this).attr("id") );        // works fine!
-    });*/
-
-/*    //Trying to select by "id"
-    d3.selectAll(".node.enter").each( function(d, i) {
-        idSelection = d3.select(this).attr("id");
-    
-        d3.selectAll("#"+idSelection)          
-          .selectAll("rect")
-          .style("fill", "brown");                      // works fine!
-
-    });*/
-
-
-/*     //Trying to select by "id"
-    d3.selectAll(".node.enter").each( function(d, i) {
-        
-        idSelection = d3.select(this)
-        graphStuff = graph.successors(idSelection).attr("id");
-    
-        console.log(graphStuff)
-
-        d3.selectAll("#"+idSelection)          
-          .selectAll("rect")
-          .style("fill", "brown");          
-
-    });  */
-
-
-    
-/* 
-    //Trying to select by "id"
-    idVertex = d3.selectAll("#GoSlims").attr("id")
- 
-    idSucessorsVertex = graph.successors(idVertex)
-    idPredecessorsVertex = graph.predecessors(idVertex)
-    idNeighborsVertex = graph.neighbors(idVertex)
-    console.log(idNeighborsVertex)*/
-
-/*    d3.selectAll("#"+ idPredecessorsVertex) 
-      .selectAll("rect")
-      .style("fill", "yellow");                     // works fine!*/
-    
-/*    d3.selectAll("#"+ idNeighborsVertex)      //by id just selects one. I might need a filter function
-      .selectAll("rect")
-      .style("fill", "red");                     // works fine!*/
-
-
-/*
-  // Understanding filtering selections
-    d3.selectAll(".node.enter")
-                    .filter(function(d) { 
-                        selectingThis = d3.select(this)
-                        if (selectingThis.attr("id") == idPredecessorsVertex ) {
-                           console.log(selectingThis.attr("id"))     // returns #GoTerm
-
-                        selectingThis.selectAll("rect")
-                                         .style("fill", "green");     // works fine!  
-                        }
-                    })
- 
- console.log(graph.predecessors("GoSlims"))
-
-
-
-*/
-              
-
-
-
-/*  // Understanding filtering selections
-  d3.selectAll(".node.enter")
-              .filter(function(d) { 
-                  selectingThis = d3.select(this)
-                  // myArray = JSON.stringify(["GoSlims", "GoTerm"])
-                  myArray = ["GoSlims", "GoTerm"]
-                  singleElement = "SubOntologies"
-                 
-                  if (selectingThis.attr("id") == "SubOntologies"  || selectingThis.attr("id") == "GoSlims" ) {
-                      
-                      console.log(selectingThis.attr("id"))  
-                      selectingThis.selectAll("rect")
-                                   .style("fill", "red");         
-                  }
-                  
-                  else { console.log("buuu") }              // WORKS!! :D
-              })*/
-               
-
-/*  // Understanding filtering selections-comparison with MULTIPLE elements
-  d3.selectAll(".node.enter")
-              .filter(function(d) { 
-                  selectingThis = d3.select(this)
-                  // myArray = JSON.stringify(["GoSlims", "GoTerm"])
-                  myArray = ["GoSlims", "GoTerm"]
-                  singleElement = "SubOntologies"
-                  mySelectionCMenuRara = selectingThis.attr("id")
-                  
-                  //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                  if (myArray.indexOf(mySelectionCMenuRara) >= 0)  {
-                      
-                      console.log(selectingThis.attr("id"))  
-                      selectingThis.selectAll("rect")
-                                   .style("fill", "red");         
-                  }
-                  
-                  else { console.log("buuu") }              // WORKS!! :D
-              })
-
-*/
-
-/*  // Understanding filtering selections
-  d3.selectAll(".node.enter")
-              .filter(function(d) { 
-                  selectingThis = d3.select(this)
-                  selectingThisId = selectingThis.attr("id")
-
-                  myArray = ["GoSlims", "GoTerm"]
-                  
-                  //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                  if (myArray.indexOf(selectingThisId) >= 0)  {
-                      
-                      console.log(selectingThisId)  
-                      selectingThis.selectAll("rect")
-                                   .style("fill", "red");         
-                  }
-                  
-                  else { console.log("buuu") }              // WORKS!! :D
-              })*/
-
-
-/*if (["banana", "lemon", "mango", "pineapple"].indexOf(fruit) >= 0) {
-  .......
-}*/
-
-/*
-    idVertex = d3.selectAll("#GoSlims").attr("id")
-
-    idSucessorsVertex = graph.successors(idVertex)
-    idPredecessorsVertex = graph.predecessors(idVertex)
-    idNeighborsVertex = graph.neighbors(idVertex)
-
-  // all together: graphlib features + filter + arrays
-  d3.selectAll(".node.enter")
-              .filter(function(d) { 
-                  selectingThis = d3.select(this)
-                  selectingThisId = selectingThis.attr("id")
-
-                  myArray = idNeighborsVertex
-                  
-                  //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                  if (myArray.indexOf(selectingThisId) >= 0)  {
-                      
-                      console.log(selectingThisId)  
-                      selectingThis.selectAll("rect")
-                                   .style("fill", "orange");         
-                  }
-                  
-                  else { console.log("buuu") }              // WORKS!! :D
-              })
-
-    console.log(idNeighborsVertex)
-
-    //NOTE: for an in/out switch button i should access the successors/predecessors i times (i = degree)
-
-
-*/
 
 
     //TOOLTIPS WORLD:
@@ -866,254 +409,15 @@ text2 = svgGraph.append("text")
 
           });*/
 
-////////////////////////////////////////////
-  
-  //trying to connect the modules color with the graph colors. IN PROGRES--------->>>>
-/*  var 1level = d3.select(this.parentNode).attr("id");
-
-  var fillingNodes = function(d) {
-    return d3.select("#"+ 1level).attr("fill");
-  
-    }
-
-    d3.selectAll(".node rect")
-      .style("fill", fillingNodes);
-*/
-
 
 ////////////////////////////////////////////
-
-// ROUTE MAP:
-
-/*svgRouteMap = d3.select("svg#svg-routemap");
-
-RouteMap = svgRouteMap.select("g")
-                      .append("g")
-                      .attr("id", "RouteMap");*/
-
-
-  /*  var textFeatures = d3.select("#svg-dagred3graph")
-                            .selectAll("text")
-                            .data(GraphFeatures)
-                            .enter()
-                            .append("text")
-                            .text(function(d) {
-                                  return d;
-                                })
-                            .attr("x", 20)
-                            .attr("text-anchor", "middle")
-                            .attr("y", 65 )
-                            .attr("font-family", "sans-serif")
-                            .attr("font-size", "14px");*/
-
-
-// Selecting from a list of graphlib options to interact
-/*var GraphFeatures = ["idNeighborsVertex", "idSuccessorsVertex", "idPredecessorsVertex"];
-
-    var textFeatures = d3.select("#svgMainRoute")
-          .selectAll("text")
-          .data(GraphFeatures)
-          .enter()
-          .append("text")
-          .attr("id", "GraphFeatures")
-          .attr("x", 10)
-          .attr("y", function(d,i) { return 160 + i*15 })
-          .text(function(d) { return d; })
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "10px")
-          .attr("font-weight", "regular")
-          .attr("fill", "ED553B")
-
-          .on("click", function(d,i) {
-              myArray = d;
-              console.log(myArray);
- 
-              // return Options();
-          });*/
   
   arity();
 
   //GRAPH FEATURES ON CLICK
-  // Implemented: now on click 
-d3.selectAll(".node rect")
+  d3.selectAll(".node rect")
        .on("click", function(u, value) {
         // console.log(myArray);
-
-        //Adding some little interaction!!
-        selected = d3.select(this);
-
-        selected2 = d3.select(this.parentNode);
-        selected2Id = selected2.attr("id");
-
-        svgGraph.append("circle")
-                    .attr("cx", selected[0][0].getCTM().e)
-                    .attr("cy", selected[0][0].getCTM().f)
-                    .attr("r", 0)
-                    .style("fill", colorMod)
-                    .transition()
-                    .attr("cx", 50)
-                    .attr("cy", 50)
-                    .attr("r", 5)
-                    .style("opacity", .8);
-
-        svgGraph.append("rect")
-                    .attr("x", selected[0][0].getCTM().e)
-                    .attr("y", selected[0][0].getCTM().f)
-
-                    .attr("width", selected.attr("width"))
-                    .attr("height", selected.attr("height"))
-
-                    .attr("rx", selected.attr("rx"))
-                    .attr("ry", selected.attr("ry"))
-                    .style("opacity", .01)
-                    .style("fill", colorMod)
-                    .transition()
-                    .duration(500)
-                    .style("opacity", .8)
-
-                    .attr("x", 580)
-                    .attr("y", 300)
-
-                    .attr("rx", 20)
-                    .attr("ry", 20);
-
-        graph.addNode("A", {label: "a label"});
-
-        graph.addNode("lALALALALA", {label: "lALALALALA", module:"goo", propertyTypes:"id, lalala"});
-        console.log("All graph vertex: " + graph.nodes());
-        // graph.addEdge(null, "A", selected2Id,  {label: "labelll fake"});
-        
-        graph.addEdge("id-blabla?", "A", selected2Id,  {u:"A", v: selected2Id, inArity:"one", outArity:"many", label: "labelll fake", module:"blabla", propertyTypes:"X"});
-        // graph.addEdge(null, "A", "lALALALALA");
-
-        // graph.delNode("GoSlims")
-        console.log("All graph vertex: " + graph.nodes());
-
-///////////////////////////// AGAIN MAIN LAYOUT FUNCTIONS?
-
-  //alter the drawEdges function:
-/*  var oldDrawEdge = renderer.drawEdgePaths();
-  renderer.drawEdgePaths(function(graph, root) {
-
-    console.log(d3.selectAll("svgEdgePaths"));
-
-    var svgEdgePaths = oldDrawEdge(graph, root);
-    svgEdgePaths.attr("id", function(e) { return  e })
-    return svgEdgePaths;
-
-  });*/
-
-
-
-
-  //Configuring the layout:
-  var layout = dagreD3.layout()
-                //.nodeSep(50)  //50=default
-                //.edgeSep(10)
-                //.rankSep(20);   //Separation between levels, childs
-                .rankDir("LR"); //TB:top-to-bottom / BT:bottom-to-top / LR:left-to-right / RL:right-to-left 
-
-  // Custom transition function
-  function transition(selection) {
-    return selection.transition().duration(1000);
-  }
-
-  renderer.transition(transition).run(graph, svgGraph.select("g"));
-
-
-
-d3.selectAll(".edgePath path")
-    .style("stroke", colorMod);
-
-d3.selectAll(".node rect")
-    .style("fill", colorMod);
-
-
-bindingData();
-arity();
-zooming(); 
-
-
- /* 
- /////////////////////////////////////////////
-
-          // UPDATE to normal status
-          d3.selectAll(".node rect")
-             .style("fill", colorMod)
-             .style("opacity", .4)
-             .style("stroke", "#999")
-             .style("stroke-width", 1);
-          d3.selectAll(".node text") 
-              .style("font-weight", "normal")
-              .style("font-size", "14px")
-              .style("opacity", 1);
-
-          // HIGHLIGHT the vertex clicked
-          d3.select(this)
-            .style("stroke", "#ED553B")
-            .style("stroke-width", 4);
-
-
-          //GRAPH Features Possibilities
-          idNeighborsVertex = graph.neighbors(u)
-          // console.log(idNeighborsVertex) 
-
-          idSuccessorsVertex = graph.successors(u)
-          console.log(idNeighborsVertex) 
-
-          idPredecessorsVertex = graph.predecessors(u)
-          // console.log(idNeighborsVertex) 
-    
-
-          d3.selectAll(".node.enter")
-            .filter(function(d) { 
-                selectingThis = d3.select(this)
-                selectingThisId = selectingThis.attr("id")
-
-                myArray = idNeighborsVertex
-                // myArray = idSuccessorsVertex
-                // myArray = idPredecessorsVertex
-
-                //Array Based method with `indexOf` to see whether the value matches one of the values in the array
-                if (myArray.indexOf(selectingThisId) >= 0)  {
-                    
-                    // console.log(selectingThisId)  
-                    selectingThis.selectAll("rect")
-                                  .transition(400)
-                                  // .style("fill", "orange")
-                                  .style("opacity", .8);         
-
-                }
-                
-                // else { console.log("buuu") }              // WORKS!! :D
-                else { selectingThis.selectAll("rect")
-                                  .transition(400)
-                                  .style("opacity", .1);      
-                        selectingThis.selectAll("text")
-                                  .transition(400)
-                                  // .attr("text-anchor", "middle")
-                                  .style("opacity", .1);      
-                 };             
-            })
-
-          d3.select(this)
-                .transition(400)
-                .style("opacity", .8);
-
-          // console.log(d3.select(this)[0][0].parentNode);
-          // console.log(d3.select(this.parentNode));
-          
-          d3.select(this.parentNode).selectAll("text")
-                                    .transition(400)
-                                    // .style("font-size", "16px")
-                                    .style("font-weight", "bold")
-                                    .style("opacity", 1);
-
-////////////////////////////////////////////////
-*/
-
-
-
 
         // INDEXES-PROPERTIES INFO                            
         //Accessing to the properties info through .parentNode      
@@ -1130,22 +434,22 @@ zooming();
         //adding INDEX info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 20 })
-          .attr("y", function(d,i) { return i + 20 })
+          .attr("x", function(d,i) { return i + 30 })
+          .attr("y", function(d,i) { return 250+(i + 20) })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
           .attr("font-weight", "bold")
           .attr("fill", colorMod)
           .text(function(u) {                
-                return (ParentNode2Label);     
+                return ("Id: "+ ParentNode2Label);     
           })
 
         //adding PROPERTIES info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 20 })
-          .attr("y", function(d,i) { return i + 35 })
+          .attr("x", function(d,i) { return i + 30 })
+          .attr("y", function(d,i) { return  250+(i + 35) })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "11px")
@@ -1187,99 +491,17 @@ zooming();
 
 
 
- // }
 
-/*    d3.selectAll(".node rect")
-         .on("click", function(u, value) {
-             d3.selectAll(graph.neighbors(u))
-                    .style("stroke", "red")
-          });*/
-
-/*    // Accessing to attributes/classes -- WORKS
-    d3.selectAll(".node.enter")
-         .on("click", function(u, value) {
-            if(d3.select(this).attr("id") == "GoTerm") {
-              return console.log("yes, I am " + d3.select(this).attr("id") ) 
-            }
-            else { return console.log("no,  I am not GoTerm" )
-            }
-          // All this if/else code is equivalent to this single line:
-          // return d3.select(this).attr("id") == "GoTerm" ? console.log("yes") : console.log("no")
-          });
-*/
-
-
-/*    // Reading attributes/classes -- WORKS
-    d3.selectAll(".node.enter")
-         .on("click", function(u, value) {
-              var ll = d3.select(this)
-              console.log( ll.attr("propertyTypes") + ll.attr("label") + ll.attr("style") )
-                      
-          });*/
-
-/*
-    d3.selectAll(".node rect")
-         .on("mouseover", function(){ 
-                d3.select(this)
-                  .attr("width", 100)
-                  .attr("heigh", 100)
-         });*/
-
-/*    d3.selectAll(".node rect")
-         .on("mouseover", function(){ 
-                var ww = d3.select(this).attr("width")
-                
-                d3.select(this)
-                  .attr("width", (+ww + 20))
-         });*/
-
-
-
-
-
-    d3.selectAll(".edgePath path")
+    //EDGES ALERT
+/*    d3.selectAll(".edgePath path")
          .on("click", function(e, u, v, value) {
              alert("hola" + e[0] +
               "Edge '" + e + "'\n" + "Source: '" + graph.source(e) + "' -> Target: '" + graph.target(e) + "'" + "'\n" + "\n" + "Module: '" + graph.edge(e).module + "'' , PropertyTypes: '" + graph.edge(e).propertyTypes + "' & inArity/OutArity: '" + graph.edge(e).inArity + "/" + graph.edge(e).outArity + "'");
-         })
-
-/*    d3.selectAll("[id=GoTerm]")
-          .selectAll("rect")
-          .style("fill", "brown");*/
-
-/*    d3.selectAll(".edgePaths")
-      .style("stroke", "green");*/
-
-/*    d3.selectAll("[label=GoSlim]")
-      // .selectAll("rect")
-      .style("stroke", "red");*/
-
-/*    d3.selectAll("[id=GoSlim]")
-      .selectAll("path")
-      .style("stroke", "brown");*/
-
-/*    d3.selectAll("[id=PositivelyRegulates]")
-          .selectAll("path")
-          .style("stroke", "blue");
-
-    d3.selectAll("[label=iSa]") 
-           .selectAll("path")
-           .style("stroke", "green");*/
-    
-/*      d3.selectAll(".edgePaths")
-        .selectAll("[label=SubOntology]")    //works
-          .style("stroke", "blue");*/
-
-/*      d3.selectAll(".edgePaths")
-        .selectAll("[v=SubOntologies]")     //works
-          .style("stroke", "blue");*/
-
-      // d3.selectAll(".edgePaths")
-/*        d3.selectAll("[outArity=one]")    
-        .style("stroke", "blue");*/
+         })*/
 
 
 ////////////////////////////
+
 
   //ARITY-MARKER-END
   //Re-doing arrowheads:
@@ -1294,13 +516,14 @@ zooming();
       .attr("markerWidth", 15)
       .attr("markerHeight", 25)
       .attr("orient", "auto")
-      .attr("style", "fill: orange")
+      .attr("style", "fill: #E75347")
       .append("svg:path")
         .attr("d", "M 0,0 m -5,-5 L 1,-5 L 1,5 L -5,5 Z");
 
 
+////////////////////////////
 
-
+//ARITY GRAPH INFO-REPRESENTATION
 function arity() {
 
   //Some generic parameters for arity paths
@@ -1341,13 +564,9 @@ function arity() {
                   .style("stroke-width", (+arityStrokeWidth+.1));
     }
 
-
-
     if (arityInfo == "many-many") {
       var manyMany = d3.select(this);
       // console.log(manyMany);
-
-
 
     return manyMany.style("stroke", colorMod)
                       .each( function(d, i) {
@@ -1399,92 +618,8 @@ function arity() {
 
               
               })    
-
-
-
-
-
-     // console.log(graph.node(graph.incidentNodes(e)[0]));
-
-       // console.log(d3.select("_8").selectAll("path").attr("d"));
-
-      /* tooma = d3.selectAll("path").attr("d");
-       console.log(tooma);*/
-
-        //Selecting d info of edgepaths
-      /*    d3.selectAll("path").each( function(d, i) {
-              allPathData = d3.select(this).attr("d");     
-              console.log(allPathData);
-              allPathData.selectAll("")
-              // console.log(allPathData.length)
-              // return drawPath()
-              // var dPath8 = d3.select("_8").attr("d");   
-          });*/
-       
-    
     }
-
-        //Selecting d info of edgepaths
-          /*d3.selectAll(".edgePath").each( function(d, i) {
-              allPath = d3.select(this);     
-              // console.log(allPath);
-              allPathData = allPath.selectAll("path").attr("d");
-              // console.log(allPathDataD)
-              // path8 = allPath.select("_8").selectAll("path").attr("d");
-              // console.log(path8);
-              // console.log(allPathData.length)
-              // return drawPath()
-              // var dPath8 = d3.select("_8").attr("d");   
-          });
-*/
-      /*function drawPath() {
-      svgModules.append("path")
-                  .data(allPathData)
-                  .enter()
-                  .attr("d", function(d) { return d} )
-                  .style("stroke-width", 1)
-                  .style("stroke", "red")
-                  .style("fill", "none")
-                  .style("fill", "none"); 
-      }
-
-      // var edgeData = [  ];
-
-
-
-
-
-
-        // .attr("transform", "translate(0,5)");
-/*            .attr("transform", function(d,i) {
-                        "translate(0," + i*2 + ")"
-                      });*/
     
-                    // .style("stroke-width", "2");
-
-/*                    .selectAll("circle")
-                    .data([0,1,2,3])
-                    .enter()
-                    .append("circle")
-                    .attr("transform", function(d,i) {
-                        "translate(0," + d*2 + ")"
-                      }); */
-
-/*                    .select("url#arrowhead")
-                    .remove();*/                //doesn"t work yet
-                   
-
-/*      var pathEl = manyMany.node();
-
-      var pathLength = pathEl.getTotalLength();
-      console.log("path length: ", pathLength);
-
-      var pathPoint = pathEl.getPointAtLength(pathLength*0.8);
-*/
-
-
-    
-
     if (arityInfo == "many-one") {
       var manyOne = d3.select(this);
       return manyOne.style("stroke", colorMod)
@@ -1551,7 +686,7 @@ function arity() {
                 SubontolyPathManyOneUp = SubontolyPathManyOneUp+PathListSymbols[i-1]+PathListNums4Up[i];
             }
 
-            console.log("SubontolyPathManyOneUp", SubontolyPathManyOneUp)
+            // console.log("SubontolyPathManyOneUp", SubontolyPathManyOneUp)
 
 //////////////////////////////////////////////////// 
 
@@ -1603,10 +738,9 @@ function arity() {
                     .each( function(d, i) {
                           allPath = d3.select(this);     
                           allPathData = allPath.selectAll("path").attr("d");
-                          console.log(allPathData);
+                          // console.log(allPathData);
 
                           allPathDataId = allPath.attr("id");
-
 
             var patronNums = /[^\d^.]/;
             var patronSymbols = /\d+\.?/;
@@ -1635,18 +769,18 @@ function arity() {
                 SubontolyPathOneManyDown = SubontolyPathOneManyDown+PathListSymbols[i-1]+PathListNums3Down[i];
             }
 
-            console.log("SubontolyPathOneManyDown", SubontolyPathOneManyDown);          
+            // console.log("SubontolyPathOneManyDown", SubontolyPathOneManyDown);          
 
 
 /////////////////////////////////////////////
  
             var PathListNums3Up = allPathData.split(patronNums);
             
-            console.log("PathListNums3Up", PathListNums3Up);
+            // console.log("PathListNums3Up", PathListNums3Up);
 
             var SubontolyPath3 = allPathData.replace(/\./g,"");
             var PathListSymbols = SubontolyPath3.split(patronSymbols);
-            console.log("PathListSymbols", PathListSymbols);
+            // console.log("PathListSymbols", PathListSymbols);
 
             var i, longitud;
             for (i = 0, longitud = PathListSymbols.length; i < longitud; i++){
@@ -1658,13 +792,12 @@ function arity() {
                 }
             }
 
-
             var SubontolyPathOneManyUp = "";
             for (i = 1, longitud = PathListSymbols.length; i < longitud; i++){
                 SubontolyPathOneManyUp = SubontolyPathOneManyUp+PathListSymbols[i-1]+PathListNums3Up[i];
             }
 
-            console.log("SubontolyPathOneManyUp", SubontolyPathOneManyUp)
+            // console.log("SubontolyPathOneManyUp", SubontolyPathOneManyUp)
 
 //////////////////////////////////////////////////// 
                               
@@ -1728,36 +861,14 @@ function arity() {
 
 
 
-// var offset2 = 4;
+
 var offset2 = offset;
-
 var verticalSeparation = 25;
-
-svgGraph.selectAll("#legendPath")
-        .remove();
-svgGraph.selectAll("#legendText")
-        .remove();
-svgGraph.selectAll("#arityTitle")
-        .remove();
-
-////LEYEND
-//TO DO: CONVERT TO PATHS AND TRANSFORM THEM
-/*svgGraph.selectAll("rect2")
-          .data([colorMod, "green", "brown"])
-          .enter()
-          .append("rect")
-          .attr("id", "legendRect")
-          .attr("x", 500)
-          .attr("y", function(d, i) { return 50 + (i*15) })
-          .attr("width", 30 )
-          .attr("height", .8 )
-          .style("fill", function(d) {return d });*/
 
 var classes = ["many-many", "many-one", "one-many", "one-one"];
 
-// svgGraph.select("g.edgePaths").selectAll("pathLegend")
-
-svgGraphLegend.selectAll("pathLegend")
+//TO DO: IMPLEMENT THE LEGEND CODE
+svgArityLegend.selectAll("pathLegend")
           .data(classes)
           .enter()
           .append("path")
@@ -1770,80 +881,83 @@ svgGraphLegend.selectAll("pathLegend")
             return "M480," + Ycord + "L530," + Ycord  })
           .style("stroke-width", .3)          
           .style("stroke", colorMod)
-          .attr("marker-end", "url(#arrowhead)");
+          .attr("marker-end", "url(#arrowhead)")
+          .attr("transform", "translate(-450,0)");
 
 //Many-many legend
 var manyManyLegendInfo = d3.select("#pathLegend0").attr("d");
-console.log(manyManyLegendInfo);
+// console.log(manyManyLegendInfo);
 
-svgGraphLegend.append("path")
+svgArityLegend.append("path")
         .attr("class", "pathLegend")
         .attr("d", manyManyLegendInfo)
-        .attr("transform", "translate(0," + offset + ")")
         .style("stroke", colorMod)
-        .style("stroke-width", .3);
+        .style("stroke-width", .3)
+        .attr("transform", "translate(-450,"+ offset + ")");
 
-svgGraphLegend.append("path")
+
+svgArityLegend.append("path")
         .attr("class", "pathLegend")
         .attr("d", manyManyLegendInfo)
-        .attr("transform", "translate(0," + (-offset) + ")")
         .style("stroke", colorMod)
-        .style("stroke-width", .3);
-
+        .style("stroke-width", .3)
+        .attr("transform", "translate(-450," + (-offset) + ")");
 
 //Many-one legend
 var manyOneLegendInfo = d3.select("#pathLegend1").attr("d");
 console.log(manyOneLegendInfo);
 
-svgGraphLegend.append("path")
+svgArityLegend.append("path")
         .attr("class", "pathLegend")
-        // .attr("d", "M480,"+(75+offset2)+"75,510,L530,75")
         .attr("d", "M480,"+(75+offset2)+",510,75L530,75")
         .style("stroke", colorMod)
         .style("stroke-width", .3)
-        .style("fill", "none");
+        .style("fill", "none")
+        .attr("transform", "translate(-450,0)");
 
-svgGraphLegend.append("path")
+svgArityLegend.append("path")
         .attr("class", "pathLegend")
         .attr("d", "M480,"+(75-offset2)+",510,75L530,75")
-        // .attr("d", "M480,"+(75-offset2)+"75,510,L530,75")
         .style("stroke", colorMod)
         .style("stroke-width", .3)
-        .style("fill", "none");
-
+        .style("fill", "none")
+        .attr("transform", "translate(-450,0)");
 
 //One-many legend
 var oneManyLegendInfo = d3.select("#pathLegend2").attr("d");
 console.log(oneManyLegendInfo);
 
-svgGraphLegend.append("path")
+svgArityLegend.append("path")
         .attr("class", "pathLegend")
         .attr("d", "M480,100,500,100L530," + (+100+offset2))
         .style("stroke", colorMod)
         .style("stroke-width", .3)
-        .style("fill", "none");
+        .style("fill", "none")
+        .attr("transform", "translate(-450,0)");
 
-svgGraphLegend.append("path")
+svgArityLegend.append("path")
         .attr("class", "pathLegend")
         .attr("d", "M480,100,500,100L530," + (+100-offset2))
         .style("stroke", colorMod)
         .style("stroke-width", .3)        
-        .style("fill", "none");
+        .style("fill", "none")
+        .attr("transform", "translate(-450,0)");
 
 
 //One-one legend
 var oneOneLegendInfo = d3.select("#pathLegend3").attr("d");
 console.log(oneOneLegendInfo);
 
-svgGraphLegend.append("path")
+svgArityLegend.append("path")
         .attr("class", "pathLegend")
         .attr("d", oneOneLegendInfo)
         .style("stroke", colorMod)
-        .style("stroke-width", .3);
+        .style("stroke-width", .3)
+        .attr("transform", "translate(-450,0)");
 
 
 //Arity titles
-svgGraphLegend.selectAll("text2")
+svgArityLegend.selectAll("text2")
           .data(["many-many", "many-one", "one-many", "one-one"])
           .enter()
           .append("text")
@@ -1853,16 +967,18 @@ svgGraphLegend.selectAll("text2")
           .text(function(d) { return d})
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
-          .attr("font-size", "11px");
+          .attr("font-size", "11px")
+        .attr("transform", "translate(-450,0)");
 
-svgGraphLegend.append("text")
+svgArityLegend.append("text")
           .attr("id", "arityTitle")
           .attr("x", 545)
           .attr("y", 30)
           .text("ARITY")
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
-          .attr("font-size", "13px");
+          .attr("font-size", "13px")
+        .attr("transform", "translate(-450,0)");
 };
 
 
@@ -2044,7 +1160,7 @@ var id;
                             })
             },
 
-            "predecessors": function(d) {
+             "predecessors": function(d) {
                 
                 //GRAPH Features Possibilities
                 idPredecessorsVertex = graph.predecessors(mySelectionCMenu)
@@ -2074,27 +1190,14 @@ var id;
                                 console.log("mySelectionCMenu", mySelectionCMenu)
                                 console.log("incidentEdgesmySelectionCMenu", incidentEdgesmySelectionCMenu)
 
-                                                          
-                                var edgesMySelect = graph.incidentEdges(selectingThisId)
-                                console.log("edgesMySelect", edgesMySelect);
-
-
                                 d3.selectAll(".edgePath.enter")
                                             .filter(function(d) {
-                                          
+                                              selectingThis = d3.select(this)
+                                              selectingThisId = selectingThis.attr("id")
 
-                                      /*        if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
+                                              if (incidentEdgesmySelectionCMenu.indexOf(selectingThisId) >= 0)  {
                                               selectingThis.selectAll("path")
-                                                          .style("opacity", .2)
-                                                          .style("stroke", "red"); 
-                                              }*/
-
-                                                // if (incidentEdgesmySelectionCMenu.indexOf(edgesMySelect) >= 0)  {
-                                                if (edgesMySelect.indexOf(incidentEdgesmySelectionCMenu) >= 0)  {
-                                                  console.log("selectingthis", selectingThis)
-                                              selectingThis.selectAll("path")
-                                                          .style("opacity", .2)
-                                                          .style("stroke", "blue"); 
+                                                          .style("opacity", 1); 
                                               }
                                             })                                                                 
                                 }
@@ -2360,178 +1463,9 @@ var id;
                                 .style("opacity", 1); 
                                  };             
                             })
-            },
-        }
-    });
-
-
-/*ORIGINAL code
-  # Public function to update highlighted nodes
-  # from search
-  network.updateSearch = (searchTerm) ->
-    searchRegEx = new RegExp(searchTerm.toLowerCase())
-    node.each (d) ->
-      element = d3.select(this)
-      match = d.name.toLowerCase().search(searchRegEx)
-      if searchTerm.length > 0 and match >= 0
-        element.style("fill", "#F38630")
-          .style("stroke-width", 2.0)
-          .style("stroke", "#555")
-        d.searched = true
-      else
-        d.searched = false
-        element.style("fill", (d) -> nodeColors(d.artist))
-          .style("stroke-width", 1.0)
-
-/////////////
-
-  $("#search").keyup () ->
-    searchTerm = $(this).val()
-    myNetwork.updateSearch(searchTerm)
-*/
-
-
-//SEARCH BUTTON
-// network.updateSearch = (searchTerm);
-//   searchRegEx = new RegExp(searchTerm.toLowerCase())
-//   node.each(function(d) {
-//     element = d3.select(this)
-//     match = d.name.toLowerCase().search(searchRegEx)
-//     if (searchTerm.length > 0)
-//       element.style("fill", "#F38630")
-//         .style("stroke-width", 2.0)
-//         .style("stroke", "#555");
-//       d.searched = true;
-//     else 
-//       d.searched = false
-//       element.style("fill", "red")
-//               .style("stroke-width", 1.0);
-//   });
-
-//   d3.select("#search").keyup () {->}
-//     searchTerm = d3.select(this).val()
-//     myNetwork.updateSearch(searchTerm)
-
-
-/*  var mySelectionCMenu = d3.selectAll(".edgePath").each( function(d,i) {
-    arityInfo = d3.select(this).attr("outArity");
-    d3.select(this)
-      .attr("class", arityInfo)
-        // .classed(function(d) { return outArity }, true);
-  })*/
-
-  // var mySelectionCMenu = d3.selectAll("edgePath")
-  // console.log(mySelectionCMenu)
-   
-/*
-  svgGraph.style("opacity", 1e-6)
-  .transition()
-    .duration(1000)
-    .style("opacity", 1);*/
-
-  
-
-/*        .selectAll("[inArity=many]")    // NO WORKING. Something wrong when selecting by some attributes
-          .style("stroke", "blue");*/
-
-
-
-// Returning a specif atribute of a variable
-/*d3.select("body")
-    .on("mouseover", function(){ 
-          if (d3.select(this).attr("id") == "correct") {
-              enableInteraction(d3.select(this));
-          }
-});*/
-
-
-
-
-
-
-
-
-
-
-
-/*    d3.selectAll(".node.enter")
-      //On click, update with new data      
-        .on("click", function() { 
-
-          // doesn"t work well, all the time shows the first ite "GoTerm"
-            d3.select("body")
-                .data(newVertex)
-                // .enter()
-                .append("p")
-                .style("color", "teal")
-                // .text("lalala")
-                .text(function(d) { return d.value.label })
-                // .attr("x", function(d, i) { return (10*i) + 100; })
-                .attr("x", 100)
-                .attr("y", 100)
-              });*/
-
-/*    d3.selectAll(".node.enter")
-      //On click, update with new data      
-        .on("click", function(d) { 
-
-          // doesn"t work well, all the time shows the first ite "GoTerm"
-            d3.select("this").select("text")
-                            .text(function(d) { 
-                              return d.value.label })
-                            .style("font-size","20px")
-                            .style("color", "teal")
-
-                            .attr("x", 100)
-                            .attr("y", 100)
-              });*/
-
-
-/*          svgRouteMap.append("text")
-                      .attr("text-anchor", "middle")
-                      .attr("fill", "red")
-                      .text(function(u) { return u; })
-                      .attr("x", 100)
-                      .attr("y", 100)
-                    });
-*/
-
-
-
-/*        d3.selectAll(".node.enter")
-      //On click, update with new data     
-      .on("click", function(u, value) { return
-        
-        select(this).append("p")    
-         .text(function(u) { return u; })
-         .attr("font-family", "sans-serif")
-         .attr("font-size", "10px")
-         .attr("fill", "teal")
-         .attr("x", function(d, i) { return (10*i) + 100; })
-         .attr("y", 100);
-
-       });*/
-
-
-/*        d3.selectAll(".node.enter")
-      //On click, update with new data     
-        
-         .append("p")    
-         .text(function(u) { return u; })
-         .attr("font-family", "sans-serif")
-         .attr("font-size", "10px")
-         .attr("fill", "teal")
-         .attr("x", function(d, i) { return (10*i) + 100; })
-         .attr("y", 100);
-
-       });
-*/
-
-
-
-
-
-
+                  },
+              }
+          });
       });   
   });
   }

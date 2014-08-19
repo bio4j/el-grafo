@@ -33,14 +33,13 @@
 
 <div id="projectDescription" class ="introTEXT">
     <p> 
-    <b>GSoC 2014 el-grafo</b> project is the first development of an interactive web-based tool that allows users to intuitively explore the abstract domain model of the <b>Bio4j</b> open source bioinformatics data platform, which integrates the data available in the most representative open data sources around protein information: in <a href="http://www.gnu.org/licenses/agpl.html">UniProtKB </a>(SwissProt + Trembl) , <a href="http://www.gnu.org/licenses/agpl.html">Gene Ontology</a> (GO), <a href="http://www.gnu.org/licenses/agpl.html">UniRef</a> (50, 90, 100), <a href="http://www.gnu.org/licenses/agpl.html">RefSeq</a>, <a href="http://www.gnu.org/licenses/agpl.html">NCBI taxonomy</a> and <a href="http://www.gnu.org/licenses/agpl.html">Expasy Enzyme</a>.
+    <b>GSoC 2014 el-grafo</b> project is the first development of an interactive web-based tool that allows users to intuitively explore the abstract domain model of the <b>Bio4j</b> open source bioinformatics data platform, which integrates the data available in the most representative open data sources around protein information: in <a href="http://www.uniprot.org/help/uniprotkb">UniProtKB </a>(SwissProt + Trembl) , <a href="http://geneontology.org/">Gene Ontology</a> (GO), <a href="http://www.uniprot.org/help/uniref">UniRef</a> (50, 90, 100), <a href="http://www.ncbi.nlm.nih.gov/refseq/">RefSeq</a>, <a href="http://www.ncbi.nlm.nih.gov/taxonomy">NCBI taxonomy</a> and <a href="http://enzyme.expasy.org/">Expasy Enzyme</a>.
     <br> 
-        <br> 
-
+    <br> 
     <b>el-grafo </b> details the connection between all vertex and edge components which shape the logic structure of its network module by module, as well as provides specific typing information for retrieving useful data.
     <br> 
     <br> 
-    Its purpose is to help users gain a better understanding of the Bio4j domain model structure lowering their entry barrier to the database platform in order to utilise and query it more efficiently.
+    Its purpose is to help users gain a better understanding of the Bio4j domain model structure lowering their entry barrier to the database platform in order to utilize and query it more efficiently.
     <br> 
     <br> 
     Technologically speaking, <a href="http://www.d3js.org/">d3.js</a> and <a href="https://github.com/cpettitt/dagre">dagre</a> <a href="https://github.com/cpettitt/dagre-d3">/dagre-d3</a> open-source JavaScript libraries compose the main core of the project.
@@ -66,12 +65,12 @@
 
 <div id="instructionsTEXT">
     <p> 
-    The scheme above represents each <b>Bio4j MODULE</b>integrated on the database with a color area. Its size is dependent of the number of types (vertex and edges) that shape it. 
+    The scheme above represents each <b>Bio4j MODULE</b> integrated on the database with a colored area. Its size is dependent on the number of types (vertex and edges) that shape it. 
 
-    Some modules require others modules to be present in the database before they can be imported. The so called <b> Bio4j DEPENDENCIES </b> stablish connections between vertex of different modules and are represented above by lines connecting them.
+    Some modules require others modules to be present in the database before they can be imported. The so called <b> Bio4j DEPENDENCIES </b> establish connections between vertexes of different modules and are represented above by lines connecting them.
     <br> 
     <br> 
-    On the graph representation loaded at right, click on each vertex to see its <b>specific information</b> (id and properties), and right-click on it for several <b>filtering options</b> via the context menu.
+    On the graph representation loaded on the right, click on each vertex to see its <b>specific information</b> (id and properties), and right-click on it for several <b>filtering options</b> via the context menu.
     </p>
 </div>
 
@@ -81,11 +80,6 @@
   </svg>
 </div>
 
-
-<div id="mainModules">
-  <svg id="svgMainModules">
-  </svg>
-</div>
 
 <div id="mainGraph">
   <svg id="svgMainGraph">
@@ -109,9 +103,9 @@
     </ul>
 </div>
 
- <script src="scripts/el-grafo_INTRO_3.js"></script>
- <script src="scripts/el-grafo_MOD_5.js"></script>
- <script src="scripts/el-grafo_DEP_1.js"></script>
+ <script src="scripts/el-grafo_INTRO.js"></script>
+ <script src="scripts/el-grafo_MOD.js"></script>
+ <script src="scripts/el-grafo_DEP.js"></script>
 
 
 
