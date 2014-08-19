@@ -1,9 +1,7 @@
 #GSoC 2014  el-grafo
 d3-based Bio4j data model visualization
 
-Student: Carmen Torrecillas
-Organization: Bio4j
-Mentors: @eparejatobes, @laughedelic, @evdokim
+Student: Carmen Torrecillas / Organization: Bio4j / Mentors: @eparejatobes, @laughedelic, @evdokim
 
 
 ##PROJECT DESCRIPTION
