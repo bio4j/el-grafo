@@ -13,7 +13,7 @@ var distanceYlegend = 0;
 
  
 //SVG canvas for ROUTEMAP loading
-var mainRouteWidth = 300;
+var mainRouteWidth = 330;
 var mainRouteHeight = 500;
 
   svgRouteMap = d3.select("#svgMainRoute")
@@ -24,7 +24,7 @@ var mainRouteHeight = 500;
  svgArityLegend = svgRouteMap.append("g")
               .attr("id", "legend")
               .attr("class", "legend")
-              .attr("transform", "translate(0,70)");
+              .attr("transform", "translate(0,80)");
 
  ////////////////
 
@@ -311,12 +311,11 @@ text = svgRouteMap.append("text")
           .attr("id", "moduleTitle")
           .attr("x", 30)
           .attr("y", 20)
-          .text("Graph representation: " + module + " module")
+          .text(module + " Module")
           .attr("font-family", "sans-serif")
-          .attr("font-size", "14px")
+          .attr("font-size", "20px")
           .attr("font-weight", "bold")
-          .attr("fill", colorMod)
-          .style("text-transform", "uppercase");
+          .attr("fill", colorMod);
 
 svgRouteMap.selectAll("#moduleInfo")
         .remove();
@@ -327,7 +326,7 @@ text2 = svgRouteMap.append("text")
           .attr("y", 40)
           .text(graph.order() + " vertex + " + graph.size() + " edges")
           .attr("font-family", "sans-serif")
-          .attr("font-size", "12px")
+          .attr("font-size", "14px")
           .attr("font-weight", "normal")
           .attr("fill", colorMod);
 
@@ -539,7 +538,8 @@ function arity() {
   //also legend:
   d3.selectAll("path.pathLegend").remove();
   d3.selectAll("path.edgePathLe").remove();
-  
+ 
+  d3.selectAll("#legendText").remove(); 
   d3.selectAll("#pathLegend0").remove();
   d3.selectAll("#pathLegend1").remove();
   d3.selectAll("#pathLegend2").remove();

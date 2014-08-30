@@ -738,37 +738,31 @@ console.log(graph.nodes().length);
 ////////////////////////////////////////////////////////////
 
 
-svgGraph.selectAll("#moduleTitle")
+svgRouteMap.selectAll("#moduleTitle")
         .remove();
 
-text = svgGraph.append("text")
+text = svgRouteMap.append("text")
           .attr("id", "moduleTitle")
-          .attr("x", mainGraphWidth/2)
-          .attr("y", mainGraphHeight - 30)
-          .text("Graph representation: " + module + " module")
+          .attr("x", 30)
+          .attr("y", 20)
+          .text(module + " dependency")
           .attr("font-family", "sans-serif")
-          .attr("font-size", "14px")
+          .attr("font-size", "20px")
           .attr("font-weight", "bold")
-          .attr("fill", colorMod)
-          .style("text-anchor", "middle")
-          .style("text-transform", "uppercase")
-          .on("click", function(u, value) {
-            console.log("hGraph", hGraph)
-          });
+          .attr("fill", colorMod);
 
-svgGraph.selectAll("#moduleInfo")
+svgRouteMap.selectAll("#moduleInfo")
         .remove();
 
-text2 = svgGraph.append("text")
+text2 = svgRouteMap.append("text")
           .attr("id", "moduleInfo")
-          .attr("x", mainGraphWidth/2)
-          .attr("y", mainGraphHeight - 15)
+          .attr("x", 30)
+          .attr("y", 40)
           .text(graph.order() + " vertex + " + graph.size() + " edges")
           .attr("font-family", "sans-serif")
-          .attr("font-size", "12px")
+          .attr("font-size", "14px")
           .attr("font-weight", "normal")
-          .attr("fill", colorMod)
-          .style("text-anchor", "middle");
+          .attr("fill", colorMod);
 
 
 ////////////////////////////////////////////////////////////
@@ -875,6 +869,9 @@ function arity() {
   d3.selectAll("path.pathLegend").remove();
   d3.selectAll("path.edgePathLe").remove();
   
+  d3.selectAll("#arityTitle").remove(); 
+  d3.selectAll("#legendText").remove(); 
+
   d3.selectAll("#pathLegend0").remove();
   d3.selectAll("#pathLegend1").remove();
   d3.selectAll("#pathLegend2").remove();
