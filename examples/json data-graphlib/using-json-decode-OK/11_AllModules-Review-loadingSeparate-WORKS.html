@@ -1,0 +1,172 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Dagre D3 Renderer Demo</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="js/d3.js" charset="utf-8"></script>
+<script src="js/graphlib.min.js"></script>
+<script src="js/dagre-d3.js"></script>
+
+<body onLoad="draw();">
+
+<div id="attach">
+  <svg id="svg-canvas1" width=650 height=200>
+    <g transform="translate(20, 20)"/>
+  </svg>
+</div>
+  
+<p id="enzymedb">Enzymedb module</p>
+<p id="go">go module</p>
+<p id="cbiTaxonomy">ncbiTaxonomy module</p>
+<p id="refseq">refseq module</p>
+<p id="uniprot">uniprot module</p>
+<p id="uniprot_go">uniprot_go module</p>
+
+
+<script>
+
+
+var g = new dagreD3.Digraph();
+
+function draw() {
+
+  url1 = "dataReview/enzymedb.json";
+  url2 = "dataReview/go.json";
+  url3 = "dataReview/ncbiTaxonomy.json";
+  url4 = "dataReview/refseq.json";
+  url5 = "dataReview/uniprot.json";
+  url6 = "dataReview/uniprot_go.json";
+
+  d3.select("#enzymedb")
+    .on("click", function() {
+        console.log("clicking!");
+        url = url1;
+        return draw();
+      });
+
+  d3.select("#go")
+    .on("click", function() {
+        console.log("clicking!");
+        url = url2;
+        return draw();
+      });
+
+  d3.select("#cbiTaxonomy")
+    .on("click", function() {
+        console.log("clicking!");
+        url = url3;
+        return draw();
+      });
+
+  d3.select("#refseq")
+  .on("click", function() {
+      console.log("clicking!");
+      url = url4;
+      return draw();
+      }); 
+
+  d3.select("#uniprot")
+  .on("click", function() {
+      console.log("clicking!");
+      url = url5;
+      return draw();
+      });
+
+  d3.select("#uniprot_go")
+  .on("click", function() {
+      console.log("clicking!");
+      url = url6;
+      return draw();
+      });
+
+// ADDING MODULE NAME:
+d3.json(url, function(error, jsonGO) {
+  
+    if (error) return alert("error!");
+
+    var module = jsonGO.label;
+    var properties = jsonGO.propertyTypes;
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x.label,        
+            value: { module: module, label: x.label, propertyTypes: x.properties }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+    /////
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+        var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.source.type,     
+            v: x.target.type,
+            value: { module: module, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+    var renderer = new dagreD3.Renderer();
+  var graph = dagreD3.json.decode(newVertex, newEdges);
+
+
+  var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return  u });
+    // svgNodes.attr("module", function(u) { return  u.module });
+    
+    return svgNodes;
+  });
+
+  // drawEdgePaths
+
+  var layout = dagreD3.layout();
+
+  svgGraph1 = d3.select("svg#svg-canvas1");
+
+
+  var renderinglayout = renderer.layout(layout)
+              .run(graph, svgGraph1);
+
+  // console.log(graph);
+  // console.log(g.nodes);
+  // console.log(g.edges);
+  
+   // EDGES/NODE LIST (general: all edges)
+ // digraph.edges()
+
+
+
+  
+  console.log(g.edges());
+  console.log(g.nodes());
+
+  });
+}
+
+
+
+
+/*function draw() {
+
+// ADDING MODULE NAME:
+d3.json(url2, function(jsonGO) {
+
+}*/
+
+</script>

@@ -64,7 +64,7 @@ d3.select("body")
 function tick(e) {
 
   // Push different nodes in different directions for clustering.
-  var k = 6 * e.alpha;
+  var k = 2 * e.alpha;
   nodes.forEach(function(o, i) {
     o.y += i & 1 ? k : -k;
     o.x += i & 2 ? k : -k;

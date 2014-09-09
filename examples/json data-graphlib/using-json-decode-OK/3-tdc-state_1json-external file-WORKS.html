@@ -1,0 +1,122 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Dagre D3 Renderer Demo</title>
+
+<script src="js/d3.js" charset="utf-8"></script>da
+<script src="js/graphlib.min.js"></script>
+<script src="js/dagre-d3.js"></script>
+
+<style>
+svg {
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}
+
+.node rect {
+  stroke-width: 2px;
+  stroke: #333;
+  fill: #fff;
+}
+
+#node-CLOSED rect {
+  fill: #f77;
+}
+
+#node-ESTAB rect {
+  fill: #7f7;
+}
+
+.edgeLabel rect {
+  fill: #fff;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+}
+</style>
+
+<body onLoad="draw();">
+<div id="attach">
+  <svg id="svg-canvas" width=800 height=600>
+    <g transform="translate(20, 20)"/>
+  </svg>
+</div>
+<script>
+  
+/*You can load them in series:
+  d3.csv("file1.csv", function(rows1) {
+    d3.csv("file2.csv", function(rows2) {
+      … do something with rows1 and rows2 here …
+    });
+  });
+
+Or in parallel:
+
+  var rows1, rows2, remaining = 2;
+
+  d3.csv("file1.csv", function(csv) {
+    rows1 = csv;
+    if (!--remaining) doSomething();
+  });
+
+  d3.csv("file2.csv", function(csv) {
+    rows2 = csv;
+    if (!--remaining) doSomething();
+  });
+
+  function doSomething() {
+    … do something with rows1 and rows2 here …
+  }
+  */
+
+function draw() {
+
+//Loading json files
+  d3.json("data/json.json", function(json) {
+
+  console.log("json: ");
+  console.log(json);
+
+  console.log("json.nodes: ");
+  console.log(json.nodes);
+
+  console.log("json.edges: ");
+  console.log(json.edges);
+
+ 
+  var renderer = new dagreD3.Renderer();
+  var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return "node-" + u; });
+    svgNodes.attr("id", function(u) { return "node-" + u; });
+
+    
+    return svgNodes;
+  });
+
+  var layout = renderer.run(dagreD3.json.decode(json.nodes, json.edges), d3.select("svg g"));
+  d3.select("svg")
+    .attr("width", layout.graph().width + 40)
+    .attr("height", layout.graph().height + 40);
+
+/*  console.log(graph);
+  console.log(graph.nodes);
+  console.log(graph.edges);*/
+  
+   // EDGES/NODE LIST (general: all edges)
+ //digraph.edges()
+
+  });
+
+}
+</script>

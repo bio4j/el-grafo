@@ -1,0 +1,287 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>json data to representation</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="scripts/lib/d3.js" charset="utf-8"></script>
+<script src="scripts/lib/graphlib.min.js"></script>
+<script src="scripts/lib/dagre-d3.js"></script>
+
+<script src="scripts/alg/topsort.js"></script>
+<script src="scripts/alg/tarjan.js"></script>
+<script src="scripts/alg/components.js"></script>
+<script src="scripts/alg/dijkstra.js"></script>
+<script src="scripts/alg/dijkstraAll.js"></script>
+<script src="scripts/alg/findCycles.js"></script>
+<script src="scripts/alg/floydWarshall.js"></script>
+<script src="scripts/alg/isAcyclic.js"></script>
+<script src="scripts/alg/postorder.js"></script>
+<script src="scripts/alg/preorder.js"></script>
+<script src="scripts/alg/prim.js"></script>
+
+<body onLoad="draw();">
+<div id="attach">
+  <svg id="svg-canvas" width=800 height=600>
+    <g transform="translate(20, 20)"/>
+  </svg>
+</div>
+<script>
+
+  
+function draw() {
+
+// ADDING MODULE NAME:
+d3.json("data/GO.json", function(jsonGO) {
+
+    var module = jsonGO.label;
+    var properties = jsonGO.propertyTypes;
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { module: jsonGO.label, label: x, propertyTypes: properties  }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+  //////
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+        var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            id: x.label,
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { module: jsonGO.label, label: x.label, inArity: x.inArity, outArity: x.outArity, propertyTypes: properties }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+  var renderer = new dagreD3.Renderer();
+  var sourceData = dagreD3.json.decode(newVertex, newEdges);
+
+
+  /////////////
+
+/*  // Original DrawNodes function
+  function defaultDrawNodes(g, root) {
+  var nodes = g.nodes().filter(function(u) { return !isComposite(g, u); });
+
+  var svgNodes = root
+    .selectAll('g.node')
+    .classed('enter', false)
+    .data(nodes, function(u) { return u; });
+
+  svgNodes.selectAll('*').remove();
+
+  svgNodes
+    .enter()
+      .append('g')
+        .style('opacity', 0)
+        .attr('class', 'node enter');
+
+  svgNodes.each(function(u) { addLabel(g.node(u), d3.select(this), 10, 10); });
+*/
+            
+
+  //alter the drawNodes function:
+    var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+
+    console.log(newVertex);
+    console.log(d3.selectAll("svgNodes"));
+
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.attr("id", function(u) { return  u });
+    return svgNodes;
+  });
+
+
+
+  //alter the drawEdges function:
+  var oldDrawEdge = renderer.drawEdgePaths();
+  renderer.drawEdgePaths(function(graph, root) {
+
+    console.log(d3.selectAll("svgEdgePaths"));
+
+    var svgEdgePaths = oldDrawEdge(graph, root);
+    svgEdgePaths.attr("id", function(e) { return  e })
+    return svgEdgePaths;
+
+  });
+  
+  var layout = dagreD3.layout()
+                //.nodeSep(50)  //50=default
+                //.edgeSep(10)
+                //.rankSep(20);   //Separation between levels, childs
+                .rankDir("LR"); //TB:top-to-bottom / BT:bottom-to-top / LR:left-to-right / RL:right-to-left 
+
+  var renderinglayout = renderer.layout(layout)
+              // .edgeTension(.5)
+              .edgeInterpolate("bundle")  // Bundle, linear, step-after, basis, cardinal, monotone..
+              
+              .run(sourceData, d3.select("svg g"));
+  
+
+ //
+
+   renderinglayout.eachNode(function(u, value) {
+       console.log("VertexTypes " + u + ": " + JSON.stringify(value));
+   });
+    
+  renderinglayout.eachEdge(function(e, u, v, value) {
+     console.log("EdgeTypes " + e + ": " + JSON.stringify(value));
+  });
+
+
+
+   //Binding Nodes&Edges DATA to the graph by iterating over the generated svg adding attrubutes:
+
+    d3.selectAll(".edgePath.enter")
+      .data(newEdges)
+      .attr("u", function(d) {
+                  return d.u
+              })
+      .attr("v", function(d) {
+                  return d.v
+              })
+      .attr("inArity", function(d) {
+                  return d.value.inArity
+              })
+      .attr("outArity", function(d) {
+                  return d.value.outArity
+              })
+      .attr("label", function(d) {
+                  return d.value.label
+              })
+      .attr("module", function(d) {
+            return d.value.module
+              })
+      .attr("propertyTypes", function(d) {
+            return d.value.propertyTypes
+              });
+
+
+    d3.selectAll(".node.enter")
+      .data(newVertex)
+      .attr("module", function(d) {
+                  return d.value.module
+      })           
+      .attr("label", function(d) {
+                  return d.value.label
+      })
+      .attr("propertyTypes", function(d) {
+      return d.value.propertyTypes
+        });
+
+    //TO DO in general: convert as much as possible on functions so the node/edges attributes can change in the future with no need of updating the code.
+
+
+
+
+
+
+
+
+    //SOME DIAGRAPH FEATURES:
+    
+    // EDGES/NODE LIST (general: all edges)
+    console.log("All graph vertex: " + sourceData.nodes());
+    console.log("All graph edges: " + sourceData.edges());
+
+
+    // SUCCESORS, PREDECESSORS & NEIGHBORS -> LOCAL (node:node)
+    console.log(sourceData.successors("SubOntologies"));
+    console.log(sourceData.predecessors("GoSlims"));
+    console.log(sourceData.neighbors("GoTerm"));
+
+
+    // SOURCES, SINKS -> GLOBAL (general:node)
+    console.log("Graph sources: " + sourceData.sources()); // There's no source on the graph due the self-linking GoTerm node
+    console.log("Graph sinks: " + sourceData.sinks());
+
+
+    // EXISTENCE OF EDGE (edge:true/false)
+    console.log(sourceData.hasEdge("GoSlim"));
+
+    // SOURCE, TARGETS & INCIDENTS -> LOCAL  (edge:nodes)
+     // console.log(sourceData.source("PositivelyRegulates"));
+     console.log(sourceData.target("GoSlim"));
+     console.log(sourceData.incidentNodes("SubOntology")) //source+target of the edge
+
+    console.log(sourceData.inEdges("GoSlims")); //all edges going in node10
+    console.log(sourceData.inEdges("SubOntologies")); //all edges going in node10
+
+
+
+
+     // ALERT WINDOWSon click. To test if everything is working or not:
+    d3.selectAll(".node rect")
+         .on("click", function(u, value) {
+             alert("Vertex '" + u + "'\n" + "My neighbors nodes are '" + sourceData.neighbors(u) + "'" + "'\n" + "\n" + "Module: '" + sourceData.node(u).module + "' & PropertyTypes: '" + sourceData.node(u).propertyTypes + "'");
+         })
+ 
+  d3.selectAll(".edgePath path")
+         .on("click", function(e, u, v, value) {
+             alert("Edge '" + e + "'\n" + "Source: '" + sourceData.source(e) + "' -> Target: '" + sourceData.target(e) + "'" + "'\n" + "\n" + "Module: '" + sourceData.edge(e).module + "'' , PropertyTypes: '" + sourceData.edge(e).propertyTypes + "' & inArity/OutArity: '" + sourceData.edge(e).inArity + "/" + sourceData.edge(e).outArity + "'");
+         })
+
+
+/////
+
+
+// TARJAN: STRONGLY CONNECTED COMPONENTS
+ console.log("tarjan algo:")
+ console.log("finds all strongly connected components in the directed graph")
+
+ console.log(tarjan(sourceData))
+ //Array of components, each of them is itself an array with the ids. It gives lots of 1-array objetcs when there are no strongly connected components.
+
+
+ // IS ACYCLIC, FIND CLYCLES
+// console.log("isAcyclic?")
+ // console.log(isAcyclic(sourceData));    //Gives TRUE if the graph has no cycles and returns false if it does. -ERROR: if there are cycles gives Exception isntead of False.
+ 
+ // alg.findCycles(sourceData)
+ console.log("findCycles algo:")
+ console.log("all nodes that are part of a cycle")
+ console.log(findCycles(sourceData)); //Returns all nodes that are part of a cycle-> Arrays of these cycles if there are more.
+
+
+ // TOPSORT: TOPOLOGICAL SORTING
+ // var alg = require("graphlib").alg;
+ // var topsort = require("graphlib").alg.topsort.
+ // console.log(topsort(sourceData));  // If the graph has a cycle it is impossible to generate such a list and CycleException is thrown. ojo! cycles include self-linking nodes
+
+
+ // DIJKSTRA & FLOYDWARSHALL: SHORTEST PATH
+ // alg.dijkstra(g, source, [weightFunc], [incidentFunc])
+ // console.log(dijkstra(sourceData, "GoTerm"));      //ERROR: anonymous function (in the js alg file)
+ // alg.dijkstraAll(g, [weightFunc], [incidentFunc])
+ // console.log(dijkstraAll(g));        //ERROR: anonymous function (in the js alg file)
+ // alg.floydWarshall(g, [weightFunc], [incidentFunc])
+ // console.log(floydWarshall(sourceData)); //Si funciona, xo da lista infinita de cosas
+
+ // ALL CONNECTED COMPONENTS -----ERROR
+ // console.log(components(g));    //NO FUNCIONA: anonymous function (in the js alg file)
+
+
+  });
+  }
+
+
+</script>
+
+

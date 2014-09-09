@@ -1,0 +1,254 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>T....</title>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script src="js/d3.js" charset="utf-8"></script>da
+
+<body>
+<div id="attach">
+  <svg id="svg-canvas" width=800 height=600>
+    <g transform="translate(20, 20)"/>
+  </svg>
+</div>
+
+</body>
+<script>
+
+// edgeTypes:
+d3.json("data/GOedgeTypes.json", function(jsonGOedgeTypes) {
+
+    console.log("Original json structure of edgeTypes")
+    console.log(jsonGOedgeTypes)
+
+    var newEdges = jsonGOedgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { label: x.label, inArity: x.inArity, outArity: x.outArity }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib")
+    console.log(newEdges);
+});
+
+/////////////////////////////////////////
+
+// vertextTypes:
+d3.json("data/GOvertexTypes.json", function(jsonGOvertexTypes) {
+
+    console.log("Original json structure of vertexTypes")
+    console.log(jsonGOvertexTypes)
+
+    var newVertex = jsonGOvertexTypes.map(function(x) {
+          return {
+            id: x
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib")
+    console.log(newVertex);
+
+});
+
+/////////////////////////////////////////
+
+// All togheter:
+d3.json("data/GO.json", function(jsonGO) {
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+    var newEdges = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { label: x.label, inArity: x.inArity, outArity: x.outArity }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges);
+
+    /////
+
+    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { label: x }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);
+
+});
+
+
+/////////////////////////////////////////
+
+
+// ADDING MODULE NAME:
+d3.json("data/GO.json", function(jsonGO) {
+
+    console.log(jsonGO.label)
+
+    var module = jsonGO.map(function(m) {
+        return {
+        module: m.label 
+        };
+    });
+
+    console.log("Model:")
+    console.log(module);    
+
+    console.log("Original json structure of edgeTypes from GO file:")
+    console.log(jsonGO.edgeTypes)
+
+
+    var newEdges2 = jsonGO.edgeTypes.map(function(x) {
+          return {
+            u: x.sourceType,     
+            v: x.targetType,
+            value: { label: x.label, inArity: x.inArity, outArity: x.outArity }            
+          };
+        });
+    
+    console.log("Transformed structure of edgeTypes for Graphlib:")
+    console.log(newEdges2);
+    
+
+    /////
+
+/*    console.log("Original json structure of vertexTypes from GO file:")
+    console.log(jsonGO.vertexTypes)
+
+    var newVertex = jsonGO.vertexTypes.map(function(x) {
+          return {
+            id: x,
+            value: { label: x }            
+            };
+        });
+    
+    console.log("Transformed structure of vertexTypes for Graphlib:")
+    console.log(newVertex);*/
+
+});
+
+//////////////////////////
+
+/*
+
+var old = {
+ "data": 
+[
+    {
+        "id" : "e49e183e-9325-4e62-8eda-7e63fb7cdbbd",
+        "name" : "test"
+    },
+    {
+        "id" : "ac310894-d808-447b-a189-d07edb7f6dd7",
+        "name" : "test2"
+    }
+]   
+};
+
+
+//new json must be like this
+"aaData": 
+[ 
+    [
+        "e49e183e-9325-4e62-8eda-7e63fb7cdbbd","test"
+    ],
+    [
+        "ac310894-d808-447b-a189-d07edb7f6dd7","test2"
+    ]
+] 
+
+
+var len = old.data.length,
+    newJson = {aaData:[]},
+    i;
+
+for ( i=0; i < len; i+=1 ) {
+    newJson.aaData.push( [ old.data[ i ].id, old.data[ i ].name] );   
+}
+
+console.log(newJson);
+
+
+///////////////////////////////////
+
+d3.json("data/GO.json", function(jsonGO) {
+
+	console.log("Module name: " + jsonGO.label)
+	console.log("Number of property types: " + jsonGO.propertyTypes.length)
+	console.log("Number of Vertex: " + jsonGO.vertexTypes.length)
+	console.log("Number of Edges: " + jsonGO.edgeTypes.length)
+
+
+var lenVertex = jsonGO.vertexTypes.length,
+	newJsonVertex = {nodes:[]},
+    i;
+
+    for ( i=0; i < len; i+=1 ) {
+    newJsonVertex.nodes.push( [ "id" == jsonGO.vertexTypes[ i ]] );   
+}
+
+console.log(newJsonVertex);
+
+});
+
+////////////////////////////////////////
+
+var data = [
+    { "dep": "d1", "name": "name2", "size": "size1" },
+    { "dep": "d1", "name": "name2", "size": "size2" },
+    { "dep": "d2", "name": "name1"},
+    { "dep": "d2"}
+]
+
+var newData = d3.nest()
+.key(function(d,i){ return d.dep; })
+.entries(data);
+
+console.log(newData);
+
+
+/////////////////////////////////////////
+
+//Option1
+function replacer(key, value) {
+    if (typeof value === 'number' && !isFinite(value)) {
+        return String(value);
+    }
+    return value;
+}
+
+/////////////////////////////////////////
+
+
+d3.json("data/sankey.json", function(error, graph) {
+
+         var nodeMap = {};
+    graph.nodes.forEach(function(x) { nodeMap[x.name] = x; });
+    graph.links = graph.links.map(function(x) {
+      return {
+        source: nodeMap[x.source],
+        target: nodeMap[x.target],
+        value: x.value
+      };
+    });
+
+console.log(nodeMap)
+});
+*/
+
+</script>
+
+</html>

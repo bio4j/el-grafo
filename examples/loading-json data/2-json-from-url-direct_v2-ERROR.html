@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>json from url </title>
+
+<body>
+
+<script src="http://d3js.org/d3.v3.js"></script>
+<script>
+
+// from d3 API
+/*var data; // a global
+
+d3.json("path/to/file.json", function(error, json) {
+  if (error) return console.warn(error);
+  data = json;
+  visualizeit();
+});*/
+
+
+
+var url1 = "https://gist.githubusercontent.com/mbostock/1129492/raw/8ac84377f78fb62ccb574ddf9d5af42b5c21d0a4/readme.json";
+
+var urlargh = "https://gist.githubusercontent.com/mbostock/1129492/raw/8ac84377f78fb62ccb574ddf9d5af42b5c21d0a4/readme.json"
+var url2 = "http://gist.githubusercontent.com/mbostock/1093025/raw/a05a94858375bd0ae023f6950a2b13fac5127637/flare.json";
+
+//Edu tweacks:
+d3.json(url2).header("Content-Type", "application/json").get(
+	function(error, graph) {
+
+     console.log(graph.links);
+     console.log(graph.nodes);
+
+  /*  SAME ERROR WITH BOTH!!  XMLHttpRequest cannot load https://gist.githubusercontent.com/mbostock/1129492/raw/8ac84377f78fb62ccb574ddf9d5af42b5c21d0a4/readme.json. The 'Access-Control-Allow-Origin' header has a value 'https://render.githubusercontent.com' that is not equal to the supplied origin. Origin 'http://localhost:8888' is therefore not allowed access. 
+  */
+
+});
+
+
+//Initial test:
+d3.json(url2, function(error, graph) {     
+	console.log(graph.links);
+    console.log(graph.nodes);
+});
+
+</script>
+</body>

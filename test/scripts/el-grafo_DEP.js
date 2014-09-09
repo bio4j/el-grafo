@@ -738,6 +738,7 @@ console.log(graph.nodes().length);
 ////////////////////////////////////////////////////////////
 
 
+<<<<<<< HEAD
 svgGraph.selectAll("#moduleTitle")
         .remove();
 
@@ -769,6 +770,33 @@ text2 = svgGraph.append("text")
           .attr("font-weight", "normal")
           .attr("fill", colorMod)
           .style("text-anchor", "middle");
+=======
+svgRouteMap.selectAll("#moduleTitle")
+        .remove();
+
+text = svgRouteMap.append("text")
+          .attr("id", "moduleTitle")
+          .attr("x", 30)
+          .attr("y", 20)
+          .text(module + " dependency")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "20px")
+          .attr("font-weight", "bold")
+          .attr("fill", colorMod);
+
+svgRouteMap.selectAll("#moduleInfo")
+        .remove();
+
+text2 = svgRouteMap.append("text")
+          .attr("id", "moduleInfo")
+          .attr("x", 30)
+          .attr("y", 40)
+          .text(graph.order() + " vertex + " + graph.size() + " edges")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "14px")
+          .attr("font-weight", "normal")
+          .attr("fill", colorMod);
+>>>>>>> test/working/version
 
 
 ////////////////////////////////////////////////////////////
@@ -875,6 +903,12 @@ function arity() {
   d3.selectAll("path.pathLegend").remove();
   d3.selectAll("path.edgePathLe").remove();
   
+<<<<<<< HEAD
+=======
+  d3.selectAll("#arityTitle").remove(); 
+  d3.selectAll("#legendText").remove(); 
+
+>>>>>>> test/working/version
   d3.selectAll("#pathLegend0").remove();
   d3.selectAll("#pathLegend1").remove();
   d3.selectAll("#pathLegend2").remove();

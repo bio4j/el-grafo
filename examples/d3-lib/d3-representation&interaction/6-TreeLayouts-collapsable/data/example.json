@@ -1,0 +1,34 @@
+  {
+    "name": "DEF",
+    "parent": "null",
+    "relation": "null",
+    "depth": 0,
+    "children": [
+      {
+        "name": "ABC",
+        "parent": "DEF",
+        "relation": "ghi",
+        "depth": 1,
+        "children": [
+          {
+            "name": "new_name",
+            "parent": "ABC",
+            "relation": "rel",
+            "depth": 2
+          },
+          {
+            "name": "new_name2",
+            "parent": "ABC",
+            "relation": "foo",
+            "depth": 2
+          }
+        ]
+      },
+      {
+        "name": "Foo",
+        "parent": "DEF",
+        "relation": "rel",
+        "depth": 2
+      }
+    ]
+  }

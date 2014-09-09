@@ -1,0 +1,139 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>sentence-tokenization</title>
+
+<script src="js/d3.js" charset="utf-8"></script>da
+<script src="js/graphlib.min.js"></script>
+<script src="js/dagre-d3.js"></script>
+
+<body onLoad="draw();">
+<svg width=650 height=680><g transform="translate(20,20)"/></svg>
+
+<script>
+function draw() {
+  var g = new dagreD3.Digraph();
+
+/*  d3.json("data/Miserables.json", function(json) {
+  console.log(json);
+});*/
+
+  var json = [ "Myriel", "Napoleon", "Cortés" ];
+
+/*    var json = {
+    "nodes": [
+        {
+            "name": "Myriel",
+            "label": "hola"
+        },
+        {
+            "name": "Napoleon",
+            "label": "holo"
+        },
+        {
+            "name": "Cortés",
+            "label": "hele"
+        }
+    ],
+    "links": [
+        {
+            "source": 1,
+            "target": 0,
+            "value": 1
+        },
+        {
+            "source": 1,
+            "target": 0,
+            "value": 1
+        },
+        {
+            "source": 1,
+            "target": 2,
+            "value": 1
+        }
+    ]
+  };*/
+
+/*  console.log("json:");
+  console.log(json);
+
+  console.log("json.nodes:");
+  console.log(json.nodes);
+
+  console.log("json.links:");
+  console.log(json.links);*/
+
+
+
+  // states.forEach(function(state) { g.addNode(state, { label: state }); });
+
+  // var trial1 = json.nodes.forEach(function(d, i) { g.addNode(i, { label: d.group }); });
+  // json.nodes.forEach(function(d) { g.addNode(d.name, { label: d.group }); });
+  json.forEach(function(s) { g.addNode(s, { label: s }); });
+
+  // json.links.forEach(function(d, i) { g.addEdge(i, d.source, d.target)};
+
+  g.addEdge(null, "Myriel", "Napoleon");
+  g.addEdge(null, "Myriel", "Cortés");
+
+/*  g.addEdge(null, 1, 2);
+  g.addEdge(null, 1, 3);*/
+
+
+
+/* 
+  g.addNode(0,  { label: "TOP",       nodeclass: "type-TOP" });
+  g.addNode(1,  { label: "S",         nodeclass: "type-S" });
+  g.addNode(2,  { label: "NP",        nodeclass: "type-NP" });
+  g.addNode(3,  { label: "DT",        nodeclass: "type-DT" });
+  g.addNode(4,  { label: "This",      nodeclass: "type-TK" });
+  g.addNode(5,  { label: "VP",        nodeclass: "type-VP" });
+  g.addNode(6,  { label: "VBZ",       nodeclass: "type-VBZ" });
+  g.addNode(7,  { label: "is",        nodeclass: "type-TK" });
+  g.addNode(8,  { label: "NP",        nodeclass: "type-NP" });
+  g.addNode(9,  { label: "DT",        nodeclass: "type-DT" });
+  g.addNode(10, { label: "an",        nodeclass: "type-TK" });
+  g.addNode(11, { label: "NN",        nodeclass: "type-NN" });
+  g.addNode(12, { label: "example",   nodeclass: "type-TK" });
+  g.addNode(13, { label: ".",         nodeclass: "type-." });
+  g.addNode(14, { label: "sentence",  nodeclass: "type-TK" });
+
+  g.addEdge(null, 3, 4);
+  g.addEdge(null, 2, 3);
+  g.addEdge(null, 1, 2);
+  g.addEdge(null, 6, 7);
+  g.addEdge(null, 5, 6);
+  g.addEdge(null, 9, 10);
+  g.addEdge(null, 8, 9);
+  g.addEdge(null, 11,12);
+  g.addEdge(null, 8, 11);
+  g.addEdge(null, 5, 8);
+  g.addEdge(null, 1, 5);
+  g.addEdge(null, 13,14);
+  g.addEdge(null, 1, 13);
+  g.addEdge(null, 0, 1)
+
+  */
+
+  // console.log("graph.edges");
+
+  var renderer = new dagreD3.Renderer();
+  var oldDrawNodes = renderer.drawNodes();
+  renderer.drawNodes(function(graph, root) {
+    var svgNodes = oldDrawNodes(graph, root);
+    svgNodes.each(function(u) { d3.select(this).classed(graph.node(u).nodeclass, true); });
+    return svgNodes;
+  });
+  
+
+
+  var layout = renderer.run(g, d3.select("svg g"));
+  d3.select("svg")
+    .attr("width", layout.graph().width + 40)
+    .attr("height", layout.graph().height + 40);
+
+}
+
+</script>
+</body>
+</html>

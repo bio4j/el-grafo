@@ -3,8 +3,8 @@
 <meta charset="utf-8">
 <title>Dagre Interactive Demo</title>
 
-<script src="d3/d3.js"></script>
-<script src="BrowserScripts/dagre-d3.js"></script>
+<script src="js/d3.js"></script>
+<script src="js/dagre-d3.js"></script>
 <script src="http://cpettitt.github.io/project/graphlib-dot/latest/graphlib-dot.min.js"></script>
 
 <style>
@@ -83,7 +83,7 @@ digraph {
 <h2>Graph Visualization</h2>
 
 <svg width=800 height=600>
-  <g transform="translate(20, 20)"/>
+  <g transform="translate(50, 50)"/>
 </svg>
 
 <script>
@@ -120,6 +120,8 @@ var debugAlignmentRE = /[?&]alignment=([^&]+)/;
 var debugAlignmentMatch = window.location.search.match(debugAlignmentRE);
 var debugAlignment;
 if (debugAlignmentMatch) debugAlignment = debugAlignmentMatch[1];
+
+
 
 function tryDraw() {
   var result;
@@ -177,8 +179,8 @@ function tryDraw() {
 
       var layout = renderer.run(result, svg.select("g"));
       transition(d3.select("svg"))
-        .attr("width", layout.graph().width + 40)
-        .attr("height", layout.graph().height + 40)
+        .attr("width", layout.graph().width + 60)
+        .attr("height", layout.graph().height + 60)
     }
   }
 }

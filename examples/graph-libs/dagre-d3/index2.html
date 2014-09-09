@@ -1,0 +1,264 @@
+<!doctype html>
+
+<meta charset="utf-8">
+<title>Dagre D3 Renderer Demo</title>
+
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="http://cpettitt.github.io/project/graphlib/latest/graphlib.min.js"></script>
+<script src="http://cpettitt.github.io/project/dagre-d3/latest/dagre-d3.js"></script>
+
+<style>
+
+/*  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+    background: #333;
+  }*/
+
+
+/*  @-webkit-keyframes flash {
+    0%, 50%, 100% {
+      opacity: 1;
+    }
+
+    25%, 75% {
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes flash {
+    0%, 50%, 100% {
+      opacity: 1;
+    }
+
+    25%, 75% {
+      opacity: 0.2;
+    }
+  }*/
+
+/*  .warn {
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+  }
+*/
+  .live.map {
+    width: 100%;
+    height: 100%;
+  }
+
+/*  svg {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+*/
+
+  svg {
+    width: 1000px;
+    height: 600px;
+    overflow: hidden;
+  }
+
+ /**/
+  }
+
+</style>
+
+<body onLoad="draw();">
+<div class="live map">
+  <svg>
+    <g class="diagram" transform="translate(20,20)"/>
+  </svg>
+</div>
+
+<script>
+
+  var workers = {
+    'identifier': {
+      'consumers': 2,
+      'count': 20
+    },
+    'lost-and-found': {
+      'consumers': 1,
+      'count': 1,
+      'inputQueue': 'identifier',
+      'inputThroughput': 50
+    },
+    'monitor': {
+      'consumers': 1,
+      'count': 0,
+      'inputQueue': 'identifier',
+      'inputThroughput': 50
+    },
+    'meta-enricher': {
+      'consumers': 4,
+      'count': 9900,
+      'inputQueue': 'identifier',
+      'inputThroughput': 50
+    },
+    'geo-enricher': {
+      'consumers': 2,
+      'count': 1,
+      'inputQueue': 'meta-enricher',
+      'inputThroughput': 50
+    },
+    'elasticsearch-writer': {
+      'consumers': 0,
+      'count': 9900,
+      'inputQueue': 'geo-enricher',
+      'inputThroughput': 50
+    }
+  };
+
+  var zoom = d3.behavior.zoom();
+
+
+  function draw(isUpdate) {
+    var nodes = [];
+    var edges = [];
+    for (var id in workers) {
+      var worker = workers[id];
+      var className = '';
+      className += worker.consumers ? 'running' : 'stopped';
+      if (worker.count > 10000) {
+        className += ' warn';
+      }
+      var html = '<div>';
+      html += '<span class="status"></span>';
+      html += '<span class="consumers">'+worker.consumers+'</span>';
+      html += '<span class="name">'+id+'</span>';
+      html += '<span class="queue"><span class="counter">'+worker.count+'</span></span>';
+      html += '</div>';
+      nodes.push({
+        id: id,
+        value: {
+          label: html,
+          className: className
+        }
+      });
+
+      if (worker.inputQueue) {
+        var label = worker.inputThroughput + '/s';
+        edges.push({ u: worker.inputQueue, v: id, value: { label: '<span>'+label+'</span>' } });
+      }
+    }
+
+    var renderer = new dagreD3.Renderer();
+    var svg = d3.select("svg");
+console.log("svg", svg);
+
+ /* // Handle debugAlignment
+      renderer.postLayout(function(graph) {
+        if (debugAlignment) {
+          // First find necessary delta...
+          var minX = Math.min.apply(null, graph.nodes().map(function(u) {
+            var value = graph.node(u);
+            return value[debugAlignment] - value.width / 2;
+          }));
+
+          // Update node positions
+          graph.eachNode(function(u, value) {
+            value.x = value[debugAlignment] - minX;
+          });
+
+          // Update edge positions
+          graph.eachEdge(function(e, u, v, value) {
+            value.points.forEach(function(p) {
+              p.x = p[debugAlignment] - minX;
+            });
+          });
+        }
+      });*/
+
+    // Custom transition function
+    function transition(selection) {
+      return selection.transition().duration(50);
+    }
+
+    isUpdate && renderer.transition(transition);
+
+    renderer.zoom(function (graph, svg) {
+      return zoom.on('zoom', function() {
+        svg.attr('transform', 'translate(' + d3.event.translate + ')scale(' + d3.event.scale + ')');
+      });
+    });
+
+    // Left-to-right layout
+    var layout = dagreD3.layout()
+      .nodeSep(70)
+      .rankSep(120)
+      .rankDir("LR");
+    
+    var renderedLayout = renderer
+      .layout(layout)
+      .run(dagreD3.json.decode(nodes, edges), d3.select("svg g"));
+
+zoomingg()
+function zoomingg() {
+    // Zoom and scale to fit
+    var zoomScale = zoom.scale();
+    var graphWidth = renderedLayout.graph().width + 80;
+    var graphHeight = renderedLayout.graph().height + 40;
+    var width = parseInt(svg.style('width').replace(/px/, ''));
+    var height = parseInt(svg.style('height').replace(/px/, ''));
+    zoomScale = Math.min(width / graphWidth, height / graphHeight);
+    var translate = [(width/2) - ((graphWidth*zoomScale)/2), (height/2) - ((graphHeight*zoomScale)/2)];
+    zoom.translate(translate);
+    zoom.scale(zoomScale);
+    // zoom.event(isUpdate ? svg.transition().duration(500) : d3.select('svg'));
+        zoom.event(svg.transition().duration(500));
+}
+
+d3.selectAll("path")
+   .on("click", function(u, value) {
+    console.log(renderedLayout.graph().width);
+
+
+    // Zoom and scale to fit
+    var zoomScale = zoom.scale();
+    var graphWidth = renderedLayout.graph().width + 80;
+    var graphHeight = renderedLayout.graph().height + 40;
+    var width = parseInt(svg.style('width').replace(/px/, ''));
+    var height = parseInt(svg.style('height').replace(/px/, ''));
+    zoomScale = Math.min(width / graphWidth, height / graphHeight);
+    var translate = [(width/2) - ((graphWidth*zoomScale)/2), (height/2) - ((graphHeight*zoomScale)/2)];
+    zoom.translate(translate);
+    zoom.scale(zoomScale);
+    // zoom.event(isUpdate ? svg.transition().duration(500) : d3.select('svg'));
+        zoom.event(svg.transition().duration(500));
+
+
+  });
+ }
+
+  // Do some mock queue status updates
+  setInterval(function() {
+    var stoppedWorker1Count = workers['elasticsearch-writer'].count;
+    var stoppedWorker2Count = workers['meta-enricher'].count;
+    for (var id in workers) {
+      workers[id].count = Math.ceil(Math.random() * 3);
+      if (workers[id].inputThroughput) workers[id].inputThroughput = Math.ceil(Math.random() * 250);
+    }
+    workers['elasticsearch-writer'].count = stoppedWorker1Count + Math.ceil(Math.random() * 100);
+    workers['meta-enricher'].count = stoppedWorker2Count + Math.ceil(Math.random() * 100);
+    draw(true);
+    console.log(renderedLayout.graph().width);
+  }, 1000);
+
+
+
+  // Do a mock change of worker configuration
+  setInterval(function() {
+    workers['elasticsearch-monitor'] = {
+      'consumers': 0,
+      'count': 0,
+      'inputQueue': 'elasticsearch-writer',
+      'inputThroughput': 50
+    }
+  }, 5000);
+</script>

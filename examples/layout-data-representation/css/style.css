@@ -1,0 +1,81 @@
+/*g.type-TK rect {
+  fill:teal;
+}
+
+g.type-NP rect {
+  fill:chocolate;
+}
+
+g.type-DT rect {
+  fill:#FFCC00;
+}*/
+
+svg {
+  border: 1px solid #999;
+  overflow: hidden;
+}
+
+/*text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+}*/
+
+/*Node-labels*/
+.node text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 14px;
+  fill: black;
+}
+
+/*Edge-labels*/
+.edgeLabel text {
+  font-weight: 300;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+  font-size: 11px;
+  fill: grey;
+}
+
+.node rect {
+  stroke: #999;
+  stroke-width: 1px;
+  fill: teal;
+  opacity: .4;
+}
+
+/*node hover works*/
+.node:hover rect {
+  cursor: pointer;
+  opacity: .8;
+}
+
+.edgeLabel rect {
+  fill: none;
+  /*fill: #fff;*/
+  pointer-events: none;
+}
+
+.edgePath path {
+  stroke: #333;
+  stroke-width: 1.5px;
+  fill: none;
+  stroke-dasharray: 1, 4, 1, 4;
+  pointer-events:all;
+}
+
+/*path hover works*/
+.edgePath:hover path {
+  stroke-width: 3px;
+  stroke-dasharray: 10, 0;
+}
+
+/*g.oneToMany > path {
+  stroke: red;
+  stroke-width: 1.5px;
+  fill: none;
+}*/
+
+svg text {
+  pointer-events: none;
+}

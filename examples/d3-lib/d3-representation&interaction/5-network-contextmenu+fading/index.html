@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title> - jsFiddle demo</title>
+  
+  <script type='text/javascript' src='http://code.jquery.com/jquery-1.8.3.js'></script>
+  
+  
+  
+  
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  
+    
+      <script type='text/javascript' src="http://d3js.org/d3.v3.min.js"></script>
+    
+  
+    
+      <script type='text/javascript' src="http://mbostock.github.com/d3/d3.layout.js?1.29.1"></script>
+    
+  
+    
+      <script type='text/javascript' src="http://mbostock.github.com/d3/d3.geom.js?1.29.1"></script>
+    
+  
+    
+      <script type='text/javascript' src="http://www.trendskitchens.co.nz/jquery/contextmenu/jquery.contextmenu.r2.js"></script>
+    
+  
+  <style type='text/css'>
+    path.link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+marker#licensing {
+  fill: green;
+}
+
+path.link.licensing {
+  stroke: green;
+}
+
+path.link.resolved {
+  stroke-dasharray: 0,2 1;
+}
+
+circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+text {
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+
+text.shadow {
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-opacity: .8;
+}
+  </style>
+  
+
+
+<script type='text/javascript'>//<![CDATA[ 
+$(window).load(function(){
+
+function drawGraph(json)
+{
+    //doc width
+    var width = $(document).width();
+    width = 960;
+    //doc height
+    var   height = 600;
+
+    var fill = d3.scale.category20();
+
+    //layout of data
+    var force = d3.layout.force()
+        .charge(-1000)
+        .linkStrength(.01)
+        .theta(.4)
+        .gravity(.134)
+        .nodes(json.nodes)
+        .links(json.links)
+        .size([width, height])
+        .start();
+
+    //add default html structure
+    var svg = d3.select("#graph").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("pointer-events", "all")
+        .append("svg:g")
+        .call(d3.behavior.zoom().on("zoom", redraw))
+        .append("svg:g");
+    
+    svg.append("svg:rect")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("fill", 'white');
+
+    
+   //add links and style links
+    var link = svg.selectAll(".gLink")
+        .data(json.links)
+        .enter().append("g")
+        .attr("class", "gLink")
+        .append("line")
+        .attr("class", "link")
+        .style("stroke", "#000")
+        .style("stroke-width", function(d) { return d.weight;})
+        .on("mouseover", function() { d3.select(this).style("stroke", "#555555").attr("stroke-opacity", "1.0").attr("stroke-width","4");})
+        .on("mouseout", function() { d3.select(this).style("stroke", "#ccc").attr("stroke-opacity", "1.0").attr("stroke-width","1") });
+        
+   //add nodes and effects
+    var node = svg.selectAll("g.node")
+        .data(json.nodes)
+        
+        .enter().append("g")        
+        .attr("class", "node")
+        .attr("cursor", "pointer")
+        .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+        .on("mouseover", fade(.2,1))
+        .on("mouseout", fade(1,0))
+        .on("click", function(d) {
+            alert(d.name);          
+        })
+        .call(force.drag);
+    
+    
+    
+    //right click menu items
+    $('g.node').contextMenu('cntxtMenu',
+    {
+        itemStyle:
+        {
+            fontFamily : 'Arial',
+            fontSize: '13px'
+        },
+        bindings:
+        {
+            'open': function(t) {
+                alert(t.__data__.name);
+            },
+            'email': function(t) {
+                alert('Trigger was '+t.__data__.name+'\nAction was Email');
+            },
+            'save': function(t) {
+                alert('Trigger was '+t.__data__.name+'\nAction was Save');
+            },
+            'delete': function(t) {
+                $('g.node').remove();
+                //alert('Trigger was '+t.__data__.name+'\nAction was Delete');
+            }
+        }
+    });
+
+   //add style to nodes
+   node.append("svg:rect")
+       .attr("x", function(d) { return -1 * (d.name.length * 10) / 2 })
+       .attr("y", -15)
+       .attr("rx", 6)
+       .attr("ry", 6)
+       .attr("width", function(d) { return d.name.length * 10; })
+       .attr("height", 20)
+       .style("fill", "#F00")
+       .style("stroke", "#FF0");
+
+   node.append("text")
+       .attr("text-anchor", "middle")
+       .attr("fill", "#000")
+       .text(function(d) { return d.name; });
+
+    node.append("title")        
+        .text(function(d) { return d.name; });
+
+ 
+    
+       var linkText = svg.selectAll(".gLink")
+       .append("svg:marker")
+    .attr("id", 'String')
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 15)
+    .attr("refY", -1.5)
+    .attr("markerWidth", 9)
+    .attr("markerHeight", 9)
+    .attr("orient", "auto");
+    
+        
+
+     //redraw graph after zoom
+    function redraw()
+    {
+        svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+    }
+    
+    //click and drag animation
+    force.on("tick", function()
+    {
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+        node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+        linkText.attr("viewBox", "0 -5 10 10")
+    .attr("refX", 15)
+    .attr("refY", -1.5)
+    .attr("markerWidth", 9)
+    .attr("markerHeight", 9)
+    .attr("orient", "auto");
+    });
+
+   
+    
+    function fade(opacity,x)
+    {
+        return function(d)
+        {
+            node.style("stroke-opacity", function(o)
+            {
+                thisOpacity = isConnected(d, o) ? 1 : opacity;
+                this.setAttribute('fill-opacity', thisOpacity);
+                return thisOpacity;
+            });
+
+            link.style("stroke-opacity", opacity).style("stroke-opacity", function(o)
+            {
+                return o.source === d || o.target === d ? 1 : opacity;
+            });
+        };
+    }
+
+
+ var linkedByIndex = {};
+    json.links.forEach(function(d)
+    {
+        linkedByIndex[d.source.index + "," + d.target.index] = 1;
+    });
+    
+    function isConnected(a, b)
+    {
+        return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
+    }
+}
+    
+    
+    var data = {"nodes":[{"name":"ios","group":"1"},{"name":"string","group":"1"},{"name":"python","group":"1"},{"name":"list","group":"1"},{"name":"manipulation","group":"1"},{"name":"readline","group":"1"},{"name":"vb.net","group":"1"},{"name":"application","group":"1"},{"name":"console","group":"1"}],"links":[{"source":0,"target":1,"relationship":"rel"},{"source":0,"target":2,"relationship":"rel"},{"source":0,"target":3,"relationship":"rel"},{"source":0,"target":4,"relationship":"rel"},{"source":1,"target":2,"relationship":"rel"},{"source":1,"target":3,"relationship":"rel"},{"source":1,"target":4,"relationship":"rel"},{"source":2,"target":3,"relationship":"rel"},{"source":2,"target":4,"relationship":"rel"},{"source":3,"target":4,"relationship":"rel"},{"source":0,"target":5,"relationship":"rel"},{"source":0,"target":6,"relationship":"rel"},{"source":0,"target":7,"relationship":"rel"},{"source":0,"target":8,"relationship":"rel"},{"source":5,"target":6,"relationship":"rel"},{"source":5,"target":7,"relationship":"rel"},{"source":5,"target":8,"relationship":"rel"},{"source":6,"target":7,"relationship":"rel"},{"source":6,"target":8,"relationship":"rel"},{"source":7,"target":8,"relationship":"rel"}]};
+drawGraph(data);
+
+});//]]>  
+
+</script>
+
+
+</head>
+<body>
+  <div id="graph" style="width: 1024px; height: 600px; margin-left: auto; margin-right: auto; margin-top: 20px; border: 1px solid #777;"></div>
+
+    <div class="contextMenu" id="cntxtMenu">
+        <ul>
+            <li id="open"> Open</li>
+            <li id="email"> Email</li>
+            <li id="save"> Save</li>
+            <li id="delete"> DELETE</li>
+        </ul>
+    </div>
+  
+</body>
+
+
+</html>
