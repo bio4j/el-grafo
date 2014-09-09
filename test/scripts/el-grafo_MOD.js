@@ -13,11 +13,7 @@ var distanceYlegend = 0;
 
  
 //SVG canvas for ROUTEMAP loading
-<<<<<<< HEAD
-var mainRouteWidth = 300;
-=======
 var mainRouteWidth = 330;
->>>>>>> test/working/version
 var mainRouteHeight = 500;
 
   svgRouteMap = d3.select("#svgMainRoute")
@@ -28,11 +24,7 @@ var mainRouteHeight = 500;
  svgArityLegend = svgRouteMap.append("g")
               .attr("id", "legend")
               .attr("class", "legend")
-<<<<<<< HEAD
-              .attr("transform", "translate(0,70)");
-=======
               .attr("transform", "translate(0,80)");
->>>>>>> test/working/version
 
  ////////////////
 
@@ -319,20 +311,11 @@ text = svgRouteMap.append("text")
           .attr("id", "moduleTitle")
           .attr("x", 30)
           .attr("y", 20)
-<<<<<<< HEAD
-          .text("Graph representation: " + module + " module")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "14px")
-          .attr("font-weight", "bold")
-          .attr("fill", colorMod)
-          .style("text-transform", "uppercase");
-=======
           .text(module + " Module")
           .attr("font-family", "sans-serif")
           .attr("font-size", "20px")
           .attr("font-weight", "bold")
           .attr("fill", colorMod);
->>>>>>> test/working/version
 
 svgRouteMap.selectAll("#moduleInfo")
         .remove();
@@ -343,11 +326,7 @@ text2 = svgRouteMap.append("text")
           .attr("y", 40)
           .text(graph.order() + " vertex + " + graph.size() + " edges")
           .attr("font-family", "sans-serif")
-<<<<<<< HEAD
-          .attr("font-size", "12px")
-=======
           .attr("font-size", "14px")
->>>>>>> test/working/version
           .attr("font-weight", "normal")
           .attr("fill", colorMod);
 
@@ -559,12 +538,11 @@ function arity() {
   //also legend:
   d3.selectAll("path.pathLegend").remove();
   d3.selectAll("path.edgePathLe").remove();
-<<<<<<< HEAD
   
-=======
- 
+  d3.selectAll("#arityTitle").remove(); 
   d3.selectAll("#legendText").remove(); 
->>>>>>> test/working/version
+   
+  d3.selectAll("#legendText").remove(); 
   d3.selectAll("#pathLegend0").remove();
   d3.selectAll("#pathLegend1").remove();
   d3.selectAll("#pathLegend2").remove();

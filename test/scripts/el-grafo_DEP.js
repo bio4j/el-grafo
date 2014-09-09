@@ -1,5 +1,4 @@
 
-
 function drawDep() {
 
   //Complete Domain Model schema:
@@ -738,39 +737,6 @@ console.log(graph.nodes().length);
 ////////////////////////////////////////////////////////////
 
 
-<<<<<<< HEAD
-svgGraph.selectAll("#moduleTitle")
-        .remove();
-
-text = svgGraph.append("text")
-          .attr("id", "moduleTitle")
-          .attr("x", mainGraphWidth/2)
-          .attr("y", mainGraphHeight - 30)
-          .text("Graph representation: " + module + " module")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "14px")
-          .attr("font-weight", "bold")
-          .attr("fill", colorMod)
-          .style("text-anchor", "middle")
-          .style("text-transform", "uppercase")
-          .on("click", function(u, value) {
-            console.log("hGraph", hGraph)
-          });
-
-svgGraph.selectAll("#moduleInfo")
-        .remove();
-
-text2 = svgGraph.append("text")
-          .attr("id", "moduleInfo")
-          .attr("x", mainGraphWidth/2)
-          .attr("y", mainGraphHeight - 15)
-          .text(graph.order() + " vertex + " + graph.size() + " edges")
-          .attr("font-family", "sans-serif")
-          .attr("font-size", "12px")
-          .attr("font-weight", "normal")
-          .attr("fill", colorMod)
-          .style("text-anchor", "middle");
-=======
 svgRouteMap.selectAll("#moduleTitle")
         .remove();
 
@@ -796,7 +762,6 @@ text2 = svgRouteMap.append("text")
           .attr("font-size", "14px")
           .attr("font-weight", "normal")
           .attr("fill", colorMod);
->>>>>>> test/working/version
 
 
 ////////////////////////////////////////////////////////////
@@ -829,8 +794,8 @@ d3.selectAll(".mainNodeRect")
         //adding INDEX info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 20 })
-          .attr("y", function(d,i) { return i + 20 })
+          .attr("x", function(d,i) { return i + 30 })
+          .attr("y", function(d,i) { return 250+(i + 20) })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
@@ -843,8 +808,8 @@ d3.selectAll(".mainNodeRect")
         //adding PROPERTIES info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 20 })
-          .attr("y", function(d,i) { return i + 35 })
+          .attr("x", function(d,i) { return i + 30 })
+          .attr("y", function(d,i) { return  250+(i + 35) })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "11px")
@@ -903,12 +868,9 @@ function arity() {
   d3.selectAll("path.pathLegend").remove();
   d3.selectAll("path.edgePathLe").remove();
   
-<<<<<<< HEAD
-=======
   d3.selectAll("#arityTitle").remove(); 
   d3.selectAll("#legendText").remove(); 
 
->>>>>>> test/working/version
   d3.selectAll("#pathLegend0").remove();
   d3.selectAll("#pathLegend1").remove();
   d3.selectAll("#pathLegend2").remove();

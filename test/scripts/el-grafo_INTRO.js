@@ -10,19 +10,11 @@ var color = d3.scale.category10()
 var introModulesWidthAux2 = 570;
 var introModulesHeightAux2 = 500;
 
-<<<<<<< HEAD
-    //SVG canvas for modules loading
-    SvgModulesINTRO = d3.select("#svgModulesINTRO")
-                .attr("width", introModulesWidthAux2)
-                .attr("height", introModulesHeightAux2)
-                .append("g");
-=======
 //SVG canvas for modules loading
 SvgModulesINTRO = d3.select("#svgModulesINTRO")
             .attr("width", introModulesWidthAux2)
             .attr("height", introModulesHeightAux2)
             .append("g");
->>>>>>> test/working/version
 
 ////////////////////////////////
 
@@ -30,32 +22,6 @@ SvgModulesINTRO = d3.select("#svgModulesINTRO")
 function draw0() {
 
   //Complete Domain Model schema:
-<<<<<<< HEAD
-  url0 = "data/rev_schema_new_ALL_lengths.json";
-
-  d3.json(url0, function(json0) {
-
-    console.log(json0);
-
-    var newjson0 = json0.map(function(x) {
-      function colorModule(d, i) { return color(i); }
-          return {
-            id: x.label,
-            //To be updated when the scala model is ready finally        
-/*            Nvertex: x.vertexTypes.length,
-            Nedges: x.edgeTypes.length,*/
-
-            //Handy numbers took from https://github.com/bio4j/bio4j/tree/master/src/main/java/com/bio4j/model  
-            Nvertex: x.vertexTypesLength,
-            Nedges: x.edgeTypesLength,
-
-            Dependencies: x.dependencies.length,
-            Color: colorModule(x)
-            };
-        });
-      
-    console.log(newjson0);
-=======
   url0 = "data/modelService_schema.json";
 
   d3.json(url0, function(json0) {
@@ -73,23 +39,10 @@ function draw0() {
         });
       
     console.log("newjson0", newjson0);
->>>>>>> test/working/version
 
 
 ////////////////////////////////////////////////////////////
   
-<<<<<<< HEAD
-      //TO DO
-/*      var forcelayoutjson = newjson0.map(function(x) {
-          return {
-            nodes: { module: module, label: x.label, propertyTypes: x.properties },
-            links: { module: module, label: x.label, propertyTypes: x.properties }     
-            };
-        });
-      
-    console.log(newjson0);*/
-    urlForceLayout = "data/rev_schema_new_forceLayout.json";
-=======
 
 
  var graph2 = json0.map(function(x) {
@@ -140,7 +93,6 @@ function draw0() {
             // nodes: { module: x.label, label: x.vertexTypes.label, propertyTypes: x.vertexTypes.properties },
             // links: { module: module, label: x.label, propertyTypes: x.properties }     
             };*/
->>>>>>> test/working/version
 
 })
 }
@@ -150,13 +102,9 @@ function draw0() {
 
  d3.json("data/rev_schema_forceLayout_CLEAN.json", function(error, graph) {
     
-<<<<<<< HEAD
-  var nodes = graph.nodes
-=======
     console.log("graph", graph);
 
     var nodes = graph.nodes
->>>>>>> test/working/version
 
     var Force = function(nodes, links) {
         return d3.layout.force()
@@ -305,10 +253,6 @@ function draw0() {
                     .style("stroke", bio4jColors[i] );
             }
             else {
-<<<<<<< HEAD
-
-=======
->>>>>>> test/working/version
                 d3.selectAll(".node-"+i)
                     .style("stroke", bio4jColors[i])
                     .style("stroke-width", 8)
@@ -320,14 +264,11 @@ function draw0() {
 });
 
 
-<<<<<<< HEAD
-=======
 /////////////////////
 
     d3.select("#svgMainGraph")
         .attr("width", 10);
 
->>>>>>> test/working/version
 ///////////////////
 
     //All vertex and edges: 
@@ -429,14 +370,35 @@ function draw0() {
 
 ////////////////////////////////////////////////////////////////////
 
-<<<<<<< HEAD
 
-    d3.selectAll(".link")
-        .data(graph.links)
-        .attr("id", function(d) { return d.label })
-        .on("click", function(d) {
-                  
-=======
+function backIntro() {
+
+    //Removing all legend on Intro Menu
+    svgRouteMap.select("#legend") 
+        .style("opacity", 0); 
+    svgRouteMap.select("#moduleTitle") 
+        .style("opacity", 0); 
+    svgRouteMap.select("#moduleInfo") 
+        .style("opacity", 0); 
+
+    //Modules texts back to their color & opacity   
+    var textColor = d3.select("#modulesText").selectAll("text").each( function(d,i) {
+        textColor2 = d3.select(this).attr("textColor");
+        console.log("textColor2", textColor2);
+
+        d3.select(this).transition()
+        .duration(500)
+        .style("font-size", 20)
+        .style("opacity", 1)
+        .style("fill", textColor2);
+    });
+
+    d3.select("#modulesText").selectAll("text")
+
+}
+
+/////////
+
 function clickIntro() {
 
     //COMMON BEHAVIOUR
@@ -463,8 +425,9 @@ function clickIntro() {
     d3.select("#modulesText").selectAll("text")
         .transition()
         .duration(750)
-        .style("font-size", 16)
-        .style("fill", "lightgrey");
+        .style("font-size", 20)
+        .style("opacity", .3)
+        // .style("fill", "lightgrey");
 
     //modules scheme smaller as guide
     d3.select("#svgModulesINTRO").select("g")
@@ -497,6 +460,18 @@ function clickIntro() {
         .duration(750)
         .style("opacity", 1);
 
+    //Removing specific Protein info
+    svgRouteMap.selectAll(".VertexIndexProperties") 
+        .remove();   
+
+
+    svgRouteMap.select("#legend") 
+        .style("opacity", 1); 
+    svgRouteMap.select("#moduleTitle") 
+        .style("opacity", 1); 
+    svgRouteMap.select("#moduleInfo") 
+        .style("opacity", 1); 
+
 }
 
 
@@ -509,7 +484,6 @@ function clickIntro() {
         .on("click", function(d) {
                     clickIntro();                                       
 
->>>>>>> test/working/version
                     title = d3.select(this).attr("id");
                     url = urlFunction(title);
                     console.log("title", title);
@@ -526,47 +500,10 @@ function clickIntro() {
 
 
                     d3.selectAll("#"+title).selectAll("text")
-<<<<<<< HEAD
-                         .transition()
-                        .duration(750)
-                        .style("fill", "brown");
-
-                    d3.selectAll(".link")
-                        .transition()
-                        .duration(750)
-                        .style("opacity", .4)
-                        .style("stroke-width", 10);
-                    
-                    d3.selectAll(".backButton")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", 1);
-                    
-                    d3.selectAll("#buttons")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", 1);
-
-                    d3.select("#svgMainGraph")
-                            .transition()
-                            .duration(750)
-                            .style("opacity", 1);
-
-                    d3.selectAll(".introTEXT")
-                        .transition()
-                        .duration(750)
-                        .style("opacity", 0);
-
-                    d3.select("#instructionsTEXT")
-                                .transition()
-                                .duration(500)
-                                .style("opacity", 1);
-=======
                         .transition()
                         .duration(750)
                         .style("fill", "brown");
       
->>>>>>> test/working/version
 
                     d3.select(this)
                         .transition()
@@ -576,30 +513,13 @@ function clickIntro() {
 
                     previousColor = d3.select(this).style("fill");
 
-<<<<<<< HEAD
-                    //UPDATE TO NORMAL STATUS
-                    d3.select("#modulesText").selectAll("text")
-                        .transition()
-                        .duration(750)
-                        .style("font-size", 16)
-                        .style("fill", "lightgrey");
-
-
-
-                    d3.select("#svgModulesINTRO").select("g")
-                        .transition()
-                        .duration(1000)
-                        .attr("transform", "scale(.7) translate(-80,-20)");
-=======
->>>>>>> test/working/version
 
 
                     d3.selectAll("#buttons")
                         .on("click", function(d) {
-<<<<<<< HEAD
-                                        
-=======
-                         
+                            
+                            backIntro();                                       
+
                             //SVG size transformation to avoid overlapping issues
                             d3.select("#svgModulesINTRO")
                                 .transition()
@@ -609,7 +529,6 @@ function clickIntro() {
                             d3.select("#svgMainGraph")
                                 .attr("width", 10);
 
->>>>>>> test/working/version
                             //UPDATE TO NORMAL STATUS
                             d3.select("#svgModulesINTRO").select("g")
                                 .transition()
@@ -645,12 +564,6 @@ function clickIntro() {
                                 .transition()
                                 .duration(500)
                                 .style("opacity", .3);
-
-                            d3.select("#modulesText").selectAll("text")
-                                .transition()
-                                .duration(500)
-                                .style("font-size", 16)
-                                .style("fill", "lightgrey");
 
                             d3.select("#svgMainGraph")
                                 .transition()
@@ -676,21 +589,13 @@ function clickIntro() {
 
 ////////////////////////////////////////////////////////////////////
 
-<<<<<<< HEAD
-
-=======
->>>>>>> test/working/version
     //Filtering all edges:
     d3.selectAll(".edge-0, .edge-1, .edge-2, .edge-3, .edge-4")
         .transition(500)
         .attr("r", .7);
     
     strengths = [strength[0], strength[1], strength[2], strength[3], strength[4]];
-<<<<<<< HEAD
-
-=======
     // console.log("strengths", strengths);
->>>>>>> test/working/version
 
  //////////////////////////////////////////
 
@@ -715,12 +620,9 @@ function clickIntro() {
         .attr("text-anchor", "middle")
         .attr("font-family", "sans-serif")
         .attr("font-weight", "bold")
-        .attr("font-size", "18px")
-<<<<<<< HEAD
-        .attr("fill", function(d, i) { return color(i)} );
-=======
+        .attr("font-size", "20px")
+        .attr("textColor", function(d, i) { return color(i)} )
         .style("fill", function(d, i) { return color(i)} );
->>>>>>> test/working/version
 
 
 //////////////////////////////////////////
@@ -738,7 +640,7 @@ function clickIntro() {
         .attr("y", IntroYPosit)
         .text("back to INTRO")
         // .style("fill", "grey")
-        .attr("font-size", "18px")
+        .attr("font-size", "20px")
         .attr("text-anchor", "right")
         .attr("id", "INTRO")
         .attr("class", "backButton")
@@ -759,146 +661,6 @@ function clickIntro() {
         .style("opacity", 0);
 
 
-<<<<<<< HEAD
-    //LINKSSS
-     for(i = 0, longitud = graph.nodes.length; i < longitud; i++){
-
-        // d3.selectAll("#path"+i)
-        d3.selectAll(".hull")
-                .data(strengths)
-                .attr("newid", function(d) { return d.name})
-
-                .on("click", function(d) {
-                    d3.selectAll(".hull")
-                        .style("opacity", .4);
-
-                    d3.selectAll(".link")
-                        .transition()
-                        .duration(750)
-                        .style("opacity", .4)
-                        .style("stroke-width", 10);
-                    
-                    d3.selectAll(".backButton")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", 1);
-                    
-                    d3.selectAll("#buttons")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", 1);
-
-                    d3.select("#svgMainGraph")
-                            .transition()
-                            .duration(750)
-                            .style("opacity", 1);
-
-                    d3.selectAll(".introTEXT")
-                        .transition()
-                        .duration(750)
-                        .style("opacity", 0);
-
-                    d3.select("#instructionsTEXT")
-                                .transition()
-                                .duration(500)
-                                .style("opacity", 1);
-
-                    d3.select(this)
-                        .transition()
-                        .style("stroke-width", 50)
-                        .style("opacity", .7);
-                    
-                    previousColor = d3.select(this).style("fill");
-
-                    //UPDATE TO NORMAL STATUS
-                    d3.select("#modulesText").selectAll("text")
-                        .transition()
-                        .duration(750)
-                        .style("font-size", 16)
-                        .style("fill", "lightgrey");
-
-                    title = d3.select(this).attr("newid");
-                    textId = "text-"+ title;
-
-                    url = urlFunction(title);
-
-                    colorMod = d3.select(this).style("fill");
-                    color = colorMod.toString(); 
-
-                    d3.select("#"+textId)
-                        .transition()
-                        .duration(750)
-                        .style("font-size", 40)
-                        .style("fill", "brown");
-                    
-                    d3.select("#svgModulesINTRO").select("g")
-                        .transition()
-                        .duration(1000)
-                        .attr("transform", "scale(.7) translate(-80,-20)");
-                    
-                    // return force.start();
-                    // return draw0();
-
-                    d3.selectAll("#buttons")
-                        .on("click", function(d) {
-                                        
-                            //UPDATE TO NORMAL STATUS
-                            d3.select("#svgModulesINTRO").select("g")
-                                .transition()
-                                .duration(1000)
-                                .attr("transform", "scale(1) translate(0,0)");
-                                
-                            d3.selectAll(".introTEXT")
-                                    .transition()
-                                    .duration(1000)
-                                    .style("opacity", 1);
-
-                            d3.select("#instructionsTEXT")
-                                .transition()
-                                .duration(500)
-                                .style("opacity", 0);
-
-                            d3.selectAll(".backButton")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", 0);
-
-                            d3.selectAll(".backButton")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", 0);
-
-                            d3.select(this)
-                                .transition()
-                                .duration(500)
-                                .style("opacity", 0);
-
-                            d3.selectAll(".hull")
-                                .transition()
-                                .duration(500)
-                                .style("opacity", .3);
-
-                            d3.select("#modulesText").selectAll("text")
-                                .transition()
-                                .duration(500)
-                                .style("font-size", 16)
-                                .style("fill", "lightgrey");
-
-                            d3.select("#svgMainGraph")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", 0)
-
-                            d3.select("#INTRO")
-                                    .transition()
-                                    .duration(750)
-                                    .style("opacity", 0);
-                    });
-
-            return draw();
-         });
-    }
-=======
     //MODULES ON CLICK
      // for(i = 0, longitud = graph.nodes.length; i < longitud; i++){
 
@@ -933,6 +695,7 @@ function clickIntro() {
                     .transition()
                     .duration(750)
                     .style("font-size", 40)
+                    .style("opacity", 1)
                     .style("fill", "brown");
                 
 
@@ -942,7 +705,11 @@ function clickIntro() {
 
                 d3.selectAll("#buttons")
                     .on("click", function(d) {
-                    
+
+                        backIntro(); 
+
+                        // console.log("colorMod", colorMod);
+
                         //SVG size transformation to avoid overlapping issues
                         d3.select("#svgModulesINTRO")
                             .transition()
@@ -988,20 +755,6 @@ function clickIntro() {
                             .duration(500)
                             .style("opacity", .3);
 
-/*                        d3.select("#modulesText").selectAll("text")
-                            .transition()
-                            .duration(500)
-                            .style("font-size", 16)
-                            .style("fill", "lightgrey");*/
-
-                        d3.select("#modulesText").selectAll("text")
-                            .data(strengths)
-                            .transition()
-                            .duration(500)
-                            .style("font-size", 16)
-                            .style("fill", function(d, i) { return color(i)} );
- 
-
                         d3.select("#svgMainGraph")
                             .transition()
                             .duration(750)
@@ -1016,7 +769,6 @@ function clickIntro() {
             return draw();
          });
     // }
->>>>>>> test/working/version
 
     force.start();
     
