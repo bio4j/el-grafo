@@ -538,7 +538,10 @@ function arity() {
   //also legend:
   d3.selectAll("path.pathLegend").remove();
   d3.selectAll("path.edgePathLe").remove();
- 
+  
+  d3.selectAll("#arityTitle").remove(); 
+  d3.selectAll("#legendText").remove(); 
+   
   d3.selectAll("#legendText").remove(); 
   d3.selectAll("#pathLegend0").remove();
   d3.selectAll("#pathLegend1").remove();

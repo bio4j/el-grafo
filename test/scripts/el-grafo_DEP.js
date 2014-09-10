@@ -1,5 +1,4 @@
 
-
 function drawDep() {
 
   //Complete Domain Model schema:
@@ -795,8 +794,8 @@ d3.selectAll(".mainNodeRect")
         //adding INDEX info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 20 })
-          .attr("y", function(d,i) { return i + 20 })
+          .attr("x", function(d,i) { return i + 30 })
+          .attr("y", function(d,i) { return 250+(i + 20) })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "14px")
@@ -809,8 +808,8 @@ d3.selectAll(".mainNodeRect")
         //adding PROPERTIES info
         svgRouteMap.append("text")
           .attr("class", "VertexIndexProperties")
-          .attr("x", function(d,i) { return i + 20 })
-          .attr("y", function(d,i) { return i + 35 })
+          .attr("x", function(d,i) { return i + 30 })
+          .attr("y", function(d,i) { return  250+(i + 35) })
           .attr("text-anchor", "left")
           .attr("font-family", "sans-serif")
           .attr("font-size", "11px")

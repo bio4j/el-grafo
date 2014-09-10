@@ -370,6 +370,35 @@ function draw0() {
 
 ////////////////////////////////////////////////////////////////////
 
+
+function backIntro() {
+
+    //Removing all legend on Intro Menu
+    svgRouteMap.select("#legend") 
+        .style("opacity", 0); 
+    svgRouteMap.select("#moduleTitle") 
+        .style("opacity", 0); 
+    svgRouteMap.select("#moduleInfo") 
+        .style("opacity", 0); 
+
+    //Modules texts back to their color & opacity   
+    var textColor = d3.select("#modulesText").selectAll("text").each( function(d,i) {
+        textColor2 = d3.select(this).attr("textColor");
+        console.log("textColor2", textColor2);
+
+        d3.select(this).transition()
+        .duration(500)
+        .style("font-size", 20)
+        .style("opacity", 1)
+        .style("fill", textColor2);
+    });
+
+    d3.select("#modulesText").selectAll("text")
+
+}
+
+/////////
+
 function clickIntro() {
 
     //COMMON BEHAVIOUR
@@ -396,8 +425,9 @@ function clickIntro() {
     d3.select("#modulesText").selectAll("text")
         .transition()
         .duration(750)
-        .style("font-size", 16)
-        .style("fill", "lightgrey");
+        .style("font-size", 20)
+        .style("opacity", .3)
+        // .style("fill", "lightgrey");
 
     //modules scheme smaller as guide
     d3.select("#svgModulesINTRO").select("g")
@@ -429,6 +459,18 @@ function clickIntro() {
         .transition()
         .duration(750)
         .style("opacity", 1);
+
+    //Removing specific Protein info
+    svgRouteMap.selectAll(".VertexIndexProperties") 
+        .remove();   
+
+
+    svgRouteMap.select("#legend") 
+        .style("opacity", 1); 
+    svgRouteMap.select("#moduleTitle") 
+        .style("opacity", 1); 
+    svgRouteMap.select("#moduleInfo") 
+        .style("opacity", 1); 
 
 }
 
@@ -475,7 +517,9 @@ function clickIntro() {
 
                     d3.selectAll("#buttons")
                         .on("click", function(d) {
-                         
+                            
+                            backIntro();                                       
+
                             //SVG size transformation to avoid overlapping issues
                             d3.select("#svgModulesINTRO")
                                 .transition()
@@ -520,12 +564,6 @@ function clickIntro() {
                                 .transition()
                                 .duration(500)
                                 .style("opacity", .3);
-
-                            d3.select("#modulesText").selectAll("text")
-                                .transition()
-                                .duration(500)
-                                .style("font-size", 16)
-                                .style("fill", "lightgrey");
 
                             d3.select("#svgMainGraph")
                                 .transition()
@@ -582,7 +620,8 @@ function clickIntro() {
         .attr("text-anchor", "middle")
         .attr("font-family", "sans-serif")
         .attr("font-weight", "bold")
-        .attr("font-size", "18px")
+        .attr("font-size", "20px")
+        .attr("textColor", function(d, i) { return color(i)} )
         .style("fill", function(d, i) { return color(i)} );
 
 
@@ -601,7 +640,7 @@ function clickIntro() {
         .attr("y", IntroYPosit)
         .text("back to INTRO")
         // .style("fill", "grey")
-        .attr("font-size", "18px")
+        .attr("font-size", "20px")
         .attr("text-anchor", "right")
         .attr("id", "INTRO")
         .attr("class", "backButton")
@@ -656,6 +695,7 @@ function clickIntro() {
                     .transition()
                     .duration(750)
                     .style("font-size", 40)
+                    .style("opacity", 1)
                     .style("fill", "brown");
                 
 
@@ -665,7 +705,11 @@ function clickIntro() {
 
                 d3.selectAll("#buttons")
                     .on("click", function(d) {
-                    
+
+                        backIntro(); 
+
+                        // console.log("colorMod", colorMod);
+
                         //SVG size transformation to avoid overlapping issues
                         d3.select("#svgModulesINTRO")
                             .transition()
@@ -710,20 +754,6 @@ function clickIntro() {
                             .transition()
                             .duration(500)
                             .style("opacity", .3);
-
-/*                        d3.select("#modulesText").selectAll("text")
-                            .transition()
-                            .duration(500)
-                            .style("font-size", 16)
-                            .style("fill", "lightgrey");*/
-
-                        d3.select("#modulesText").selectAll("text")
-                            .data(strengths)
-                            .transition()
-                            .duration(500)
-                            .style("font-size", 16)
-                            .style("fill", function(d, i) { return color(i)} );
- 
 
                         d3.select("#svgMainGraph")
                             .transition()
