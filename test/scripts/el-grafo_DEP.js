@@ -151,6 +151,12 @@ zooming();
 
 function zooming() {
 
+  //Restarting zoom from previous explorations
+  d3.selectAll("g.zoom")
+          .transition()
+          .duration(1000)
+          .attr("transform", "translate(0,0) scale(1)");
+          
   //Centering the graphs depending on their size
   wGraph = renderinglayout.graph().width;
   hGraph = renderinglayout.graph().height;
