@@ -1,4 +1,3 @@
-
 //COLOR PALETTE:
 var bio4jColors = ["#449FB3  ","#2B5F73", "#49B4B4","#8E8E8E","#457FC1","#68DCFF","#3F464E "];
 //Related colors:
@@ -401,6 +400,9 @@ function backIntro() {
 
 function clickIntro() {
 
+  // zoom.scale(1);
+  //   zoom.translate([0, 0]);
+
     //COMMON BEHAVIOUR
     //SVG size transformation to avoid overlapping issues
     d3.select("#svgModulesINTRO")
@@ -656,7 +658,6 @@ function clickIntro() {
         .attr("class", "backButton")
         .attr("d", d3.svg.symbol().type('triangle-up').size(80))
         .style("fill", "brown")
-        // .attr("transform", "translate("+ (+IntroXPosit-15)+","+(+IntroYPosit-5)+") rotate(-90)");
         .attr("transform", function(d, i) {return "translate("+ ((+IntroXPosit-15)-(i*15))+","+(+IntroYPosit-5)+") rotate(-90)"})
         .style("opacity", 0);
 
@@ -680,8 +681,6 @@ function clickIntro() {
                     .style("opacity", .7);
                 
                 previousColor = d3.select(this).style("fill");
-
-
 
                 title = d3.select(this).attr("newid");
                 textId = "text-"+ title;
