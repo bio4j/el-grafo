@@ -10,7 +10,6 @@ var distanceYlegend = 0;
               .attr("height", mainGraphHeight);
   svgGraph.append("g")
             .attr("id", "grafo");
-
  
 //SVG canvas for ROUTEMAP loading
 var mainRouteWidth = 330;
@@ -30,10 +29,6 @@ var mainRouteHeight = 500;
 
 
 var zoom = d3.behavior.zoom();
-/*    .x(x)
-    .y(y)
-    .scaleExtent([1, 10])
-    .on("zoom", zooming);*/
 
 function draw(isUpdate) {
 
@@ -175,11 +170,9 @@ d3.json(url, function(json) {
 zooming(); 
 
 function zooming() {
-
-  // zoom.scale(1);
-  // zoom.translate([0, 0]);
   
-  svgGraph.select("#grafo")
+  //Restarting zoom from previous explorations
+  d3.selectAll("g.zoom")
           .transition()
           .duration(1000)
           .attr("transform", "translate(0,0) scale(1)");
@@ -417,6 +410,7 @@ text2 = svgRouteMap.append("text")
   d3.selectAll(".node rect")
        .on("click", function(u, value) {
         // console.log(myArray);
+
 
         // INDEXES-PROPERTIES INFO                            
         //Accessing to the properties info through .parentNode      
