@@ -67,7 +67,7 @@ body {
   fill: none;
   stroke: black;
   stroke-dasharray: 2, 3;
-  stroke-width: 10;
+  stroke-width: 15;
 }
 
 .link:hover {
@@ -76,7 +76,7 @@ body {
 /*  fill: none;
   stroke: black;
   stroke-dasharray: 5, 10;*/
-  stroke-width: 10;
+  stroke-width: 20;
 }
 
 
