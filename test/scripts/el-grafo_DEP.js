@@ -1,14 +1,13 @@
-
 function drawDep() {
 
   //Complete Domain Model schema:
-  url0 = "data/rev_schema_new_ALL.json";
+  // url0 = "data/rev_schema_new_ALL.json";
+  url0 = "data/modelService_schema.json";
 
 
   d3.json(url0, function(json0) {
 
     // console.log("json0", json0);
-
     var newjson0 = json0.map(function(x) {
           return {
             id: x.label,        
@@ -490,10 +489,15 @@ console.log(graph.nodes().length);
                 .selectAll(".mainNodeRect")
                 .style("fill", "brown");
 
-
-          zooming2();
+          zooming();
+          // zooming2();
 
           function zooming2() {
+          //Restarting zoom from previous explorations
+          d3.selectAll("g.zoom")
+                  .transition()
+                  .duration(1000)
+                  .attr("transform", "translate(0,0) scale(1)");
 
             //Centering the graphs depending on their size
             wGraph = renderinglayout.graph().width;
@@ -713,6 +717,11 @@ console.log(graph.nodes().length);
           zooming2();
 
           function zooming2() {
+          //Restarting zoom from previous explorations
+          d3.selectAll("g.zoom")
+                  .transition()
+                  .duration(1000)
+                  .attr("transform", "translate(0,0) scale(1)");
 
             //Centering the graphs depending on their size
             wGraph = renderinglayout.graph().width;
