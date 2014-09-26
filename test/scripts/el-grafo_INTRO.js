@@ -1,3 +1,4 @@
+
 //COLOR PALETTE:
 var bio4jColors = ["#449FB3  ","#2B5F73", "#49B4B4","#8E8E8E","#457FC1","#68DCFF","#3F464E "];
 //Related colors:
@@ -34,76 +35,74 @@ function draw0() {
             Nedges: x.edgeTypes.length,
 
             Dependencies: x.dependencies.length,
+            
+            source: x.dependencies[0],
+            target: x.dependencies[1],
+
             };
         });
       
     console.log("newjson0", newjson0);
 
 
-////////////////////////////////////////////////////////////
-  
-
-
- var graph2 = json0.map(function(x) {
-          return {
-            id: x.label,
-            Nvertex: x.vertexTypes.length,
-            Nedges: x.edgeTypes.length,
-
-            Dependencies: x.dependencies.length,
-            };
-        });
-      
-    console.log("graph2", graph2);
-
-
 /////////////////////////////////////////////////
 
-      //data remaped for the forcelayout scheme
-      var nodes = newjson0.map(function(x) {
-  /*    if (x.Nvertex>0) return {"wowow"}
-                    else {"wiwi" };*/
+    var nested_data = d3.nest()
+            .key(function(d) {return d.Dependencies; })
+            .entries(newjson0);
+    console.log("nested_data", nested_data);
+    console.log("nested_data-nodes", nested_data[0].values);
+    console.log("nested_data-links", nested_data[1].values);
 
-        return {
-            id: "LALALA",
+
+/////////////////////////////////////////
+
+    var nodes0 = nested_data[0].values
+    console.log("nodes0.length", nodes0.length);
+
+    var nodes = nodes0.map(function(x, i) {
+          return {
+            id: i,
             label: x.id,
             vertexTypesLength: x.Nvertex,
-            edgeTypesLength: x.Nedges
+            edgeTypesLength: x.Nedges,
             };
         });
       
     console.log("nodes", nodes);
 
+    ////
     
-    /*else {
+    function arrayObjectIndexOf(nodes, searchTerm, property) {
+        for(var i = 0, len = nodes.length; i < len; i++) {
+            if (nodes[i][property] === searchTerm) return i;
+        }
+        return -1;
+    }
+    arrayObjectIndexOf(nodes, "refseq", "label");
+    console.log("nodes-index", arrayObjectIndexOf(nodes, "refseq", "label"));
 
-    console.log("ELSE");
+    ////
 
-    var links = newjson0.map(function(x) {
-        arrayModules = [];
-        var (i = 0; i < 10; i++
+    var edges0 = nested_data[1].values
+    console.log("edges.length", edges0.length);
+
+    var edges = edges0.map(function(x, i) {
           return {
-            id: arrayModules.push(i),
             label: x.id,
-            edgeTypesLength: x.Nvertex,
-            vertexTypesLength: x.Nedges
+            vertexTypesLength: x.Nvertex,
+            edgeTypesLength: x.Nedges,
 
-            // nodes: { module: x.label },
-            // nodes: { module: x.label, label: x.vertexTypes.label, propertyTypes: x.vertexTypes.properties },
-            // links: { module: module, label: x.label, propertyTypes: x.properties }     
-            };*/
+            // sourceLabel: x.source,
+            source: arrayObjectIndexOf(nodes, x.source, "label"),
+            // targetLabel: x.target,
+            target: arrayObjectIndexOf(nodes, x.target, "label"),
+            };
+        });
 
-})
-}
+    console.log("edges", edges);
 
-/////////////////////////////////////////
-
-
- d3.json("data/rev_schema_forceLayout_CLEAN.json", function(error, graph) {
-    
-    console.log("graph", graph);
-
-    var nodes = graph.nodes
+    ////////////////////
 
     var Force = function(nodes, links) {
         return d3.layout.force()
@@ -155,7 +154,7 @@ function draw0() {
 //////////////
 
     arrayModules = [];
-    for (var i = 0; i < graph.nodes.length; i++) {         
+    for (var i = 0; i < nodes.length; i++) {         
         arrayModules.push(i);       //Add new number to array
             };
 
@@ -166,30 +165,29 @@ function draw0() {
         .append("path")
         .attr("class", "hull")
         .attr("id", function(d,i) {return "path" + i});
-
-
+   
 ///////////////////////////////////////////////////
 
 
-        var NumNodes = new Array(graph.nodes.length);
-        var NumEdges = new Array(graph.nodes.length);
+        var NumNodes = new Array(nodes.length);
+        var NumEdges = new Array(nodes.length);
         
-        var nodesv = new Array(graph.nodes.length);
-        var nodese = new Array(graph.nodes.length);
+        var nodesv = new Array(nodes.length);
+        var nodese = new Array(nodes.length);
 
-        var nodesVector = new Array(graph.nodes.length);
+        var nodesVector = new Array(nodes.length);
         
-        for(i = 0, longitud = graph.nodes.length; i < longitud; i++){
+        for(i = 0, longitud = nodes.length; i < longitud; i++){
 
-            NumNodes[i] = graph.nodes[i].vertexTypesLength;
-            NumEdges[i] = graph.nodes[i].edgeTypesLength;
+            NumNodes[i] = nodes[i].vertexTypesLength;
+            NumEdges[i] = nodes[i].edgeTypesLength;
 
             nodesv[i] = Nodes(NumNodes[i], i, "node-"+i),
             nodese[i] = Nodes(NumEdges[i], i, "edge-"+i),
             nodesVector[i] = nodesv[i].concat(nodese[i]);
         }
 
-    //POSITIONS STRENGHTS MANUALLY TEMPORARY   
+    //POSITIONS STRENGHTS MANUALLY    
     xUniprot = (introModulesWidthAux2 / 2);
     yUniprot = (introModulesHeightAux2 / 2);
 
@@ -197,21 +195,21 @@ function draw0() {
     var positionsManuallyY = [(yUniprot - 50), (yUniprot - 120), (yUniprot + 60), (yUniprot + 90), (yUniprot)];
 
     //STRENGTHS AND LINKS STRENGTHS-NODES
-    var strength = new Array(graph.nodes.length);
-    var links = new Array(graph.nodes.length);
-    for(i = 0, longitud = graph.nodes.length; i < longitud; i++){
-        strength[i] = Strength(positionsManuallyX[i], positionsManuallyY[i], graph.nodes[i].label);
+    var strength = new Array(nodes.length);
+    var links = new Array(nodes.length);
+    for(i = 0, longitud = nodes.length; i < longitud; i++){
+        strength[i] = Strength(positionsManuallyX[i], positionsManuallyY[i], nodes[i].label);
         links[i]  = Links(nodesVector[i], strength[i]);
     }
 
-    var aux = new Array(graph.nodes.length);
+    var aux = new Array(nodes.length);
     var all = nodesVector[0].concat(nodesVector[1]);
-    for(i = 2, longitud = graph.nodes.length; i < longitud; i++){
+    for(i = 2, longitud = nodes.length; i < longitud; i++){
         if(i+1 != longitud)
             all = all.concat(nodesVector[i]);
         else{
             all = all.concat(nodesVector[i]);
-            for(i = 0, longitud = graph.nodes.length; i < longitud; i++)
+            for(i = 0, longitud = nodes.length; i < longitud; i++)
                 aux[i] = (strength[i]);
                 
             all = all.concat(aux);
@@ -220,7 +218,7 @@ function draw0() {
 
     //FORCES
     var forceLinks = links[0];
-    for(i = 1, longitud = graph.nodes.length; i < longitud; i++)
+    for(i = 1, longitud = nodes.length; i < longitud; i++)
         forceLinks = forceLinks.concat(links[i]);
         
     force = Force(all, forceLinks);
@@ -243,7 +241,7 @@ function draw0() {
 
         // var NumTotal[i] = NumNodes[i]+NumEdges[i];
         //PATHS convex hull function
-        for(i = 0, longitud = graph.nodes.length; i < longitud; i++){
+        for(i = 0, longitud = nodes.length; i < longitud; i++){
             if((NumEdges[i]) >= 2){
                 SvgModulesINTRO.select("#path"+i)
                     .data([d3.geom.hull(nodesVector[i].map(function(d) { return [ d.x, d.y ]; }))])
@@ -299,25 +297,28 @@ function draw0() {
                     });
                     // .call(force.drag);
 
+console.log(strength[edges[0].target]);
+console.log(strength[edges[0].target].x);
+
 
     //LINKS as LINES by function
-   for(i = 0, longitud = graph.links.length; i < longitud; i++){
+   for(i = 0, longitud = edges.length; i < longitud; i++){
         SvgModulesINTRO.append("line")
-            .attr("x1", strength[graph.links[i].target].x)
-            .attr("x2", strength[graph.links[i].source].x)
-            .attr("y1", strength[graph.links[i].target].y)
-            .attr("y2", strength[graph.links[i].source].y)
+            .attr("x1", strength[edges[i].target].x)
+            .attr("x2", strength[edges[i].source].x)
+            .attr("y1", strength[edges[i].target].y)
+            .attr("y2", strength[edges[i].source].y)
             .style("stroke", "#ccc")
             .attr("class", "link");
     }
 
     //double links as LINES by function
-   for(i = 0, longitud = graph.links.length; i < longitud; i++){
+   for(i = 0, longitud = edges.length; i < longitud; i++){
         SvgModulesINTRO.append("line")
-            .attr("x1", strength[graph.links[i].target].x)
-            .attr("x2", strength[graph.links[i].source].x)
-            .attr("y1", strength[graph.links[i].target].y)
-            .attr("y2", strength[graph.links[i].source].y)
+            .attr("x1", strength[edges[i].target].x)
+            .attr("x2", strength[edges[i].source].x)
+            .attr("y1", strength[edges[i].target].y)
+            .attr("y2", strength[edges[i].source].y)
             .style("opdacity", 0)
             .attr("id", "line"+[i]);
     }
@@ -325,8 +326,8 @@ function draw0() {
 ////////////////////////////////////////////////////////////////////
 
 
-    var positionsTextY = new Array(graph.links.length);
-    for(i = 0, longitud = graph.links.length; i < longitud; i++){
+    var positionsTextY = new Array(edges.length);
+    for(i = 0, longitud = edges.length; i < longitud; i++){
 
 
         if ((+d3.select("#line"+[i]).attr("y1"))>(+introModulesHeightAux2/2)+50) {
@@ -340,11 +341,10 @@ function draw0() {
     };
 
 
-    var positionsTextX = new Array(graph.links.length);
-    for(i = 0, longitud = graph.links.length; i < longitud; i++){
+    var positionsTextX = new Array(edges.length);
+    for(i = 0, longitud = edges.length; i < longitud; i++){
             positionsTextX[i] = ((+d3.select("#line"+[i]).attr("x1")+(+d3.select("#line"+[i]).attr("x2")))/2);
     };
-
 
 
     //LABELS DEPENDENCIES
@@ -352,7 +352,7 @@ function draw0() {
         .append("g")
         .attr("class", "dependenciesText")
         .selectAll("text")        
-        .data(graph.links)
+        .data(edges)
         .enter()
         .append("text")
         .attr("id", (function(d) { return d.label }))
@@ -399,9 +399,6 @@ function backIntro() {
 /////////
 
 function clickIntro() {
-
-  // zoom.scale(1);
-  //   zoom.translate([0, 0]);
 
     //COMMON BEHAVIOUR
     //SVG size transformation to avoid overlapping issues
@@ -466,7 +463,6 @@ function clickIntro() {
     svgRouteMap.selectAll(".VertexIndexProperties") 
         .remove();   
 
-
     svgRouteMap.select("#legend") 
         .style("opacity", 1); 
     svgRouteMap.select("#moduleTitle") 
@@ -476,12 +472,11 @@ function clickIntro() {
 
 }
 
-
 /////////////////////////////////////////
 
     //LINKS ON CLICK
     d3.selectAll(".link")
-        .data(graph.links)
+        .data(edges)
         .attr("id", function(d) { return d.label })
         .on("click", function(d) {
                     clickIntro();                                       
@@ -514,8 +509,6 @@ function clickIntro() {
                         // .style("stroke", "grey");
 
                     previousColor = d3.select(this).style("fill");
-
-
 
                     d3.selectAll("#buttons")
                         .on("click", function(d) {
@@ -587,8 +580,6 @@ function clickIntro() {
             return drawDep();
         });
 
-
-
 ////////////////////////////////////////////////////////////////////
 
     //Filtering all edges:
@@ -600,7 +591,6 @@ function clickIntro() {
     // console.log("strengths", strengths);
 
  //////////////////////////////////////////
-
 
  //Function for each module url:
     var urlFunction = function(d) {
@@ -658,6 +648,7 @@ function clickIntro() {
         .attr("class", "backButton")
         .attr("d", d3.svg.symbol().type('triangle-up').size(80))
         .style("fill", "brown")
+        // .attr("transform", "translate("+ (+IntroXPosit-15)+","+(+IntroYPosit-5)+") rotate(-90)");
         .attr("transform", function(d, i) {return "translate("+ ((+IntroXPosit-15)-(i*15))+","+(+IntroYPosit-5)+") rotate(-90)"})
         .style("opacity", 0);
 
@@ -673,7 +664,6 @@ function clickIntro() {
             .on("click", function(d) {
                 clickIntro();
                 console.log("d.newid", d3.select(this).attr("newid"));
-
 
                 d3.select(this)
                     .transition()
@@ -767,8 +757,8 @@ function clickIntro() {
 
             return draw();
          });
-    // }
 
     force.start();
     
 })
+}
