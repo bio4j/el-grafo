@@ -33,7 +33,7 @@ var zoom = d3.behavior.zoom();
 function draw(isUpdate) {
 
   //Complete Domain Model schema:
-  url0 = "data/rev_schema_new_ALL.json";
+  url0 = "data/modelService_schema.json";
 
   d3.json(url0, function(json0) {
 
