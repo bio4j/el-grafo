@@ -1,4 +1,3 @@
-
 //SVG canvas for GRAPH representation
 var mainGraphWidth = 600;
 var mainGraphHeight = 550;
@@ -37,15 +36,12 @@ function draw(isUpdate) {
 
   d3.json(url0, function(json0) {
 
-    // console.log("json0", json0);
     var newjson0 = json0.map(function(x) {
-      // function colorModule(d, i) { return color(i); }
           return {
             id: x.label,        
             Nvertex: x.vertexTypes.length,
             Nedges: x.edgeTypes.length,
             Dependencies: x.dependencies.length
-            // Color: colorModule(x)
             };
         });
       
