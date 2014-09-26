@@ -1,6 +1,5 @@
-
 //COLOR PALETTE:
-var bio4jColors = ["#449FB3  ","#2B5F73", "#49B4B4","#8E8E8E","#457FC1","#68DCFF","#3F464E "];
+var bio4jColors = ["#449FB3","#2B5F73", "#49B4B4","#8E8E8E","#457FC1","#68DCFF","#3F464E"];
 //Related colors:
 // #817327,  #675D25, #673415
 
@@ -93,9 +92,9 @@ function draw0() {
             vertexTypesLength: x.Nvertex,
             edgeTypesLength: x.Nedges,
 
-            // sourceLabel: x.source,
+            sourceLabel: x.source,
             source: arrayObjectIndexOf(nodes, x.source, "label"),
-            // targetLabel: x.target,
+            targetLabel: x.target,
             target: arrayObjectIndexOf(nodes, x.target, "label"),
             };
         });
@@ -125,7 +124,7 @@ function draw0() {
                 id: id,
                 x: Math.random() * introModulesWidthAux2,
                 y: Math.random() * introModulesHeightAux2,
-                charge: -4.0,
+                charge: -6.0,
                 name: name,
             }
         })
@@ -135,7 +134,7 @@ function draw0() {
         return {
             x: x,
             y: y,
-            charge: -2.5,
+            charge: -1,
             fixed: true,
             name: name
         }
@@ -250,11 +249,17 @@ function draw0() {
                     .style("stroke", bio4jColors[i] );
             }
             else {
+                var circleId = d3.select(".hull").attr("newid");
+            
+                d3.select("#path"+i)
+                    .remove();
+
                 d3.selectAll(".node-"+i)
                     .style("stroke", bio4jColors[i])
                     .style("stroke-width", 8)
                     .style("opacity", .2)
-                    .attr("id", "path"+i)
+                    .attr("newid", circleId)
+                    // .attr("id", "path"+i)
                     .attr("class", "hull");
             }
         }
@@ -372,6 +377,10 @@ console.log(strength[edges[0].target].x);
 
 function backIntro() {
 
+    //All hull paths back to normal status
+    d3.selectAll(".hull").filter("path")
+        .style("stroke-width", 30);
+
     //Removing all legend on Intro Menu
     svgRouteMap.select("#legend") 
         .style("opacity", 0); 
@@ -385,7 +394,7 @@ function backIntro() {
         textColor2 = d3.select(this).attr("textColor");
         console.log("textColor2", textColor2);
 
-        d3.select(this).transition()
+    d3.select(this).transition()
         .duration(500)
         .style("font-size", 20)
         .style("opacity", 1)
@@ -398,6 +407,49 @@ function backIntro() {
 
 /////////
 
+   function clickCircle() {
+
+    d3.selectAll(".hull").filter("circle")
+        .on("click", function(d) {
+                
+                clickIntro();
+
+                d3.select(this)
+                    .transition()
+                    .style("stroke-width", 9)
+                    .style("opacity", .8);
+                
+                previousColor = d3.select(this).style("fill");
+
+                //UPDATE texts TO NORMAL STATUS
+                d3.select("#modulesText").selectAll("text")
+                    .transition()
+                    .duration(750)
+                    .style("font-size", 20)
+                    .style("opacity", .3);
+
+                title = d3.select(this).attr("newid");
+                textId = "text-"+ title;
+
+                url = urlFunction(title);
+                console.log("url", url);
+
+                colorMod = d3.select(this).style("fill");
+                color = colorMod.toString(); 
+
+                d3.select("#"+textId)
+                    .transition()
+                    .duration(750)
+                    .style("font-size", 40)
+                    .style("opacity", 1)
+                    .style("fill", "brown");
+
+            return draw();
+});
+};
+
+///////////////////////////////////
+
 function clickIntro() {
 
     //COMMON BEHAVIOUR
@@ -406,6 +458,9 @@ function clickIntro() {
         .transition()
         .duration(750)
         .attr("width", (introModulesWidthAux2-200));
+
+    d3.selectAll(".hull").filter("path")
+        .style("stroke-width", 30);
 
     d3.select("#svgMainGraph")
         .attr("width", mainGraphWidth);
@@ -425,7 +480,7 @@ function clickIntro() {
         .transition()
         .duration(750)
         .style("font-size", 20)
-        .style("opacity", .3)
+        .style("opacity", .3);
         // .style("fill", "lightgrey");
 
     //modules scheme smaller as guide
@@ -447,7 +502,7 @@ function clickIntro() {
         .transition()
         .duration(750)
         .style("opacity", .4)
-        .style("stroke-width", 10);
+        .style("stroke-width", 15);
 
     d3.selectAll(".backButton")
         .transition()
@@ -569,7 +624,7 @@ function clickIntro() {
                                 .transition()
                                 .duration(750)
                                 .style("opacity", .4)
-                                .style("stroke-width", 10);
+                                .style("stroke-width", 15);
 
                             d3.select("#INTRO")
                                     .transition()
@@ -587,6 +642,7 @@ function clickIntro() {
         .transition(500)
         .attr("r", .7);
     
+    ///////---------------------------------------------------------------
     strengths = [strength[0], strength[1], strength[2], strength[3], strength[4]];
     // console.log("strengths", strengths);
 
@@ -654,20 +710,18 @@ function clickIntro() {
 
 
     //MODULES ON CLICK
-     // for(i = 0, longitud = graph.nodes.length; i < longitud; i++){
-
-    // d3.selectAll("#path"+i)
     d3.selectAll(".hull")
             .data(strengths)
             .attr("newid", function(d) { return d.name})
 
             .on("click", function(d) {
+
+                clickCircle();
                 clickIntro();
-                console.log("d.newid", d3.select(this).attr("newid"));
 
                 d3.select(this)
                     .transition()
-                    .style("stroke-width", 50)
+                    .style("stroke-width", 70)
                     .style("opacity", .7);
                 
                 previousColor = d3.select(this).style("fill");
@@ -686,9 +740,7 @@ function clickIntro() {
                     .style("font-size", 40)
                     .style("opacity", 1)
                     .style("fill", "brown");
-                
-
-                
+             
                 // return force.start();
                 // return draw0();
 
@@ -696,7 +748,6 @@ function clickIntro() {
                     .on("click", function(d) {
 
                         backIntro(); 
-
                         // console.log("colorMod", colorMod);
 
                         //SVG size transformation to avoid overlapping issues
