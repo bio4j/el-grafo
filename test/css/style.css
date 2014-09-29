@@ -48,7 +48,7 @@ body {
 .hull {
       stroke-width: 30px;
       stroke-linejoin: round;
-      opacity: .35;
+      opacity: .4;
   }
 
 .hull:hover {
@@ -72,7 +72,6 @@ body {
 
 .link:hover {
   cursor: pointer;
-
 /*  fill: none;
   stroke: black;
   stroke-dasharray: 5, 10;*/
@@ -242,4 +241,34 @@ a { text-decoration: none; }
 
 svg text {
   pointer-events: none;
+}
+
+
+/*TOOLTIP 1*/
+#tooltip {
+        position: absolute;
+        width: 230px;
+        height: auto;
+        padding: 10px;
+        /*background-color: white;*/
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        border-radius: 6px;
+        -webkit-box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+        -moz-box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+        pointer-events: none;
+        z-index: +5;
+}
+
+#tooltip.hidden {
+        display: none;
+}
+
+#tooltip p {
+        color: white;
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 14px;
+        line-height: 16px;
 }
