@@ -22,10 +22,13 @@
 <script src="scripts/alg/preorder.js"></script>
 <script src="scripts/alg/prim.js"></script>
 
-<!-- <button>Reset</button> -->
-
 
 <body onLoad="draw0();">
+
+<div id="tooltip" class="hidden">
+  <p><strong>Bio4j module information:</strong></p>
+  <p><span id="value"</span></p>
+</div>
 
 <div id="introTITLE">
     <h1> el-grafo </h1>
@@ -75,7 +78,6 @@
     </p>
 </div>
 
-
 <div id="modulesINTRO">
   <svg id="svgModulesINTRO">
   </svg>
@@ -92,25 +94,17 @@
   </svg>
 </div>
 
-
 <div class="contextMenu" id="cntxtMenu">
     <ul>
-
         <li id="predecessors"> > Select its PREDECESSORS </li>
         <li id="successors"> > Select its SUCCESSORS </li>
         <li id="neighbour"> > Select its NEIGHBOUR </li>
         <li id="strongly-connected"> > Select its STRONGLY CONNECTED COMMUNITY </li>
-
     </ul>
 </div>
 
- <script src="scripts/el-grafo_INTRO.js"></script>
+
+
  <script src="scripts/el-grafo_MOD.js"></script>
  <script src="scripts/el-grafo_DEP.js"></script>
-
-
-
-
-
-
-
+ <script src="scripts/el-grafo_INTRO.js"></script>
