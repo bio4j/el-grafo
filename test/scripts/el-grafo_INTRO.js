@@ -191,7 +191,7 @@ function draw0() {
     yUniprot = (introModulesHeightAux2 / 2);
 
     var positionsManuallyX = [(xUniprot + 130), (xUniprot - 95), (xUniprot + 100), (xUniprot - 140), (xUniprot)]; 
-    var positionsManuallyY = [(yUniprot - 50), (yUniprot - 120), (yUniprot + 60), (yUniprot + 90), (yUniprot)];
+    var positionsManuallyY = [(yUniprot - 70), (yUniprot - 120), (yUniprot + 60), (yUniprot + 90), (yUniprot)];
 
     //STRENGTHS AND LINKS STRENGTHS-NODES
     var strength = new Array(nodes.length);
@@ -305,7 +305,6 @@ function draw0() {
 console.log(strength[edges[0].target]);
 console.log(strength[edges[0].target].x);
 
-
     //LINKS as LINES by function
    for(i = 0, longitud = edges.length; i < longitud; i++){
         SvgModulesINTRO.append("line")
@@ -330,27 +329,15 @@ console.log(strength[edges[0].target].x);
 
 ////////////////////////////////////////////////////////////////////
 
-
-    var positionsTextY = new Array(edges.length);
-    for(i = 0, longitud = edges.length; i < longitud; i++){
-
-
-        if ((+d3.select("#line"+[i]).attr("y1"))>(+introModulesHeightAux2/2)+50) {
-            positionsTextY[i] = (1.1*((+d3.select("#line"+[i]).attr("y1"))+(+d3.select("#line"+[i]).attr("y2")))/2);
-        }
-        
-        else {
-            positionsTextY[i] = ((+d3.select("#line"+[i]).attr("y1")+0.5*((+d3.select("#line"+[i]).attr("y2")))/2));
-        }
-
-    };
-
-
     var positionsTextX = new Array(edges.length);
     for(i = 0, longitud = edges.length; i < longitud; i++){
             positionsTextX[i] = ((+d3.select("#line"+[i]).attr("x1")+(+d3.select("#line"+[i]).attr("x2")))/2);
     };
 
+    var positionsTextY = new Array(edges.length);
+    for(i = 0, longitud = edges.length; i < longitud; i++){
+            positionsTextY[i] = ((+d3.select("#line"+[i]).attr("y1")+(+d3.select("#line"+[i]).attr("y2")))/2 -10);
+    };
 
     //LABELS DEPENDENCIES
     labelsDepend = SvgModulesINTRO
@@ -367,7 +354,7 @@ console.log(strength[edges[0].target].x);
         .attr("text-anchor", "middle")
         .attr("font-family", "sans-serif")
         .attr("font-weight", "bold")
-        .attr("font-size", "14px")
+        .attr("font-size", "20px")
         .attr("fill", "#606060")
         .style("opacity", .1);
 
@@ -376,6 +363,12 @@ console.log(strength[edges[0].target].x);
 
 
 function backIntro() {
+
+    //Setting tooltip behaviour
+    d3.select("#tooltip")
+        .transition()
+        .duration(750)
+        .style("opacity", 1);
 
     //All hull paths back to normal status
     d3.selectAll(".hull").filter("path")
@@ -388,11 +381,20 @@ function backIntro() {
         .style("opacity", 0); 
     svgRouteMap.select("#moduleInfo") 
         .style("opacity", 0); 
+    svgRouteMap.selectAll(".VertexIndexProperties") 
+        .style("opacity", 0); 
 
     //Modules texts back to their color & opacity   
     var textColor = d3.select("#modulesText").selectAll("text").each( function(d,i) {
         textColor2 = d3.select(this).attr("textColor");
         console.log("textColor2", textColor2);
+
+     d3.selectAll(".dependenciesText").selectAll("text")
+            .transition()
+            .duration(750)
+            .style("opacity", .1)
+            .style("font-size", 20)
+            .style("fill", "grey");
 
     d3.select(this).transition()
         .duration(500)
@@ -452,6 +454,19 @@ function backIntro() {
 
 function clickIntro() {
 
+    //Setting tooltip behaviour
+    d3.select("#tooltip")
+        .transition()
+        .duration(750)
+        .style("opacity", 0);
+
+    d3.selectAll(".dependenciesText").selectAll("text")
+        .transition()
+        .duration(750)
+        .style("opacity", .1)
+        .style("font-size", 20)
+        .style("fill", "grey");
+
     //COMMON BEHAVIOUR
     //SVG size transformation to avoid overlapping issues
     d3.select("#svgModulesINTRO")
@@ -483,11 +498,12 @@ function clickIntro() {
         .style("opacity", .3);
         // .style("fill", "lightgrey");
 
+    var modulesReduction = 0.7;
     //modules scheme smaller as guide
     d3.select("#svgModulesINTRO").select("g")
         .transition()
         .duration(1000)
-        .attr("transform", "scale(.7) translate(-70,-20)");
+        .attr("transform", "scale(" + modulesReduction +") translate(-70,-20)");
 
     d3.select("#svgMainGraph")
         .transition()
@@ -543,20 +559,21 @@ function clickIntro() {
                     colorMod = d3.select(this).style("stroke");
                     color = colorMod.toString(); 
 
-                    d3.selectAll(".dependenciesText").selectAll("text")
+/*                    d3.selectAll(".dependenciesText").selectAll("text")
                         .transition()
                         .duration(750)
-                        .style("opacity", 1);
-
-                    // d3.selectAll(".dependenciesText").select("#"+title)
+                        .style("opacity", 1);*/
 
 
-                    d3.selectAll("#"+title).selectAll("text")
+
+                    d3.selectAll(".dependenciesText").select("#"+title)
+                   // d3.select("#"+title)
                         .transition()
                         .duration(750)
+                        .style("font-size", 35)
+                        .style("opacity", 1)
                         .style("fill", "brown");
       
-
                     d3.select(this)
                         .transition()
                         .duration(750)      
@@ -808,6 +825,69 @@ function clickIntro() {
 
             return draw();
          });
+
+
+//////////////////////// 
+
+    //TOOLTIPS MODULE INFO
+    //Order: enzymedb, go, ncbiTaxonomy, refseq, uniprot
+    var moduleData = [
+    "ENZYME is a repository of information relative to the nomenclature of enzymes. It is primarily based on the recommendations of the Nomenclature Committee of the International Union of Biochemistry and Molecular Biology (IUBMB) and it describes each type of characterized enzyme for which an EC (Enzyme Commission) number has been provided.",
+    "The Gene Ontology project provides an ontology of defined terms representing gene product properties. GO consists of three independent sub-ontologies: cellular component, molecular function & biological process.",
+    "The Taxonomy Database is a curated classification and nomenclature for all of the organisms in the public sequence databases. Bio4j includes the whole NCBI taxonomy tree.",
+    "The Reference Sequence (RefSeq) collection aims to provide a comprehensive, integrated, non-redundant, well-annotated set of sequences, including genomic DNA, transcripts, and proteins.",
+    "The UniProt Knowledgebase (UniProtKB) is the central hub for the collection of functional information on proteins, with accurate, consistent and rich annotation."
+    ];
+
+    d3.selectAll(".hull")
+         .data(moduleData)
+         .attr("moduleInfo", function(d) { return d;});
+
+
+  //HTML div Tooltip for Module info
+    d3.selectAll(".hull")
+         .on("mouseover", function(d) {
+
+        function getCentroid(selection) {
+            var element = selection.node(),
+                bbox = element.getBBox();
+                bboxwidth = bbox.width;
+            return [(+bbox.x +bbox.width ), (bbox.y + bbox.height/2)];
+        }
+
+          var xPosition = (+getCentroid(d3.select(this))[0]);
+          var yPosition = getCentroid(d3.select(this))[1];
+          console.log(d3.select(this).attr("newid"));
+          var newId = d3.select(this).attr("newid");
+          var  colorHull = d3.select(this).style("fill");
+          var  moduleHull = d3.select(this).attr("moduleInfo");
+          console.log(d3.select(this).attr("moduleInfo"));
+
+          //Update the tooltip position and value
+          d3.select("#tooltip")
+            .style("left", (+xPosition) + 110+ "px")
+            .style("top", (+yPosition + 40) + "px")     
+            .style("background-color", colorHull)   
+
+            .select("#value")
+            .text(function(d) {
+                return moduleHull;     
+             });
+
+         console.log(d3.select(this).attr("newid"));
+
+          //Show the tooltip
+          d3.select("#tooltip").classed("hidden", false);
+
+         })
+
+         .on("mouseout", function() {
+         
+          //Hide the tooltip
+          d3.select("#tooltip").classed("hidden", true);
+
+          });
+
 
     force.start();
     
