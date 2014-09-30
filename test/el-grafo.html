@@ -26,8 +26,13 @@
 <body onLoad="draw0();">
 
 <div id="tooltip" class="hidden">
-  <p><strong>Bio4j module information:</strong></p>
+  <p><strong>Bio4j Module information</strong></p>
   <p><span id="value"</span></p>
+</div>
+
+<div id="tooltipDep" class="hidden">
+  <p><strong>Bio4j Dependency module</strong></p>
+  <p>Between <strong><span id="linkSource"></span></strong> and <strong><span id="linkTarget"> </span></strong> modules</p>
 </div>
 
 <div id="introTITLE">
@@ -102,8 +107,6 @@
         <li id="strongly-connected"> > Select its STRONGLY CONNECTED COMMUNITY </li>
     </ul>
 </div>
-
-
 
  <script src="scripts/el-grafo_MOD.js"></script>
  <script src="scripts/el-grafo_DEP.js"></script>
