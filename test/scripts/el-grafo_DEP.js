@@ -210,7 +210,7 @@ function bindingData1() {
           .attr("id", "DepText")
           .attr("x", 325)
           .attr("y", 210)
-          .text("collapsibles modules")
+          .text("collapsible modules")
           .attr("text-anchor", "left")
           .attr("font-weight", "bold")
           .attr("font-family", "sans-serif")
