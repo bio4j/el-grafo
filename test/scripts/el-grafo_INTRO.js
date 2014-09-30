@@ -17,7 +17,6 @@ SvgModulesINTRO = d3.select("#svgModulesINTRO")
 
 ////////////////////////////////
 
-
 function draw0() {
 
   //Complete Domain Model schema:
@@ -25,39 +24,26 @@ function draw0() {
 
   d3.json(url0, function(json0) {
 
-    console.log("json0", json0);
-
     var newjson0 = json0.map(function(x) {
           return {
             id: x.label,
             Nvertex: x.vertexTypes.length,
             Nedges: x.edgeTypes.length,
-
             Dependencies: x.dependencies.length,
-            
             source: x.dependencies[0],
             target: x.dependencies[1],
-
             };
         });
       
-    console.log("newjson0", newjson0);
-
-
 /////////////////////////////////////////////////
 
     var nested_data = d3.nest()
             .key(function(d) {return d.Dependencies; })
             .entries(newjson0);
-    console.log("nested_data", nested_data);
-    console.log("nested_data-nodes", nested_data[0].values);
-    console.log("nested_data-links", nested_data[1].values);
-
 
 /////////////////////////////////////////
 
     var nodes0 = nested_data[0].values
-    console.log("nodes0.length", nodes0.length);
 
     var nodes = nodes0.map(function(x, i) {
           return {
@@ -68,8 +54,6 @@ function draw0() {
             };
         });
       
-    console.log("nodes", nodes);
-
     ////
     
     function arrayObjectIndexOf(nodes, searchTerm, property) {
@@ -79,27 +63,22 @@ function draw0() {
         return -1;
     }
     arrayObjectIndexOf(nodes, "refseq", "label");
-    console.log("nodes-index", arrayObjectIndexOf(nodes, "refseq", "label"));
 
     ////
 
     var edges0 = nested_data[1].values
-    console.log("edges.length", edges0.length);
 
     var edges = edges0.map(function(x, i) {
           return {
             label: x.id,
             vertexTypesLength: x.Nvertex,
             edgeTypesLength: x.Nedges,
-
             sourceLabel: x.source,
             source: arrayObjectIndexOf(nodes, x.source, "label"),
             targetLabel: x.target,
             target: arrayObjectIndexOf(nodes, x.target, "label"),
             };
         });
-
-    console.log("edges", edges);
 
     ////////////////////
 
@@ -112,7 +91,6 @@ function draw0() {
             .linkDistance(0)
             .linkStrength(.1)
             .friction(0.9)
-
             .charge(function(d, i) {
                 return d.charge
             })
@@ -149,7 +127,6 @@ function draw0() {
         })
     };
 
-
 //////////////
 
     arrayModules = [];
@@ -166,7 +143,6 @@ function draw0() {
         .attr("id", function(d,i) {return "path" + i});
    
 ///////////////////////////////////////////////////
-
 
         var NumNodes = new Array(nodes.length);
         var NumEdges = new Array(nodes.length);
@@ -222,9 +198,7 @@ function draw0() {
         
     force = Force(all, forceLinks);
 
-
 /////////////
-
 
     force.on("tick", function() {
         // SvgModulesINTRO.selectAll("circle")
@@ -265,7 +239,6 @@ function draw0() {
         }
 });
 
-
 /////////////////////
 
     d3.select("#svgMainGraph")
@@ -294,16 +267,11 @@ function draw0() {
                         "class": function(d) {
                             return d.name
                         }
-                        // "class": "strengths"
                     })
 
                     .style("fill", function(d) {
                         return color(d.id)
                     });
-                    // .call(force.drag);
-
-console.log(strength[edges[0].target]);
-console.log(strength[edges[0].target].x);
 
     //LINKS as LINES by function
    for(i = 0, longitud = edges.length; i < longitud; i++){
@@ -312,7 +280,10 @@ console.log(strength[edges[0].target].x);
             .attr("x2", strength[edges[i].source].x)
             .attr("y1", strength[edges[i].target].y)
             .attr("y2", strength[edges[i].source].y)
-            .style("stroke", "#ccc")
+
+            .attr("linkSource", strength[edges[i].source].name)
+            .attr("linkTarget", strength[edges[i].target].name)
+            .style("opacity", 0)
             .attr("class", "link");
     }
 
@@ -323,7 +294,10 @@ console.log(strength[edges[0].target].x);
             .attr("x2", strength[edges[i].source].x)
             .attr("y1", strength[edges[i].target].y)
             .attr("y2", strength[edges[i].source].y)
-            .style("opdacity", 0)
+            .style("opacity", 1)
+            .style("stroke", "#ccc")
+
+            .attr("class", "link2")
             .attr("id", "line"+[i]);
     }
 
@@ -356,16 +330,20 @@ console.log(strength[edges[0].target].x);
         .attr("font-weight", "bold")
         .attr("font-size", "20px")
         .attr("fill", "#606060")
-        .style("opacity", .1);
-
+        .style("opacity", 0);
 
 ////////////////////////////////////////////////////////////////////
-
 
 function backIntro() {
 
     //Setting tooltip behaviour
     d3.select("#tooltip")
+        .transition()
+        .duration(750)
+        .style("opacity", 1);
+
+    //Setting tooltip behaviour
+    d3.select("#tooltipDep")
         .transition()
         .duration(750)
         .style("opacity", 1);
@@ -387,12 +365,14 @@ function backIntro() {
     //Modules texts back to their color & opacity   
     var textColor = d3.select("#modulesText").selectAll("text").each( function(d,i) {
         textColor2 = d3.select(this).attr("textColor");
-        console.log("textColor2", textColor2);
+
+    d3.selectAll(".link")
+        .style("opacity", "0");
 
      d3.selectAll(".dependenciesText").selectAll("text")
             .transition()
             .duration(750)
-            .style("opacity", .1)
+            .style("opacity", 0)
             .style("font-size", 20)
             .style("fill", "grey");
 
@@ -404,7 +384,6 @@ function backIntro() {
     });
 
     d3.select("#modulesText").selectAll("text")
-
 }
 
 /////////
@@ -434,7 +413,6 @@ function backIntro() {
                 textId = "text-"+ title;
 
                 url = urlFunction(title);
-                console.log("url", url);
 
                 colorMod = d3.select(this).style("fill");
                 color = colorMod.toString(); 
@@ -460,10 +438,16 @@ function clickIntro() {
         .duration(750)
         .style("opacity", 0);
 
+    //Setting tooltip behaviour
+    d3.select("#tooltipDep")
+        .transition()
+        .duration(750)
+        .style("opacity", 0);
+
     d3.selectAll(".dependenciesText").selectAll("text")
         .transition()
         .duration(750)
-        .style("opacity", .1)
+        .style("opacity", 0)
         .style("font-size", 20)
         .style("fill", "grey");
 
@@ -496,7 +480,6 @@ function clickIntro() {
         .duration(750)
         .style("font-size", 20)
         .style("opacity", .3);
-        // .style("fill", "lightgrey");
 
     var modulesReduction = 0.7;
     //modules scheme smaller as guide
@@ -515,10 +498,7 @@ function clickIntro() {
         .style("opacity", .4);                 
 
     d3.selectAll(".link")
-        .transition()
-        .duration(750)
-        .style("opacity", .4)
-        .style("stroke-width", 15);
+        .style("opacity", "0");
 
     d3.selectAll(".backButton")
         .transition()
@@ -540,7 +520,6 @@ function clickIntro() {
         .style("opacity", 1); 
     svgRouteMap.select("#moduleInfo") 
         .style("opacity", 1); 
-
 }
 
 /////////////////////////////////////////
@@ -554,31 +533,38 @@ function clickIntro() {
 
                     title = d3.select(this).attr("id");
                     url = urlFunction(title);
-                    console.log("title", title);
 
                     colorMod = d3.select(this).style("stroke");
                     color = colorMod.toString(); 
 
-/*                    d3.selectAll(".dependenciesText").selectAll("text")
-                        .transition()
-                        .duration(750)
-                        .style("opacity", 1);*/
-
-
-
                     d3.selectAll(".dependenciesText").select("#"+title)
-                   // d3.select("#"+title)
                         .transition()
                         .duration(750)
                         .style("font-size", 35)
                         .style("opacity", 1)
                         .style("fill", "brown");
-      
+                    
                     d3.select(this)
+                        .style("opacity", ".2");
+
+                    linkSource = d3.select(this).attr("linkSource");
+                    linkTarget = d3.select(this).attr("linkTarget");
+
+                    linkSourceColor = d3.select("[newid ="+linkSource+"]")
+                        .style("fill");
+
+                    linkTargetColor = d3.select("[newid ="+linkTarget+"]")
+                        .style("fill");
+
+                     d3.select("[newid ="+linkSource+"]")
                         .transition()
-                        .duration(750)      
-                        .style("stroke-width", 30);
-                        // .style("stroke", "grey");
+                        .duration(750)
+                        .style("opacity", .9);
+
+                     d3.select("[newid ="+linkTarget+"]")
+                        .transition()
+                        .duration(750)
+                        .style("opacity", .9);
 
                     previousColor = d3.select(this).style("fill");
 
@@ -637,12 +623,6 @@ function clickIntro() {
                                 .duration(750)
                                 .style("opacity", 0)
 
-                            d3.selectAll(".link")
-                                .transition()
-                                .duration(750)
-                                .style("opacity", .4)
-                                .style("stroke-width", 15);
-
                             d3.select("#INTRO")
                                     .transition()
                                     .duration(750)
@@ -659,9 +639,7 @@ function clickIntro() {
         .transition(500)
         .attr("r", .7);
     
-    ///////---------------------------------------------------------------
     strengths = [strength[0], strength[1], strength[2], strength[3], strength[4]];
-    // console.log("strengths", strengths);
 
  //////////////////////////////////////////
 
@@ -689,9 +667,7 @@ function clickIntro() {
         .attr("textColor", function(d, i) { return color(i)} )
         .style("fill", function(d, i) { return color(i)} );
 
-
 //////////////////////////////////////////
-
 
     //Back to intro button/text
     var IntroXPosit = (+introModulesWidthAux2-150);
@@ -699,12 +675,9 @@ function clickIntro() {
 
     d3.select("#svgModulesINTRO").select("g")
         .append("text")
-        // .transition()
-        // .duration(500)
         .attr("x", IntroXPosit)
         .attr("y", IntroYPosit)
         .text("back to INTRO")
-        // .style("fill", "grey")
         .attr("font-size", "20px")
         .attr("text-anchor", "right")
         .attr("id", "INTRO")
@@ -721,16 +694,13 @@ function clickIntro() {
         .attr("class", "backButton")
         .attr("d", d3.svg.symbol().type('triangle-up').size(80))
         .style("fill", "brown")
-        // .attr("transform", "translate("+ (+IntroXPosit-15)+","+(+IntroYPosit-5)+") rotate(-90)");
         .attr("transform", function(d, i) {return "translate("+ ((+IntroXPosit-15)-(i*15))+","+(+IntroYPosit-5)+") rotate(-90)"})
         .style("opacity", 0);
-
 
     //MODULES ON CLICK
     d3.selectAll(".hull")
             .data(strengths)
             .attr("newid", function(d) { return d.name})
-
             .on("click", function(d) {
 
                 clickCircle();
@@ -758,14 +728,10 @@ function clickIntro() {
                     .style("opacity", 1)
                     .style("fill", "brown");
              
-                // return force.start();
-                // return draw0();
-
                 d3.selectAll("#buttons")
                     .on("click", function(d) {
 
                         backIntro(); 
-                        // console.log("colorMod", colorMod);
 
                         //SVG size transformation to avoid overlapping issues
                         d3.select("#svgModulesINTRO")
@@ -826,7 +792,6 @@ function clickIntro() {
             return draw();
          });
 
-
 //////////////////////// 
 
     //TOOLTIPS MODULE INFO
@@ -843,10 +808,17 @@ function clickIntro() {
          .data(moduleData)
          .attr("moduleInfo", function(d) { return d;});
 
-
   //HTML div Tooltip for Module info
     d3.selectAll(".hull")
          .on("mouseover", function(d) {
+
+        d3.selectAll(".link")
+                .style("opacity", "0");
+
+        d3.select(this)
+            .transition()
+            .duration(250)
+            .style("opacity", .8);
 
         function getCentroid(selection) {
             var element = selection.node(),
@@ -857,11 +829,9 @@ function clickIntro() {
 
           var xPosition = (+getCentroid(d3.select(this))[0]);
           var yPosition = getCentroid(d3.select(this))[1];
-          console.log(d3.select(this).attr("newid"));
           var newId = d3.select(this).attr("newid");
           var  colorHull = d3.select(this).style("fill");
           var  moduleHull = d3.select(this).attr("moduleInfo");
-          console.log(d3.select(this).attr("moduleInfo"));
 
           //Update the tooltip position and value
           d3.select("#tooltip")
@@ -874,8 +844,6 @@ function clickIntro() {
                 return moduleHull;     
              });
 
-         console.log(d3.select(this).attr("newid"));
-
           //Show the tooltip
           d3.select("#tooltip").classed("hidden", false);
 
@@ -886,8 +854,83 @@ function clickIntro() {
           //Hide the tooltip
           d3.select("#tooltip").classed("hidden", true);
 
+          d3.selectAll(".hull")
+            .transition()
+            .duration(250)
+            .style("opacity", .4);
+
           });
 
+////////////////
+
+//HTML div Tooltip for Module info
+    d3.selectAll(".link")
+         .on("mouseover", function(d) {
+
+            d3.selectAll(".link")
+                .style("opacity", "0");
+
+            d3.select(this)
+                .style("opacity", ".2");
+
+            linkSource = d3.select(this).attr("linkSource");
+            linkTarget = d3.select(this).attr("linkTarget");
+
+            x1TooltipDep = d3.select(this).attr("x1");
+            x2TooltipDep = d3.select(this).attr("x2");
+            xTooltipDep = ((+x1TooltipDep + (+x2TooltipDep))/2);
+
+            y1TooltipDep = d3.select(this).attr("y1");
+            y2TooltipDep = d3.select(this).attr("y2");
+            yTooltipDep = ((+y1TooltipDep + (+y2TooltipDep))/2);
+        
+        //Update the tooltip position and value
+          d3.select("#tooltipDep")
+            .style("left",  xTooltipDep + 100 +"px")
+            .style("top",  xTooltipDep + (-20) +"px")    
+            .style("background-color", "grey")   
+
+            .select("#linkSource")
+            .text(function(d) {
+                return linkSource;     
+             });
+
+        linkSource = d3.select(this).attr("linkSource");
+        linkTarget = d3.select(this).attr("linkTarget");
+
+         d3.select("[newid ="+linkSource+"]")
+            .transition()
+            .duration(250)
+            .style("opacity", .8);
+
+         d3.select("[newid ="+linkTarget+"]")
+            .transition()
+            .duration(250)
+            .style("opacity", .8);
+
+        d3.select("#tooltipDep")
+            .select("#linkTarget")
+            .text(function(d) {
+                return linkTarget;     
+             });
+
+          //Show the tooltip
+          d3.select("#tooltipDep").classed("hidden", false);
+         })
+
+         .on("mouseout", function() {
+         
+          //Hide the tooltip
+          d3.select("#tooltipDep").classed("hidden", true);
+          
+          d3.selectAll(".link")
+            .style("opacity", 0);
+
+          d3.selectAll(".hull")
+            .transition()
+            .duration(250)
+            .style("opacity", .4);
+          });
 
     force.start();
     
