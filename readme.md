@@ -7,7 +7,7 @@ Student: Carmen Torrecillas / Organization: Bio4j / Mentors: @eparejatobes, @lau
 ##PROJECT DESCRIPTION
 GSoC 2014 el-grafo project is the first development of an interactive web-based tool that allows users to intuitively explore the abstract domain model of the Bio4j open source bioinformatics data platform, which integrates the data available in the most representative open data sources around protein information: in [UniProtKB](http://www.uniprot.org/help/uniprotkb) (SwissProt + Trembl), [Gene Ontology](http://geneontology.org) (GO), [UniRef](http://www.uniprot.org/help/uniref) (50, 90, 100), [RefSeq](http://www.ncbi.nlm.nih.gov/refseq), [NCBI taxonomy](http://www.ncbi.nlm.nih.gov/taxonomy) and [Expasy Enzyme](http://enzyme.expasy.org). 
 
-el-grafo project details the connection between all vertex and edge components which shape the logic structure of its network module by module, as well as provides specific typing information for retrieving useful data. Its purpose is to help users gain a better understanding of the Bio4j domain model structure lowering their entry barrier to the database platform in order to utilise and query it more efficiently.
+el-grafo project details the connection between all vertex and edge components which shape the logic structure of its network module by module, as well as provides specific typing information for retrieving useful data. Its purpose is to help users gain a better understanding of the Bio4j domain model structure lowering their entry barrier to the database platform in order to utilize and query it more efficiently.
 
 
 
@@ -27,7 +27,7 @@ Regarding the external libraries it uses, the latest browser-ready scripts can b
 
 Apart from them, the scripts folder contains several algorithms from [graphlib.js](https://github.com/cpettitt/graphlib) and [contextmenu](http://www.trendskitchens.co.nz/jquery/contextmenu/) jQuery plugin.
 
-All scripts could be loaded from the HTML pages, but as the  the API may change over the time, a copy of the libraries is included in the scripts folder. They are loaded as follows:
+All scripts could be loaded from the HTML pages, but as the API may change over the time, a copy of the libraries is included in the scripts folder. They are loaded as follows:
 
 `<script src="scripts/lib/dagre-d3.js"></script>`
 
@@ -35,9 +35,9 @@ All scripts could be loaded from the HTML pages, but as the  the API may change 
 
 ## ABOUT THE MODEL DATA
 
-A HTTP-service request for exploring the Bio4j domain model has been used to return updated [graphSON](https://github.com/thinkaurelius/faunus/wiki/GraphSON-Format)/JSON objects of the different modules integrated. More infomation about this feature [here](https://github.com/bio4j/model-service)
+A HTTP-service request for exploring the Bio4j domain model has been used to return updated [graphSON](https://github.com/thinkaurelius/faunus/wiki/GraphSON-Format)/JSON objects of the different modules integrated. More information about this feature [here](https://github.com/bio4j/model-service)
 
-Once retrieved, the service data was adapted until it suited the graphlib/dagre expected income. Once the graph structure and layout were setted, we  used this as an input for dagre-d3 in order to perform its visualization using d3 on its base. For the purposes of this project, it was necessary to link all info generated on the layout with the represented outcome graph.
+Once retrieved, the service data was adapted until it suited the graphlib/dagre expected income. Once the graph structure and layout were set, we used this as an input for dagre-d3 in order to perform its visualization using d3 on its base. For the purposes of this project, it was necessary to link all info generated on the layout with the represented outcome graph.
 
 It is important to note that the data represented on el-grafo visualization tool is related with the Bio4j abstract model, not with the actual data stored on the database, although this is an interesting feature that could be integrated somehow in further development of this tool.
 
@@ -50,14 +50,13 @@ Network structures are usually represented by plotting x, y coordinates as attri
 A set of tools and libs for graph data manipulation and representation were explored in order to find the most suitable solution for the Bio4j database model visualization.
 
 On first trial, I discovered that the d3.js JavaScript library has its own [Force Layout](https://github.com/mbostock/d3/wiki/Force-Layout) for visualizing networks. It utilizes physical "forces" to arrange the elements and give attributes to the nodes (x and y coordinates, weight..) and links (source and target nodes). Although it is a flexible and interactive way to visualize these networks, it was decided that it was not suitable for this project as it jumbles the layout and the representation. 
-Due to the dynamic nature of the d3.js JavaScript library the physics behind it would make it difficult in terms of useability.
+Due to the dynamic nature of the d3.js JavaScript library the physics behind it would make it difficult in terms of usability.
 
 Other very interesting open-source JavaScript libraries consulted where [cola.js](http://marvl.infotech.monash.edu/webcola): a constraint-Based Layout in the Browser that works with d3.js, or [joint](https://github.com/DavidDurman/joint) for interactive diagramming.
 
 The final election regarding the layout component of the project was to integrate the graph data lib [dagre.js](https://github.com/cpettitt/dagre) as the most orderly and simple way to layout the network. It has [graphlib](https://github.com/cpettitt/graphlib) library bundle on it to provide data structures for undirected and directed multi-graphs along with algorithms. Our case corresponds with Diagraph as they are directed multigraphs. 
 
-On the rendering side, I decided to use [dagre-d3.js](https://github.com/cpettitt/dagre-d3), the d3-based rendered for dagre.js on the client-side, as 
-the main core of the project.
+On the rendering side, I decided to use [dagre-d3.js](https://github.com/cpettitt/dagre-d3), the d3-based rendered for dagre.js on the client-side, as the main core of the project.
 
 
 
@@ -65,7 +64,7 @@ the main core of the project.
 
 As previously explained, this approach to the Bio4j Database representation consists on a Html page that works initially as an introduction page to the project: its purpose and context.
 
-![alt tag](https://raw.githubusercontent.com/bio4j/el-grafo/master/test/docs/Screenshot%20from%202014-08-19%2002:09:12.png)
+![alt tag](https://cloud.githubusercontent.com/assets/7012771/4475125/df15231e-4968-11e4-8ce2-bbd4b7176af6.gif)
 
 
 Features:
@@ -74,7 +73,7 @@ Features:
 - Modules and Dependencies schematic representation, as colored areas and lines connecting them. Sizes relative to the number of types (vertexes and edges) on each module. 
 - Selection onClick of the Modules and Dependencies that could be LOADED and explored independently.
 
-![alt tag](https://raw.githubusercontent.com/bio4j/el-grafo/master/test/docs/Screenshot%20from%202014-08-19%2002:09:34.png)
+![alt tag](https://cloud.githubusercontent.com/assets/7012771/4475478/bc00acaa-496c-11e4-9c45-b2ac6bea25f5.gif)
 
 Once a specific Module or Dependency is loaded, the web interface turns into the main Graph representation site.
 
