@@ -1,0 +1,18 @@
+{
+    "label": "uniprot",
+    "properties": [
+
+    ],
+    "dependencies": [
+
+    ],
+    "vertexTypes": [{
+        "label": "Protein",
+        "properties": [
+
+        ]
+    }],
+    "edgeTypes": [
+
+    ]
+}

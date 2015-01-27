@@ -4,7 +4,7 @@
 <title>Dagre D3 Renderer Demo</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 
-<script src="js/d3.js" charset="utf-8"></script>da
+<script src="js/d3.js" charset="utf-8"></script>
 <script src="js/graphlib.min.js"></script>
 <script src="js/dagre-d3.js"></script>
 
@@ -16,15 +16,18 @@
 </div>
 <script>
 
-var g = new dagreD3.Digraph();
+var graph = new dagreD3.Digraph();
+
   
 function draw() {
 
 // ADDING MODULE NAME:
-d3.json("data/GO.json", function(jsonGO) {
+d3.json("data/GOReview.json", function(jsonGO) {
 
     var module = jsonGO.label;
-    var properties = jsonGO.propertyTypes;
+    console.log(module)
+    var properties = jsonGO.properties;
+    console.log(properties)
 
     /////
 
@@ -33,8 +36,8 @@ d3.json("data/GO.json", function(jsonGO) {
 
     var newVertex = jsonGO.vertexTypes.map(function(x) {
           return {
-            id: x,
-            value: { module: jsonGO.label, label: x, propertyTypes: properties  }            
+            id: x.label,        
+            value: { module: module, label: x.label, propertyTypes: x.properties }            
             };
         });
     
@@ -48,9 +51,9 @@ d3.json("data/GO.json", function(jsonGO) {
 
         var newEdges = jsonGO.edgeTypes.map(function(x) {
           return {
-            u: x.sourceType,     
-            v: x.targetType,
-            value: { module: jsonGO.label, label: x.label, inArity: x.inArity, outArity: x.outArity, propertyTypes: properties }            
+            u: x.source.type,     
+            v: x.target.type,
+            value: { module: module, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
           };
         });
     
@@ -89,8 +92,8 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
   
-  console.log(g.edges());
-  console.log(g.nodes());
+  console.log(graph.edges());
+  console.log(graph.nodes());
 
 });
 }

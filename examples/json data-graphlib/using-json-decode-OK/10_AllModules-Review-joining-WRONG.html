@@ -4,24 +4,42 @@
 <title>Dagre D3 Renderer Demo</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 
-<script src="js/d3.js" charset="utf-8"></script>da
+<script src="js/d3.js" charset="utf-8"></script>
 <script src="js/graphlib.min.js"></script>
 <script src="js/dagre-d3.js"></script>
 
 <body onLoad="draw();">
+
 <div id="attach">
-  <svg id="svg-canvas" width=800 height=600>
+  <svg id="svg-canvas1" width=400 height=400>
     <g transform="translate(20, 20)"/>
   </svg>
 </div>
+
+<div id="attach">
+  <svg id="svg-canvas2" width=400 height=400>
+    <g transform="translate(400, 400)"/>
+  </svg>
+</div>
+
 <script>
 
+
 var g = new dagreD3.Digraph();
-  
+
+// d3.merge
+
+url1 = "dataReview/enzymedb.json"
+url2 = "dataReview/go.json"
+url3 = "dataReview/ncbiTaxonomy.json"
+url4 = "dataReview/refseq.json"
+url5 = "dataReview/uniprot.json"
+url6 = "dataReview/uniprot_go.json"
+
 function draw() {
 
 // ADDING MODULE NAME:
-d3.json("data/GO.json", function(jsonGO) {
+d3.json(url1, function(jsonGO) {
 
     var module = jsonGO.label;
     var properties = jsonGO.propertyTypes;
@@ -33,8 +51,8 @@ d3.json("data/GO.json", function(jsonGO) {
 
     var newVertex = jsonGO.vertexTypes.map(function(x) {
           return {
-            id: x,
-            value: { module: jsonGO.label, label: x, propertyTypes: properties  }            
+            id: x.label,        
+            value: { module: module, label: x.label, propertyTypes: x.properties }            
             };
         });
     
@@ -48,16 +66,18 @@ d3.json("data/GO.json", function(jsonGO) {
 
         var newEdges = jsonGO.edgeTypes.map(function(x) {
           return {
-            u: x.sourceType,     
-            v: x.targetType,
-            value: { module: jsonGO.label, label: x.label, inArity: x.inArity, outArity: x.outArity, propertyTypes: properties }            
+            u: x.source.type,     
+            v: x.target.type,
+            value: { module: module, label: x.label, inArity: x.source.arity, outArity: x.target.arity, propertyTypes: x.properties }            
           };
         });
     
     console.log("Transformed structure of edgeTypes for Graphlib:")
     console.log(newEdges);
 
-  var renderer = new dagreD3.Renderer();
+    var renderer = new dagreD3.Renderer();
+  var graph = dagreD3.json.decode(newVertex, newEdges);
+
 
   var oldDrawNodes = renderer.drawNodes();
   renderer.drawNodes(function(graph, root) {
@@ -71,12 +91,13 @@ d3.json("data/GO.json", function(jsonGO) {
 
   // drawEdgePaths
 
+  var layout = dagreD3.layout();
 
+svgGraph1 = d3.select("svg#svg-canvas1");
+svgGraph2 = d3.select("svg#svg-canvas2");
 
-  var layout = renderer.run(dagreD3.json.decode(newVertex, newEdges), d3.select("svg g"));
-  d3.select("svg")
-    .attr("width", layout.graph().width + 40)
-    .attr("height", layout.graph().height + 40);
+  var renderinglayout = renderer.layout(layout)
+              .run(graph, svgGraph1);
 
   // console.log(graph);
   // console.log(g.nodes);
@@ -87,16 +108,19 @@ d3.json("data/GO.json", function(jsonGO) {
 
 
 
-
   
   console.log(g.edges());
   console.log(g.nodes());
 
-});
+  });
 }
 
 
+/*function draw() {
 
+// ADDING MODULE NAME:
+d3.json(url2, function(jsonGO) {
 
+}*/
 
 </script>
